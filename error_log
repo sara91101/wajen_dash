@@ -1,0 +1,2 @@
+[30-Mar-2024 22:41:10 Asia/Riyadh] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/wajengph/dash.wajen.net/app/Http/Controllers/CustomerController.php on line 49
+[30-Mar-2024 22:41:27 Asia/Riyadh] PHP Fatal error:  Cannot use isset() on the result of an expression (you can use "null !== expression" instead) in /home/wajengph/dash.wajen.net/app/Http/Controllers/CustomerController.php on line 49
