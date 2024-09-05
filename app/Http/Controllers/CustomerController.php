@@ -182,7 +182,7 @@ class CustomerController extends Controller
 
     public function sendNotification(Request $request)
     {
-        $subscribers_ids = array($request->customer_id);
+        $subscribers_ids = $request->subscribers;
         $title = $request->title;
         $message = $request->message;
 
