@@ -1,6 +1,18 @@
 @extends('welcome')
 
 @section('content')
+
+<script>
+    function checkAll(source,name)
+    {
+        checkboxes = document.getElementsByClassName(name);
+        for(var i=0, n=checkboxes.length;i<n;i++)
+        {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+</script>
+
     <div class="modal fade" id="notifyCustomer" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -91,7 +103,7 @@
                             <th class="font-weight-bold"> إنتهاء الإشتراك</th>
                             <th class="font-weight-bold"> عدد الرسائل</th>
                             <th class="font-weight-bold">الحالة</th>
-                            <th class="font-weight-bold"><input type="checkbox"></th>
+                            <th class="font-weight-bold"><input type="checkbox" onchange="checkAll(this,'subs')"></th>
                         </thead>
 
                         <tbody>
@@ -124,7 +136,7 @@
                                 </td>
 
                                 <td>
-                                    <input type="checkbox" name="subscribers[]" value="{{ $c['id'] }}">
+                                    <input type="checkbox" name="subscribers[]" value="{{ $c['id'] }}" class="subs">
                                 </td>
                             </tr>
                             @php $i++; @endphp
