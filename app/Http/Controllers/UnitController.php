@@ -12,7 +12,7 @@ class UnitController extends Controller
 {
     public function index()
     {
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $token = session("skillTax_token");
         // echo $token;exit;
         $client = new Client();
@@ -40,8 +40,7 @@ class UnitController extends Controller
     public function store(UnitRequest $request)
     {
         $client = new Client();
-        $url = session("url")."v1/inventory-units";
-        $url="https://backend.skilltax.sa/api/v1/inventory-units";
+        $url = "https://back.skilltax.sa/api/v1/inventory-units";
 
         $token = session("skillTax_token");
         // echo $token;exit;
@@ -79,7 +78,7 @@ class UnitController extends Controller
     public function update(Request $request)
     {
         $client = new Client();
-        $url=session("url")."v1/inventory-units/$request->Unit_id";
+        $url="https://back.skilltax.sa/api/v1/inventory-units/$request->Unit_id";
 
         $token = session("skillTax_token");
         // echo $token;exit;
@@ -107,7 +106,7 @@ class UnitController extends Controller
     public function activateUnit($Unit_id)
     {
         $client = new Client();
-        $url=session("url")."v1/inventory-units/activate/$Unit_id";
+        $url="https://back.skilltax.sa/api/v1/inventory-units/activate/$Unit_id";
 
         $token = session("skillTax_token");
 
@@ -126,7 +125,7 @@ class UnitController extends Controller
     public function inActivateUnit($Unit_id)
     {
         $client = new Client();
-        $url=session("url")."v1/inventory-units/inActivate/$Unit_id";
+        $url="https://back.skilltax.sa/api/v1/inventory-units/inActivate/$Unit_id";
 
         $token = session("skillTax_token");
 
@@ -145,7 +144,7 @@ class UnitController extends Controller
     public function destroy($Unit_id)
     {
         $client = new Client();
-        $url=session("url")."v1/inventory-units/archive/$Unit_id";
+        $url="https://back.skilltax.sa/api/v1/inventory-units/archive/$Unit_id";
 
         $token = session("skillTax_token");
 

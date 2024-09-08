@@ -256,7 +256,7 @@
 
                     <td>{{ $c["membership_no"] }}</td>
                     <td>{{ $c["city"]}}</td>
-                    <td>{{ $c["activity_ar"] }}</td>
+                    <td>{{ $c["ar_activity"] }}</td>
 
                     <td>{{ $c["package_ar"] }}</td>
                     <td>@if(!is_null($c['subscription_end_at'])){{date('Y-m-d', strtotime($c['subscription_end_at'])) }} @endif</td>

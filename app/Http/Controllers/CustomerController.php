@@ -75,19 +75,7 @@ class CustomerController extends Controller
             $customers = json_decode($subscribers->getBody()->getContents(), true);
 
             //paginate result
-            $newCollection = collect($customers)->map(function ($item) {
-                    $activity_type = Activity::find($item["activity_type"]);
-                    if($activity_type)
-                    {
-                        $item["activity_ar"] = $activity_type->activity_ar;
-                    }
-                    else
-                    {
-                        $item["activity_ar"] = "";
-                    }
-                    return $item;
-                })
-                ->filter(function ($item,$counter)
+            $newCollection = collect($customers)->filter(function ($item,$counter)
                 {
 
                     if($item["is_archived"] == 1) {$counter++;}
@@ -286,7 +274,7 @@ class CustomerController extends Controller
         $data["towns"] = json_decode(Http::get("$url/cities"), true);
 
         $data["systems"] = Systm::all();
-        $data["activities"] = Activity::all();
+        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"), true);
 
         $data["packages"] = json_decode($client->get("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
@@ -552,7 +540,9 @@ class CustomerController extends Controller
 
         $data["towns"] = json_decode(Http::get("$url/cities"), true);
 
-        $data["activities"] = Activity::all();
+        // $data["activities"] = Activity::all();
+
+        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"), true);
 
         $data["packages"] = json_decode($client->get("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],

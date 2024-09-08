@@ -55,7 +55,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header align-self-center">
-            <h3 align="center" class="modal-title text-primary-purple"><b>تعديل النشاط الرئيسية</b></h3>
+            <h3 align="center" class="modal-title text-primary-purple"><b>تعديل النشاط </b></h3>
         </div>
         <form method="POST" action="/updateActivity">
             @csrf
@@ -115,15 +115,15 @@
             @foreach ($activities as $a)
                 <tr>
                     <td >{!! $i !!}</td>
-                    <td id="ActivityAr{{ $a->id }}">{{ $a->activity_ar }}</td>
-                    <td id="ActivityEn{{ $a->id }}">{{ $a->activity_en }}</td>
+                    <td id="ActivityAr{{ $a['id'] }}">{{ $a['ar_activity'] }}</td>
+                    <td id="ActivityEn{{ $a['id'] }}">{{ $a['en_activity'] }}</td>
                     <td>
-                        <a href="#" class="btn btn-success btn-sm btn-icon-text me-3" onclick="editActivity({{ $a->id }})">
+                        <a href="#" class="btn btn-success btn-sm btn-icon-text me-3" onclick="editActivity({{ $a['id'] }})">
                             <i class="typcn typcn-edit btn-icon-append"></i>
                                 تعديل
                         </a>
                         &nbsp;&nbsp;
-                        <a onclick="destroyItem( 'destroyActivity', {{ $a->id }})"  href="#" class="btn btn-danger btn-sm btn-icon-text">
+                        <a onclick="destroyItem( 'destroyActivity', {{ $a['id'] }})"  href="#" class="btn btn-danger btn-sm btn-icon-text">
                             <i class="typcn typcn-delete-outline btn-icon-append"></i>
                                 حذف
                         </a>
@@ -141,11 +141,6 @@
             لا توجد بيانات
         </div>
         @endif
-    </div>
-    <div class="card-footer">
-        <div  dir="rtl" align="center" class="pagination flat rounded rounded-flat" style="display: flex;justify-content: center;">
-            {{ $activities->links("pagination::bootstrap-5") }}
-        </div>
     </div>
 
 </div>

@@ -676,7 +676,7 @@
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> نوع النشاط</label>
                         <select name="activity_id" id="activity" class="form-select text-right" required>
                             @foreach ($activities as $a)
-                                <option value={{ $a->id }} @if(isset($customer) && ($customer['activity_type'] == $a['id'])) selected @endif>{{ $a->activity_ar }}</option>
+                                <option value={{ $a['id'] }} @if(isset($customer) && ($customer['activity_type'] == $a['id'])) selected @endif>{{ $a['ar_activity'] }}</option>
                              @endforeach
                         </select>
                     </div>

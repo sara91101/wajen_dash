@@ -202,8 +202,8 @@
         font-family: "Material Design Icons";
         content: "2";
     }
-    
-    #progressbar #services:before 
+
+    #progressbar #services:before
     {
         font-family: "Material Design Icons";
         content: "3";
@@ -510,7 +510,7 @@
     {
         var package=document.getElementById("package_id");
         var packagePrice = package.options[package.selectedIndex].getAttribute('data-price');
-        
+
         document.getElementById("serve").innerHTML = "";
 
         document.getElementById("final_amount").value = parseInt(packagePrice);
@@ -601,7 +601,7 @@
     {
         var d = row.parentNode.parentNode.parentNode.parentNode.remove();
     }
-    
+
     function removeDiv2(row)
     {
         var d = row.parentNode.parentNode.remove();
@@ -677,7 +677,7 @@
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> نوع النشاط</label>
                         <select name="activity_id" id="activity" class="form-select text-right" required>
                             @foreach ($activities as $a)
-                                <option value={{ $a->id }} @if(($a->id - 1) == $customer['activity_type']) selected @endif>{{ $a->activity_ar }}</option>
+                                <option value={{ $a['id'] }} @if(($a['id'] - 1) == $customer['activity_type']) selected @endif>{{ $a['ar_activity'] }}</option>
                              @endforeach
                         </select>
                     </div>
