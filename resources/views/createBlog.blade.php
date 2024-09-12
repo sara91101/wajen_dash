@@ -10,6 +10,29 @@
 
         document.forms[formName].submit();
 	}
+
+
+    function addKeyword()
+    {
+        var myDiv = document.createElement("div");
+        myDiv.classList.add("col-lg-12");
+        myDiv.classList.add("row");
+        myDiv.innerHTML += '<div class="form-group col-lg-5" dir="rtl">'+
+            '<input type="text" name="ar_keyword[]" class="form-control text-right" placeholder="بالعربية">'+
+            '</div><div class="form-group col-lg-5" dir="rtl">'+
+            '<input type="text" name="en_keyword[]" class="form-control text-left" placeholder="بالإنجليزية">'+
+            '</div>'+
+            '<div class="col-lg-2"><div class="form-group"><span><label class="btn btn-sm btn-danger" onclick="removeDiv(this)"><i class="mdi mdi-delete"></i></label></span></div></div></div>';
+
+        var div = document.getElementById("keywords");
+
+        div.append(myDiv);
+    }
+
+    function removeDiv(row)
+    {
+        var d = row.parentNode.parentNode.parentNode.parentNode.remove();
+    }
 </script>
     <div class="card">
 
@@ -77,8 +100,25 @@
                         <textarea name="en_details" id="en_details" class="form-control" style="display: none;"></textarea>
                     </div>
 
-                </div>
+                <div><br><br><br><br></div>
 
+                <div id="keywords" class="col-lg-12 row" dir="rtl">
+                    <div class="col-lg-12" dir="rtl">
+                        <h4 class="text-primary-purple">
+                            <span class="btn btn-sm btn-success" onclick="addKeyword()">
+                                <i class="mdi mdi-plus"></i>
+                            </span>
+                            الكلمات الدًالة
+                        </h4>
+                    </div>
+                    <div class="form-group col-lg-5" dir="rtl">
+                        <input type="text" name="ar_keyword[]" class="form-control text-right" placeholder="بالعربية">
+                    </div>
+                    <div class="form-group col-lg-5" dir="rtl">
+                        <input type="text" name="en_keyword[]" class="form-control text-left" placeholder="بالإنجليزية">
+                    </div>
+                </div>
+                </div>
                 <br><br>
                 <div class="modal-footer justify-content-center" align="center">
                     <input type="submit" value="حفظ" class="btn  my-btn btn-lg btn-primary">

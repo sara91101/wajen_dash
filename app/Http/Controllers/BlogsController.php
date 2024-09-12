@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogDepartment;
 use App\Models\Blogs;
+use App\Models\Keyword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File as FacadesFile;
 use Spatie\Backtrace\File;
@@ -57,6 +58,24 @@ class BlogsController extends Controller
         }
         $blog->save();
 
+        if($request->ar_keyword)
+        {
+            $ar_keywords = $request->ar_keyword;
+            $en_keywords = $request->en_keyword;
+            foreach($ar_keywords as $k => $keyword)
+            {
+                if($keyword != "")
+                {
+                    $key = new Keyword();
+                    $key->blog_id = $blog->id;
+                    $key->ar_keyword = $keyword;
+                    $key->en_keyword = $en_keywords[$k];
+                    $key->save();
+                }
+
+            }
+        }
+
         return redirect("/blogs")->with("Message","تمت الاضافة");
 
     }
@@ -66,7 +85,7 @@ class BlogsController extends Controller
      */
     public function show( $blog_id)
     {
-        $blog = Blogs::find($blog_id);
+        $blog = Blogs::with("keyword")->find($blog_id);
 
         return response()->json($blog,200);
     }
@@ -76,7 +95,7 @@ class BlogsController extends Controller
      */
     public function edit( $blog)
     {
-        $data["blog"] = Blogs::find($blog);
+        $data["blog"] = Blogs::with("keyword")->find($blog);
 
         $data["departments"] = BlogDepartment::all();
 
@@ -85,7 +104,7 @@ class BlogsController extends Controller
 
     public function blog($blog_id)
     {
-        $data["blog"] = Blogs::find($blog_id);
+        $data["blog"] = Blogs::with("keyword")->find($blog_id);
 
         return view("blog",$data);
     }
@@ -116,6 +135,25 @@ class BlogsController extends Controller
         }
         $blog->update();
 
+        Keyword::where("blog_id",$blog_id)->delete();
+        if($request->ar_keyword)
+        {
+            $ar_keywords = $request->ar_keyword;
+            $en_keywords = $request->en_keyword;
+            foreach($ar_keywords as $k => $keyword)
+            {
+                if($keyword != "")
+                {
+                    $key = new Keyword();
+                    $key->blog_id = $blog->id;
+                    $key->ar_keyword = $keyword;
+                    $key->en_keyword = $en_keywords[$k];
+                    $key->save();
+                }
+
+            }
+        }
+
         return redirect("/blogs")->with("Message","تم التعديل");
     }
 
@@ -132,5 +170,16 @@ class BlogsController extends Controller
 
         return redirect("/blogs")->with("Message","تم الحذف");
 
+    }
+
+    public function star($blog_id,$star)
+    {
+        Blogs::where("id",$blog_id)->update(["starred"=>$star]);
+
+        $msg = "";
+        if($star == 0){$msg = "تم الحذف من المفضلة";}
+        else{$msg = "تم الإضافة للمفضلة";}
+
+        return redirect("/blogs")->with("Message",$msg);
     }
 }

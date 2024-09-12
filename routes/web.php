@@ -27,6 +27,7 @@ use App\Http\Controllers\DemandController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\LoyaltyConditionController;
 use App\Http\Controllers\LoyaltyContactController;
 use App\Http\Controllers\LoyaltyController;
@@ -325,11 +326,12 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     //blogs
     Route::get('/blogs', [BlogsController::class, 'index'])->name("blogs");
     Route::get('/createBlog', [BlogsController::class, 'create'])->name("createBlog");
-    Route::post('/blogs', [BlogsController::class, 'store'])->name("blogs");
+    Route::post('/storeBlog', [BlogsController::class, 'store'])->name("storeBlog");
     Route::get('/editBlog/{blog_id}', [BlogsController::class, 'edit'])->name("editBlog");
     Route::get('/blog/{blog_id}', [BlogsController::class, 'blog'])->name("blog");
     Route::post('/updateBlog/{blog_id}', [BlogsController::class, 'update'])->name("updateBlog");
     Route::get('/destroyBlog/{id}', [BlogsController::class, 'destroy'])->name("destroyBlog");
+    Route::get('/starBlog/{id}/{star}', [BlogsController::class, 'star'])->name("starBlog");
 
     //Loyalty Customers
     Route::get('/loyaltyCustomers/{page}', [LoyaltyCustomerController::class, 'index'])->name("loyaltyCustomers");
@@ -340,6 +342,12 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::get('/notifyMultiple', [CustomerController::class, 'notifyMultiple'])->name("notifyMultiple");
 
     Route::post('/sendNotification', [CustomerController::class, 'sendNotification'])->name("sendNotification");
+
+    //keywords
+    Route::get('/keywords', [KeywordController::class, 'index'])->name('keywords');
+    Route::post('/newKeyword', [KeywordController::class, 'store'])->name('newKeyword');
+    Route::post('/updateKeyword', [KeywordController::class, 'update'])->name('updateKeyword');
+    Route::get('/destroyKeyword/{Keyword_id}', [KeywordController::class, 'destroy'])->name('destroyKeyword');
 
 
 });

@@ -1,7 +1,7 @@
 @extends("welcome")
 
 @section("content")
-<div class="row" dir="rtl">
+<div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header" dir="rtl">
@@ -20,44 +20,57 @@
             <div class="card-body">
             <div class="mt-4">
                 <div class="accordion" id="accordion" role="tablist">
-                    <div class="card">
+                    <div class="card" dir="rtl">
                         <div class="card-header" role="tab" id="heading-1">
-                            <h6 class="mb-0">
+                            <h6 class="mb-0 text-right">
                                 <a data-bs-toggle="collapse" href="#collapse-ar" aria-expanded="true" aria-controls="collapse-1">
                                 {{ $blog->ar_title }}
                                 </a>
                             </h6>
                         </div>
-                        <div id="collapse-ar" class="collapse show" role="tabpanel" aria-labelledby="heading-1" data-bs-parent="#accordion">
+                        <div id="collapse-ar" class="collapse" role="tabpanel" aria-labelledby="heading-1" data-bs-parent="#accordion">
                             <div class="card-body">
-                                <div class="row">
-                                <div class="col-9">
-                                    <p class="mb-0">
+                                    <p>
                                         {!! $blog->ar_details !!}
-                                    </p>
-                                </div>
-                                </div>
+                                    </p><br>
+                                    @if(count($blog['keyword']) > 0)
+                                    <h4>الكلمات الدالًة</h4>
+                                    <div>
+                                        @foreach ($blog['keyword'] as $keyword)
+                                        <span class="badge badge-primary text-white">
+                                                {{ $keyword->ar_keyword }}
+                                        </span>&nbsp;&nbsp;
+                                        @endforeach
+                                    </div>
+                                    @endif
                             </div>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-header" role="tab" id="heading-1">
+                        <div class="card-header" role="tab" id="heading-1" dir="rtl">
                             <h6 class="mb-0">
                                 <a data-bs-toggle="collapse" href="#collapse-en" aria-expanded="true" aria-controls="collapse-1">
                                 {{ $blog->en_title }}
                                 </a>
                             </h6>
                         </div>
-                        <div id="collapse-en" class="collapse show" role="tabpanel" aria-labelledby="heading-1" data-bs-parent="#accordion">
+                        <div id="collapse-en" class="collapse" role="tabpanel" aria-labelledby="heading-1" data-bs-parent="#accordion">
                             <div class="card-body">
-                                <div class="row">
-                                <div class="col-9">
-                                    <p class="mb-0">
+                                    <p>
                                         {!! $blog->en_details !!}
                                     </p>
-                                </div>
-                                </div>
+                                    <br>
+                                    @if(count($blog['keyword']) > 0)
+                                    <h4>Keywords</h4>
+                                    <div>
+                                        @foreach ($blog['keyword'] as $keyword)
+                                            <span class="badge badge-primary text-white">
+                                                {{ $keyword->en_keyword }}
+                                            </span>&nbsp;&nbsp;
+                                        @endforeach
+                                    </div>
+                                    @endif
                             </div>
                         </div>
                     </div>

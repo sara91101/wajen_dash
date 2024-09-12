@@ -326,6 +326,17 @@
                       </h6>
                     </div>
                 </a>
+
+                <a class="dropdown-item preview-item" href="/blogDepartments">
+                    <div class="preview-thumbnail">
+                        <i class="mdi mdi-lead-pencil"></i>
+                    </div>
+                    <div class="preview-item-content flex-grow" align="right">
+                      <h6 class="preview-subject font-weight-normal">
+                         أقسام المٌدونة
+                      </h6>
+                    </div>
+                </a>
                   <!--a class="dropdown-item preview-item" href="/userTypes">
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-account-key"></i>
@@ -453,6 +464,7 @@
                         <li class="nav-item"><a class="nav-link" href="/inquiries"> الإستفسارات </a></li>
                         <li class="nav-item"><a class="nav-link" href="/distributors"> الموزعين </a></li>
                         <li class="nav-item"><a class="nav-link" href="/friends"> الوسطاء </a></li>
+                        <li class="nav-item"><a class="nav-link" href="/blogs"> المُدونة </a></li>
 
                       </ul>
                   </div>

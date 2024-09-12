@@ -88,7 +88,9 @@ class BlogDepartmentController extends Controller
 
      public function blogs($department_id)
     {
-        $blogs = BlogDepartment::where("id",$department_id)->with("blog")->get();
+        $blogs = BlogDepartment::where("id",$department_id)->with(["blog"=>function($sql){
+            $sql->with("keyword")->get();
+        }])->first();
 
         return response()->json($blogs);
     }
