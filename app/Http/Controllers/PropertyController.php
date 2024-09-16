@@ -114,7 +114,7 @@ class PropertyController extends Controller
             $compare[] = "$l->operation_ar";
         }
 
-        $operations = json_decode(Http::get($system->endPoint_url."v1/endPoints"),true);
+        $operations = json_decode(Http::get("https://back.skilltax.sa/api/v1/endPoints"),true);
 
         return view("createProperty",$data,compact("operations","compare"));
     }
@@ -179,7 +179,7 @@ class PropertyController extends Controller
         }
 
 
-        $operations = json_decode(Http::get($system->endPoint_url."v1/endPoints"),true);
+        $operations = json_decode(Http::get("https://back.skilltax.sa/api/v1/endPoints"),true);
 
         return view("editProperty",$data,compact("operations","compare","used"));
     }

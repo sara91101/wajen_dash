@@ -132,7 +132,7 @@
         </div>
         <form method="POST" action="/sendNotification">
             @csrf
-            <input type="hidden" name="subscribers[]" class="form-control text-right" id="customer_id" >
+            <input type="hidden" name="subscribers[]" class="form-control text-right" id="notify_customer_id" >
             <div class="modal-body text-right font-weight-bold" dir="rtl">
                 <div class="form-group" id="customerName">
                     <label for="exampleInputUsername1" class="text-primary-purple">

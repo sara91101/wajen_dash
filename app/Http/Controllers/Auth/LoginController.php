@@ -8,6 +8,9 @@ use App\Models\Systm;
 use App\Providers\RouteServiceProvider;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -38,23 +41,30 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        Session::flush();
+
         $info = Info::first();
         Session(['infos' => $info]);
         Session(['mode' => "dark"]);
-
-        $systm = Systm::first();
-        Session(['url' => "https://back.skilltax.sa/api/"]);
 
         $client = new Client();
 
         $login = $client->post("https://back.skilltax.sa/api/v1/subscribers/login", [
             'headers' => ['Content-Type' => 'application/json'],
-            'json' => ['membership_no' => 700000, 'password' => "St@203040"]
+            'json' => ['membership_no' => 701292, 'password' => "888888"]
         ]);
 
         $token = json_decode($login->getBody()->getContents())->token;
         Session(['skillTax_token' => $token]);
 
         $this->middleware('guest')->except('logout');
+    }
+
+
+    public function logout(Request $request)
+    {
+        Session::flush();
+        Auth::logout();
+        return redirect('/login');
     }
 }

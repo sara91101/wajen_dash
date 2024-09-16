@@ -182,7 +182,7 @@ class PackageController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
     $data =[
         "dash_id"=>$package->id,
@@ -242,7 +242,7 @@ class PackageController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $client->post("$url/updateCustomersPackage", [
         'headers'=> ['Authorization' => 'Bearer ' . $token ],
         'json' => json_decode($contents)]);
@@ -266,7 +266,7 @@ class PackageController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $allPackageSubscribers = json_decode($client->get("$url/subscribers/searchByPackage/$package_id", [
             'headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(),true);
@@ -351,7 +351,7 @@ class PackageController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $client->delete("$url/packages/$package_id", [
             'headers' => ['Authorization' => 'Bearer ' . $token]

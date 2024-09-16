@@ -191,7 +191,7 @@ class CustomerController extends Controller
             ]);
 
             $returned_code = $postResponse->getStatusCode();
-            if($returned_code == 200)
+            if($returned_code == 201)
             {
                 return redirect("/customers")->with("Message", " تم إرسال الإشعار");
             }
