@@ -27,6 +27,7 @@ use App\Http\Controllers\DemandController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\KeyController;
 use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\LoyaltyConditionController;
 use App\Http\Controllers\LoyaltyContactController;
@@ -348,6 +349,12 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::post('/newKeyword', [KeywordController::class, 'store'])->name('newKeyword');
     Route::post('/updateKeyword', [KeywordController::class, 'update'])->name('updateKeyword');
     Route::get('/destroyKeyword/{Keyword_id}', [KeywordController::class, 'destroy'])->name('destroyKeyword');
+
+    //keys
+    Route::get('/keys', [KeyController::class, 'index'])->name('keys');
+    Route::post('/newKey', [KeyController::class, 'store'])->name('newKey');
+    Route::post('/updateKey', [KeyController::class, 'update'])->name('updateKey');
+    Route::get('/destroyKey/{Key_id}', [KeyController::class, 'destroy'])->name('destroyKey');
 
 
 });
