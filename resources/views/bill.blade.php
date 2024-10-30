@@ -20,7 +20,7 @@
             .table {width:100%; text-align:center !important;border-collapse: separate; border-spacing: 0 20px;}
             .table .under { border-bottom: 1px solid #ddd; width:20%;}
             .thanx {padding-left:15%; font-size: 35px;}
-            
+
             .boxed {
                 /*border: 1px solid;*/
                 width: 50px;
@@ -36,16 +36,16 @@
 
         <div style="justify-content: space-between !important;">
             <span class="bill">
-               ﻓﺎﺗﻮرة ﺿﺮﻳﺒﻴﺔ 
+               ﻓﺎﺗﻮرة ﺿﺮﻳﺒﻴﺔ
                <br> Tax Invoice
-            </span> 
+            </span>
 
             <span>
                 <img src="{!! $info->bill !!}" width="140" height="40" class="billImg">
             </span>
         </div>
 
-        
+
 
         <div style="justify-content: space-between !important;">
             <table class="customers" border=0>
@@ -79,7 +79,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr> 
+                    <tr>
                         @php
                             if($package->taxes_type == 2){$taxx = $package->price * $package->taxes / 100;}
                             else{$taxx = $package->taxes;}
@@ -88,7 +88,7 @@
                             else{$discounts = $package->discounts;}
 
                             //$sum = $taxx + $package->price - $discounts;
-                            
+
                             $sum = $package->final_amount;
                         @endphp
                         <td class="under">{{ $sys->appreviation }} - {{ $package->package_ar }}</td>
@@ -114,18 +114,18 @@
                         <td><b>الإجمالي</b></td>
                         <td><b>{{  number_format($sum,0) }} ر.س  </b></td>
                     </tr>
-                    
-                   
-                    
-                     
-                      
+
+
+
+
+
                 </tbody>
             </table>
         </div>
-        
+
         <div style="justify-content: space-between;">
-            
-           
+
+
             <table class="payment" border=0>
                 <tr>
                      <td class="fontt">
@@ -139,12 +139,12 @@
                             <br><br><br>
                         <h1>شكراً لك</h1> <br>
                     </td>
-                   
+
                     <td >
                     </td>
                     <td></td>
                     <td class="rightt">
-                        @php 
+                        @php
                             $name = "$info->name_ar";
                             $date = date('d M Y - H:m:s a');
                         @endphp
@@ -158,12 +158,12 @@
                         </center>
                     </td>
                 </tr>
-                
-                
+
+
             </table>
-            
+
         </div>
-        
+
 
 
         <div style="justify-content: space-between !important;">

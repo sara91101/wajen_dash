@@ -367,6 +367,16 @@
                       </h6>
                     </div>
                   </a>
+                  <a class="dropdown-item preview-item" href="/keys">
+                    <div class="preview-thumbnail">
+                        <i class="mdi mdi-menu"></i>
+                    </div>
+                    <div class="preview-item-content flex-grow" align="right">
+                      <h6 class="preview-subject font-weight-normal">
+                        Keys
+                      </h6>
+                    </div>
+                  </a>
                 </div>
               </li>
             </ul>
@@ -478,8 +488,38 @@
               </li>
 
 
+              <li class="nav-item mega-menu">
+                <a href="#" class="nav-link">
+                    <i class="mdi mdi-chart-bar menu-icon"></i>
+                    <span class="menu-title font-weight-bold">التقارير</span>
+                    <i class="menu-arrow"></i></a>
+                    <div class="submenu">
+                    <div class="col-group-wrapper row">
+                        <div class="col-group col-md-6">
+                        <p class="category-heading text-primary">تقارير سكيل تاكس</p>
+                        <ul class="submenu-item">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/paymentTransactions">تقرير المدفوعات</a>
+                            </li>
+                        </ul>
+                        </div>
+                        <div class="col-group col-md-6">
+                        <p class="category-heading text-primary">التقارير العامة</p>
+                        <ul class="submenu-item">
+                            <li class="nav-item"><a class="nav-link" href="/customer_systems_report">إحصائية المشتركين بالنظام</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/customer_towns_report">إحصائية المشتركين بالمٌدٌن</a></li>
+                            <!--li class="nav-item"><a class="nav-link" href="/customer_governorates_report">إحصائية المشتركين بالمحافظات</a></li-->
+                            <li class="nav-item"><a class="nav-link" href="/customer_packages_report">إحصائية المشتركين بالباقات</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/customer_substraction_report"> إحصائية المشتركين بالإشتراك</a></li>
+                        </ul>
+                        </div>
+                    </div>
+                    </div>
+              </li>
 
-            <li class="nav-item">
+
+
+            {{--  <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="mdi mdi-chart-bar menu-icon"></i>&nbsp;
                 <span class="menu-title font-weight-bold">التقارير</span>&nbsp;
@@ -494,7 +534,7 @@
                   <li class="nav-item"><a class="nav-link" href="/customer_substraction_report"> إحصائية المشتركين بالإشتراك</a></li>
                 </ul>
               </div>
-            </li>
+            </li>  --}}
 
 
           </ul>

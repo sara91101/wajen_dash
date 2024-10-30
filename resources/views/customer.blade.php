@@ -320,7 +320,7 @@
                                         <td >{!! $b !!}</td>
                                         <td>{{ $branch->ar_name }}</td>
                                         <td>{{ $branch->en_name }}</td>
-                                        <td>{{ $branch->city_name }}</td>
+                                        <td>{{ $branch->city }}</td>
                                         <td>{{ $branch->phone_number }}</td>
                                         <td>
                                             <a href="/destroyBranch/{{ $branch->id }}/{{$customer['id'] }}" class="btn btn-danger btn-sm btn-icon-text">

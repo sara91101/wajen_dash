@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ab-alselwi/laravel-arabic-html": "^0.2.0",
         "barryvdh/laravel-dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
+        "maatwebsite/excel": "^3.1",
         "niklasravnsborg/laravel-pdf": "^4.1",
         "prgayman/laravel-zatca": "^1.0",
         "simplesoftwareio/simple-qrcode": "^4.2"

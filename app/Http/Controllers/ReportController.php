@@ -52,7 +52,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
         $data["towns"] = $response["cities"];
         return view("customers_towns_report",$data);
@@ -61,7 +61,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
         $data["towns"] = $response["cities"];
         return view("print_customers_towns_report",$data);
@@ -71,7 +71,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
         $data["governorates"] = $response["governorates"];
 
@@ -81,7 +81,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
         $data["governorates"] = $response["governorates"];
         return view("print_customers_governorates_report",$data);
@@ -91,7 +91,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
 
         $data["packages"] = $response["customers_by_packages"];
@@ -101,7 +101,7 @@ class ReportController extends Controller
     {
          $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
 
         $data["packages"] = $response["customers_by_packages"];
@@ -112,7 +112,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
 
         $data["systems"] = Systm::with("customer")->get();
@@ -129,7 +129,7 @@ class ReportController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $response = json_decode($client->get("$url/subscriber_statistics",['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(), true);
 
         $data["systems"] = Systm::with("customer")->get();
@@ -141,4 +141,5 @@ class ReportController extends Controller
         }
         return view("print_customer_substraction_report",$data);
     }
+
 }

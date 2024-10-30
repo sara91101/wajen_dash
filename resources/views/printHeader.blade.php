@@ -86,7 +86,6 @@
     <link href="/kufi/kufi.css" rel="stylesheet">
 
 </head>
-@php $info = Session("infos"); @endphp
 <div class="justify-content-between" align="center">
     <span class="text-right headerTitle" style="float: right !important; text-align:right !important">
         <label>{{ $info->name_ar }}</label><br>

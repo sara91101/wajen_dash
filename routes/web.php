@@ -38,8 +38,7 @@ use App\Http\Controllers\LoyaltySliderController;
 use App\Http\Controllers\LoyaltySplashController;
 use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\PriceShowController;
-
-
+use App\Http\Controllers\SkilltaxReports;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -355,6 +354,12 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::post('/newKey', [KeyController::class, 'store'])->name('newKey');
     Route::post('/updateKey', [KeyController::class, 'update'])->name('updateKey');
     Route::get('/destroyKey/{Key_id}', [KeyController::class, 'destroy'])->name('destroyKey');
+
+    //new reports
+    Route::get('/paymentTransactions', [SkilltaxReports::class, 'paymentTransactions'])->name('paymentTransactions');
+    Route::get('/removeSearch', [SkilltaxReports::class, 'removeSearch'])->name('removeSearch');
+    Route::get('/paymentTransactionsPdf', [SkilltaxReports::class, 'paymentTransactionsPdf'])->name('paymentTransactionsPdf');
+    Route::get('/paymentTransactionsExcel', [SkilltaxReports::class, 'paymentTransactionsExcel'])->name('paymentTransactionsExcel');
 
 
 });
