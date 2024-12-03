@@ -27,7 +27,7 @@ class ExportPaymentTransaction implements FromCollection, WithHeadings
         if(session('start_date') != ""){$url .= "&start_date=".session('start_date');}
         if(session('end_date') != ""){$url .= "&end_date=".session('end_date');}
 
-        $results = json_decode($client->get($url,['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(),true);
+        $results = json_decode($client->get($url,['headers' => ['Authorization' => 'Bearer ' . $token]])->getBody()->getContents(),true)['paymentTransactions'];
 
         foreach($results as $result)
         {
@@ -53,8 +53,8 @@ class ExportPaymentTransaction implements FromCollection, WithHeadings
             'النوع',
             'الحالة',
             'سعر الخدمة',
-            'سعر التطبيق',
-            'سعر التاجر',
+            'رسوم التطبيق',
+            'مبلغ التاجر',
         ];
     }
 }

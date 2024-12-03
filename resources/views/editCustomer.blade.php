@@ -445,7 +445,7 @@
         let taxes_value = document.getElementById("taxes").value;
         let discounts_value = document.getElementById("discounts").value;
 
-        if(!(taxes_value == ""))
+        /*if(!(taxes_value == ""))
         {
             if(document.getElementById("tax_percent").checked)
             {
@@ -455,21 +455,21 @@
             {
                 tax = taxes_value;
             }
-        }
+        }*/
 
         if(!(discounts_value == ""))
         {
-            if(document.getElementById("discount_percent").checked)
+            /*if(document.getElementById("discount_percent").checked)
             {
                 discount = amount * discounts_value / 100;
             }
             else
-            {
+            {*/
                 discount  = discounts_value;
-            }
+            //}
             //document.getElementById("final_amount").value -=  parseInt(discount);
         }
-        document.getElementById("final_amount").value = parseInt(amount) + parseInt(tax) - parseInt(discount);
+        document.getElementById("final_amount").value -=  parseInt(discount);
     }
 
     function showGovernate(town_id)
@@ -728,15 +728,15 @@
                         <input type="date" id="end_date" value="{{ date('Y-m-d',strtotime($customer['subscription_end_at'])) }}" name="end_date" class="form-control text-right" required>
                     </div>
 
-                    <div class="form-group col-lg-4">
+                    {{--  <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1">الضريبة
                             (  <input value="2" @if($customerPackage->taxes_type == 2) checked @endif id="tax_percent" name="tax_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
                               نسبة  )
                         </label>
                         <input type="text" id="taxes" value="{{ $customerPackage->taxes }}" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
-                    </div>
+                    </div>  --}}
 
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1">الخصومات
                             (  <input value="2" @if($customerPackage->discounts_type == 2) checked @endif id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
 
@@ -746,7 +746,7 @@
                     </div>
 
 
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
                         <input type="text" id="final_amount" value="{{ $customerPackage->final_amount }}" name="amount" class="form-control text-right" required>
                     </div>

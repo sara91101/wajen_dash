@@ -28,7 +28,7 @@ class PriceShowController extends Controller
         // Offset required to take the results
         $offset = ($data["page"] * $data["perPage"]) - $data["perPage"];
 
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $client = new Client();
         $token = session("skillTax_token");
 
@@ -61,7 +61,7 @@ class PriceShowController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $data["packages"] = json_decode($client->get("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
@@ -77,7 +77,7 @@ class PriceShowController extends Controller
     {
         $client = new Client();
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $data = ["name" => $request->name,"activity_name" => $request->activity_name,
         "package_id" => $request->package_id,"final_price" => $request->final_price,
@@ -98,7 +98,7 @@ class PriceShowController extends Controller
     public function show($priceShowId)
     {
         $client = new Client();
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $token = session("skillTax_token");
 
         $data["price"] = json_decode($client->get("$url/priceShow/$priceShowId", [
@@ -114,7 +114,7 @@ class PriceShowController extends Controller
 
         // return view("price",$data);
 
-        $pdf = PDF::loadView('price', $data);
+        $pdf = PDF::loadView('price3', $data);
 
         $pdf->save(public_path("prices/$fileName"));
         return $pdf->stream($fileStorePath);
@@ -127,7 +127,7 @@ class PriceShowController extends Controller
     public function edit($priceShowId)
     {
         $client = new Client();
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $token = session("skillTax_token");
 
         $data["price"] = json_decode($client->get("$url/priceShow/$priceShowId", [
@@ -145,7 +145,7 @@ class PriceShowController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $data = ["name" => $request->name,"activity_name" => $request->activity_name,
         "package_id" => $request->package_id,"final_price" => $request->final_price,
@@ -170,7 +170,7 @@ class PriceShowController extends Controller
         $client = new Client();
 
         $token = session("skillTax_token");
-        $url = session("url")."v1";
+        $url = "https://back.skilltax.sa/api/v1";
 
         $client->delete("$url/priceShow/$town",['headers' => ['Authorization' => 'Bearer ' . $token]]);
         return redirect("/priceShow")->with("Message","تم الحذف");

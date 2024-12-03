@@ -239,6 +239,7 @@
                 <th class="font-weight-bold"> الباقة</th>
                 <th class="font-weight-bold"> إنتهاء الإشتراك</th>
                 <th class="font-weight-bold"> عدد الرسائل</th>
+                <th class="font-weight-bold"> تفعيل الولاء </th>
                 <th class="font-weight-bold">الحالة</th>
                 <th class="font-weight-bold">العمليات</th>
             </thead>
@@ -261,6 +262,27 @@
                     <td>{{ $c["package_ar"] }}</td>
                     <td>@if(!is_null($c['subscription_end_at'])){{date('Y-m-d', strtotime($c['subscription_end_at'])) }} @endif</td>
                     <td>{{ $c["available_messages"] }}</td>
+
+                    <td>
+                        @if( $c['loyalty_status'] == 'active')
+                        <span href="javascript:;" class="badge badge-success text-white">
+                            مفعل
+                        </span>
+                        @elseif( $c['loyalty_status'] == 'pending')
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeLoyaltyStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
+                            طلب تفعيل
+                        </a>
+                        @elseif( $c['loyalty_status'] == 'inactivate pending')
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeLoyaltyStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
+                            طلب إلغاء تفعيل
+                        </a>
+                        @elseif( $c['loyalty_status'] == 'inactive')
+                        <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
+                            غير مفعل
+                        </span>
+                        @endif
+                    </td>
+                    
                     <td>
                         @if( $c['status'])
                         <a href="javascript:;" class="badge badge-success text-white" onclick="inActivateCustomer({{ $c['id'] }})">

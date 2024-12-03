@@ -20,72 +20,196 @@
                 text-align: center;
                 padding: 20px 0;
               }
-              
-              table caption {
-                  padding: .5em 0;
+
+              #my-table
+              {
+                  width:100%;
+                  border-collapse:collapse;
               }
-              
-              table.dataTable th,
-              table.dataTable td {
-                white-space: nowrap;
+              #my-table td, #my-table th
+              {
+                  font-size:0.8em;
+                  border:1px solid #000000;
+                  padding:3px 7px 2px 7px;
+                  text-align: center;
               }
-              
-              .p {
-                text-align: center;
-                padding-top: 140px;
-                font-size: 14px;
+              #my-table th
+              {
+                  font-size:0.8em;
+                  text-align:center;
+                  padding-top:8px;
+                  padding-bottom:4px;
+                  background-color:#FFFFFF;
+                  color:#000000;
               }
+              #my-table tr.alt td
+              {
+                  color:#000000;
+                  background-color:#FFFFFF;
+              }
+
+              th
+              {
+                  background-color: grey;
+                  color: white;
+                  text-align: center;
+                  vertical-align: top;
+                  height:50px;
+                  padding-top: 3px;
+                  padding-left: 5px;
+                  padding-right: 5px;
+              }
+
+              .verticalText
+              {
+                  text-align: center;
+                  vertical-align: middle;
+                  width: 20px;
+                  margin: 0px;
+                  padding: 0px;
+                  padding-left: 3px;
+                  padding-right: 3px;
+                  padding-top: 10px;
+                  white-space: nowrap;
+                  -webkit-transform: rotate(-90deg);
+                  -moz-transform: rotate(-90deg);
+              }
+
+              #headerTable
+            {
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            .new-section
+            {
+                height: 2%;
+                width: 10%;
+                padding-top: 25px;
+
+            }
+            .left-side
+            {
+                margin-left: 0px;
+                background-color: rgb(131, 87, 177);
+            }
+            .right-side
+            {
+                margin-right: 0px;
+                text-align: right;
+                background-color: rgb(131, 87, 177);
+            }
+            .all-div
+            {
+                margin-right:0px; padding:0px;
+            }
+            .first
+            {
+                text-align: left;
+            }
         </style>
 
     </head>
 
-    
-    
+
+
+
     <br><br>
     <body>
+
+        <table id="headerTable" border="0">
+            <tr>
+                <td class="new-section left-side first"></td>
+                <td style="text-align: left;">
+                    @if(file_exists(public_path('imgs/skilltax.png')))
+                        <img class="all-div" src="{!! public_path('imgs/skilltax.png') !!}" width="70" height="25">
+                    @endif
+                </td>
+
+                <td style="text-align: right;">
+                    <div class="all-div" align="right">&nbsp;تقرير المدفوعات</div>
+                </td>
+                <td class="new-section right-side last" align="right"></td>
+            </tr>
+        </table>
+        <hr>
+
+
+
+        <div class="justify-content-between" align="right">
+            <p style="text-align: right;"><b>{{ $info->name_ar }}</b></p>
+            <p style="text-align: right;" dir="rtl">{{ $info->email }}</p>
+            <p style="text-align: right;" dir="ltr">{{ $info->phone }}</p>
+        </div>
+
         <div class="justify-content-between"  align="center">
             <div class="text-right headerTitle" align="center">
-                <label>{{ $info->name_ar }}</label>
+                {{--  <label>{{ $info->name_ar }}</label>  --}}
             </div>
             <span class="text-center" align="center">
-                <label><b>نظام التحكم بالأنظمة المتعددة</b></label><br>
+                {{--  <label><b>نظام التحكم بالأنظمة المتعددة</b></label><br>  --}}
                 <span class="text-center" align="center">
-                    <strong>تقرير المدفوعات</strong>
+                    {{--  <strong>تقرير المدفوعات</strong>  --}}
                 </span>
             </span>
         </div>
-        
+
 
         <br><br>
-        <table dir="rtl">
+        @php $i=1; @endphp
+        <table dir="rtl" id="my-table">
             <thead>
-                <tr style="text-align: right !important;">
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">الرقم</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">التاريخ</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">رقم العضوية</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">النوع</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">الحالة</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">سعر الخدمة</th>
-                    <th style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">سعر التطبيق</th>
-                    <th style="text-align: right !important;border-bottom: 1px solid black;">سعر التاجر</th>
+                <tr>
+                    <th>الرقم</th>
+                    <th>التاريخ</th>
+                    <th>رقم العضوية</th>
+                    <th>النوع</th>
+                    <th>سعر الخدمة</th>
+                    <th>رسوم التطبيق</th>
+                    <th>مبلغ التاجر</th>
+                    <th>الحالة</th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($paymentTransactions as $transaction)
+                @foreach ($paymentTransactions['paymentTransactions'] as $transaction)
                 <tr>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['payment_id'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['datetime'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['membership_no'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['operation_type'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['status'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['service_fee'] }}</td>
-                    <td style="text-align: right !important;border-left: 1px solid black;border-bottom: 1px solid black;">{{ $transaction['app_fee'] }}</td>
-                    <td style="text-align: right !important;border-bottom: 1px solid black;">{{ $transaction['merchant_amount'] }}</td>
+                    <td>{{ $i }}</td>
+                    <td>{{ $transaction['datetime'] }}</td>
+                    <td>{{ $transaction['membership_no'] }}</td>
+
+                    <td>
+                        @if($transaction['operation_type'] == 'order') طلب
+                        @elseif($transaction['operation_type'] == 'gift') هدية
+                        @elseif($transaction['operation_type'] == 'reservation') حجز طاولة
+                        @else {{ $transaction['operation_type'] }}
+                        @endif
+                    </td>
+
+                    <td>{{ $transaction['service_fee'] }}</td>
+                    <td>{{ $transaction['app_fee'] }}</td>
+                    <td>{{ $transaction['merchant_amount'] }}</td>
+                    <td>
+                        @if($transaction['status'] == 'completed') مكتمل
+                        @elseif($transaction['status'] == 'pending') قيد الطلب
+                        @elseif($transaction['status'] == 'cancelled' || $transaction['status'] == 'canceled') ملغي
+                        @else {{ $transaction['status'] }}
+                        @endif
+                    </td>
 
                 </tr>
+                @php $i++; @endphp
                 @endforeach
             </tbody>
+            <tfooter>
+                <tr>
+                    <th colspan="4">المجموع</th>
+                    <th>{{ $paymentTransactions['totalServiceFee'] }}</th>
+                    <th>{{ $paymentTransactions['totalAppFee'] }}</th>
+                    <th>{{ $paymentTransactions['totalMerchantAmount'] }}</th>
+                    <th></th>
+                </tr>
+            </tfooter>
         </table>
     </body>
 

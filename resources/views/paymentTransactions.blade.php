@@ -29,11 +29,23 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputUsername1" class="text-primary-purple">الحالة</label>
-                            <input type="text" name="status" class="form-control text-right">
+                            {{--  <input type="text" name="status" class="form-control text-right">  --}}
+                            <select class="form-select" name="status" dir="rtl">
+                                <option value="">-</option>
+                                <option value="completed">مكتمل</option>
+                                <option value="pending">قيد الطلب</option>
+                                <option value="canceled">ملغي</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputUsername1" class="text-primary-purple">النوع</label>
-                            <input type="text" name="operation_type" class="form-control text-right">
+                            {{--  <input type="text" name="operation_type" class="form-control text-right">  --}}
+                            <select class="form-select" name="operation_type" dir="rtl">
+                                <option value="">-</option>
+                                <option value="order">طلب</option>
+                                <option value="gift">هدية</option>
+                                <option value="reservation">حجز طاولة</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputUsername1" class="text-primary-purple">في الفتره من</label>
@@ -82,32 +94,49 @@
 
         <div class="card-body">
             @if(count($paymentTransactions) > 0)
+            @php $i=1; @endphp
             <div class="table-responsive">
                 <table class="table text-center" >
                 <thead>
-                    <th class="font-weight-bold">الرقم</th>
+                    <th class="font-weight-bold">#</th>
                     <th class="font-weight-bold">التاريخ</th>
                     <th class="font-weight-bold">رقم العضوية</th>
                     <th class="font-weight-bold">النوع</th>
-                    <th class="font-weight-bold">الحالة</th>
                     <th class="font-weight-bold">سعر الخدمة</th>
-                    <th class="font-weight-bold">سعر التطبيق</th>
-                    <th class="font-weight-bold">سعر التاجر</th>
+                    <th class="font-weight-bold">رسوم التطبيق</th>
+                    <th class="font-weight-bold">مبلغ التاجر</th>
+                    <th class="font-weight-bold">الحالة</th>
                 </thead>
 
                 <tbody>
-                @foreach ($paymentTransactions as $transaction)
+                @foreach ($paymentTransactions['paymentTransactions'] as $transaction)
                     <tr>
-                        <td>{{ $transaction['payment_id'] }}</td>
+                        <td>{{ $i }}</td>
                         <td>{{ $transaction['datetime'] }}</td>
                         <td>{{ $transaction['membership_no'] }}</td>
-                        <td>{{ $transaction['operation_type'] }}</td>
-                        <td>{{ $transaction['status'] }}</td>
+
+                        <td>
+                            @if($transaction['operation_type'] == 'order') طلب
+                            @elseif($transaction['operation_type'] == 'gift') هدية
+                            @elseif($transaction['operation_type'] == 'reservation') حجز طاولة
+                            @else {{ $transaction['operation_type'] }}
+                            @endif
+                        </td>
+
                         <td>{{ $transaction['service_fee'] }}</td>
                         <td>{{ $transaction['app_fee'] }}</td>
                         <td>{{ $transaction['merchant_amount'] }}</td>
 
+                        <td>
+                            @if($transaction['status'] == 'completed') مكتمل
+                            @elseif($transaction['status'] == 'pending') قيد الطلب
+                            @elseif($transaction['status'] == 'cancelled' || $transaction['status'] == 'canceled') ملغي
+                            @else {{ $transaction['status'] }}
+                            @endif
+                        </td>
+
                     </tr>
+                    @php $i++; @endphp
                 @endforeach
                 </tbody>
                 </table>

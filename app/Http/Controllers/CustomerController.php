@@ -27,6 +27,7 @@ use Session;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException as ExceptionClientException;
 use Illuminate\Support\Facades\Redirect;
+// use Mpdf\Http\Exception\ClientException as HttpExceptionClientException;
 use Prgayman\Zatca\Facades\Zatca;
 
 class CustomerController extends Controller
@@ -104,7 +105,7 @@ class CustomerController extends Controller
             $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
 
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -161,7 +162,7 @@ class CustomerController extends Controller
 
         //  return json_decode($postResponse->getBody()->getCode());
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -304,7 +305,7 @@ class CustomerController extends Controller
 
          return json_decode($postResponse->getBody()->getContents());
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -392,9 +393,9 @@ class CustomerController extends Controller
 
             "package_id" => $request->package_id,
             "final_amount" => $request->amount,
-            "taxes" => $request->taxes,
+            "taxes" => 15,
             "discounts" => $request->discounts,
-            "tax_percent" => $request->tax_percent,
+            "tax_percent" => 2,
             "discount_percent" => $request->discount_percent,
 
             "services"=>$request->service,
@@ -454,7 +455,7 @@ class CustomerController extends Controller
             Subscription End Date / Time :  $request->end_date ";
             $message->save();
         }
-        catch (ClientException $e) {}}
+        catch (ExceptionClientException $e) {}}
 
         return redirect("/customers")->with("Message", "تمت الاضافة");
     }
@@ -595,9 +596,9 @@ class CustomerController extends Controller
 
             "package_id" => $request->package_id,
             "final_amount" => $request->amount,
-            "taxes" => $request->taxes,
+            "taxes" => 15,
             "discounts" => $request->discounts,
-            "taxes_type" => $request->taxes_type,
+            "taxes_type" => 2,
             "discounts_type" => $request->discounts_type,
 
             "services"=>$request->service,
@@ -613,7 +614,7 @@ class CustomerController extends Controller
             'headers' => ['Authorization' => 'Bearer ' . $token],
             'json' => $data
         ]);}
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -632,7 +633,7 @@ class CustomerController extends Controller
                 'json' => json_decode($contents)
             ]);
             }
-            catch (ClientException $e)
+            catch (ExceptionClientException $e)
             {
                 //return $e->getMessage();
                 return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -651,7 +652,7 @@ class CustomerController extends Controller
         $token = session("skillTax_token");
 
         try{$client->post("$url/subscribers/archive/$customer_id", ['headers' => ['Authorization' => 'Bearer ' . $token]]);}
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -693,6 +694,8 @@ class CustomerController extends Controller
 
     public function CustomerBill($customer_id, $package_id, $status)
     {
+        $sum = 0;
+
         $client = new Client();
         $url = "https://back.skilltax.sa/api/v1";
         $token = session("skillTax_token");
@@ -715,6 +718,22 @@ class CustomerController extends Controller
             }
         }
 
+        $subscriber_services = json_decode($client->get("$url/subscriber_service/$membership_no", [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            ])->getBody()->getContents(), true);
+            // print_r($subscriber_services); exit();
+        $data["services"] = [];
+        foreach($subscriber_services as $subscriber_service)
+        {
+            if($subscriber_service["package_id"] == $package_id)
+            {
+                $data["services"][] = $subscriber_service;
+                $sum += $subscriber_service["price"];
+            }
+        }
+
+        // print_r($data["services"]); exit();
+
         $data["sys"] = Systm::first();
         $data["info"] = Info::first();
 
@@ -724,23 +743,26 @@ class CustomerController extends Controller
         if($data["package"]->taxes_type == 2){$taxes = $data["package"]->price * $data["package"]->taxes / 100;}
 
         $date = Carbon::now()->toDateTimeString();
-        $data["base64"] = Zatca::sellerName($data["info"]->name_ar)
+
+        $sum += $data["package"]->final_amount;
+        if($data["package"]->taxes != 0) {$vat = $sum * 15 / 100;}
+        else{$vat = 0;}
+        $sum_with_vat = $sum + $vat;
+
+        $data["base64"] = Zatca::sellerName('شركة وجين لتقنية المعلومات')
                 ->vatRegistrationNumber($data["info"]->tax_no)
                 ->timestamp($date)
-                ->totalWithVat($data["package"]->final_amount)
-                ->vatTotal($taxes)
+                ->totalWithVat($sum_with_vat)
+                ->vatTotal($vat)
                 ->toQrCode(
                     qrCodeOptions()
                       ->format("svg")
-                      ->size(300)
+                      ->size(150)
                   );
 
-         $data["services"] = json_decode($client->get("$url/subscriber_service/$membership_no", [
-        'headers' => ['Authorization' => 'Bearer ' . $token],
-        ])->getBody()->getContents(), true);
 
 
-        $pdf = PDF::loadView('bill', $data);
+        $pdf = PDF::loadView('bill3', $data);
         //return view("bill",$data);
 
 
@@ -827,7 +849,7 @@ class CustomerController extends Controller
 
 
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -1009,7 +1031,7 @@ class CustomerController extends Controller
            $data["towns"] = json_decode(Http::get("$url/cities"), true);
         $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             return $e->getMessage();
         }
@@ -1137,7 +1159,7 @@ class CustomerController extends Controller
             Subscription End Date / Time :  $request->end_date ";
             $message->save();
         }
-        catch (ClientException $e) {}
+        catch (ExceptionClientException $e) {}
 
         return response()->json($subscriber,201);
     }
@@ -1162,6 +1184,26 @@ class CustomerController extends Controller
                 'json' => $data
                 ]);
         }
+    }
+
+    public function loyaltyStatus($membership_no,$status)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v2";
+        $token = session("skillTax_token");
+
+        if($status == 'active')
+        {
+            $msg = "تم تفعيل نقاط الولاء للمشترك $membership_no";
+            $client->post("$url/activateLoyaltyApp", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no]]);
+        }
+        else
+        {
+            $msg = "تم إلغاء تفعيل نقاط الولاء للمشترك $membership_no";
+            $client->post("$url/inactivateLoyaltyApp", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no]]);
+        }
+
+        return back()->with("Message", $msg);
     }
 
 }

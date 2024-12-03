@@ -280,6 +280,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     {{--  let amount = 0;  --}}
+    let counter = 1;
     $(document).ready(function()
     {
         //let city_id = {!! $towns[0]['id'] !!};
@@ -442,10 +443,10 @@
         let tax = 0;
         let discount = 0;
 
-        let taxes_value = document.getElementById("taxes").value;
+        //let taxes_value = document.getElementById("taxes").value;
         let discounts_value = document.getElementById("discounts").value;
 
-        if(!(taxes_value == ""))
+        /*if(!(taxes_value == ""))
         {
             if(document.getElementById("tax_percent").checked)
             {
@@ -455,21 +456,28 @@
             {
                 tax = taxes_value;
             }
-        }
+        }*/
 
         if(!(discounts_value == ""))
         {
-            if(document.getElementById("discount_percent").checked)
+            /*if(document.getElementById("discount_percent").checked)
             {
                 discount = amount * discounts_value / 100;
             }
             else
-            {
+            {*/
                 discount  = discounts_value;
-            }
+            //}
             //document.getElementById("final_amount").value -=  parseInt(discount);
         }
-        document.getElementById("final_amount").value = parseInt(amount) + parseInt(tax) - parseInt(discount);
+        document.getElementById("final_amount").value -=  parseFloat(discount);
+    }
+
+    function services_price()
+    {
+        let quantity = document.getElementById('quantity'+counter).value;
+        let unit_price = document.getElementById('unit_price'+counter).value;
+        document.getElementById('prices'+counter).value = unit_price * quantity;
     }
 
     function showGovernate(town_id)
@@ -577,6 +585,7 @@
 
     function addService()
     {
+        counter++;
             var myDiv = document.createElement("div");
             myDiv.classList.add("row");
             myDiv.innerHTML += '<div class="form-group col-lg-4">'+
@@ -584,10 +593,13 @@
                 '<input type="text" name="service[]" class="form-control"><br>'+
                 '</div><div class="form-group col-lg-2">'+
                 '<label  class="form-label">العدد</label>'+
-                '<input type="text" name="quantity[]" class="form-control"><br>'+
-                '</div><div class="form-group col-lg-4">'+
-                '<label  class="form-label">المبلغ</label>'+
-                '<input type="text" name="price[]" class="form-control"><br></div>'+
+                '<input type="text" name="quantity[]" id="quantity'+counter+'" class="form-control" onblur="services_price()"><br>'+
+                '</div><div class="form-group col-lg-2">'+
+                '<label> سعر الوحدة</label>'+
+                '<input id="unit_price'+counter+'"  type="text" class="form-control text-right" onblur="services_price()">'+
+                '</div><div class="form-group col-lg-2">'+
+                '<label  class="form-label">المبلغ الكلي</label>'+
+                '<input type="text" name="price[]" id="prices'+counter+'" class="form-control"><br></div>'+
                 '<div class="col-lg-2"><div class="form-group"><span><label class="btn btn-sm btn-danger" onclick="removeDiv(this)"><i class="mdi mdi-delete"></i></label></span></div></div></div>';
 
             var div = document.getElementById("serve");
@@ -598,6 +610,7 @@
     function removeDiv(row)
     {
         var d = row.parentNode.parentNode.parentNode.parentNode.remove();
+        counter--;
     }
 
 </script>
@@ -728,26 +741,27 @@
                         <input type="date" name="end_date" id="end_date" class="form-control text-right" @if(isset($customer)) value={{ $afterMonth }} @endif required>
                     </div>
 
-                    <div class="form-group col-lg-4">
+                    {{--  <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1">الضريبة
                             (  <input value="2" id="tax_percent" name="tax_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
                               نسبة  )
                         </label>
                         <input type="text" id="taxes" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
-                    </div>
+                    </div>  --}}
 
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1">الخصومات
-                            (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1">
+                        الخصم على سعر الباقة<br><br>
+                            {{--  (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
 
-                              نسبة  )
+                              نسبة  )  --}}
                         </label>
                         <input type="text" onblur="taxes_discounts()" id="discounts" name="discounts" class="form-control text-right">
                     </div>
 
 
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>إجمالي سعر الباقة<br><br></label>
                         <input type="text" @if(isset($customer)) value=0 @endif  id="final_amount" name="amount" class="form-control text-right" required>
                     </div>
                 </div>
@@ -768,11 +782,15 @@
                             </div>
                             <div class="form-group col-lg-2">
                                 <label></i> العدد</label>
-                                <input name="quantity[]" type="number" class="form-control text-right">
+                                <input name="quantity[]" id="quantity1" type="number" class="form-control text-right" onblur="services_price()">
                             </div>
-                            <div class="form-group col-lg-4">
-                                <label> المبلغ</label>
-                                <input name="price[]"  type="text" class="form-control text-right">
+                             <div class="form-group col-lg-2">
+                                <label> سعر الوحدة</label>
+                                <input id="unit_price1"  type="text" class="form-control text-right" onblur="services_price()">
+                            </div>
+                            <div class="form-group col-lg-2">
+                                <label> المبلغ الكلي</label>
+                                <input name="price[]" id="prices1"  type="text" class="form-control text-right">
                             </div>
                             <div class="form-group col-lg-2">
                                 <label class="btn btn-success btn-sm" onclick="addService()">

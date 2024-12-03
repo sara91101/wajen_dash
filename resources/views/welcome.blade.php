@@ -107,23 +107,23 @@
             </div>
             <form method="POST" action="/changePassword">
                 @csrf
-                <div class="modal-body text-right font-weight-bold" dir="rtl">
+                <div class="text-right modal-body font-weight-bold" dir="rtl">
                     <div class="form-group">
                         <label for="exampleInputUsername1" class="text-primary-purple">
                             <i class="mdi mdi-star text-danger"></i>
                              كلمة المرور الجديدة
                         </label>
-                        <input type="password" name="password" class="form-control text-right" required>
+                        <input type="password" name="password" class="text-right form-control" required>
                     </div>
                     {{--  <div class="form-group">
                         <label for="exampleInputUsername1" class="text-primary-purple">
                             <i class="mdi mdi-star text-danger"></i>
                             تأكيد كلمة المرور</label>
-                        <input type="password" name="confirm" class="form-control text-right">
+                        <input type="password" name="confirm" class="text-right form-control">
                     </div>  --}}
                 </div>
                 <div class="modal-footer justify-content-center" align="center">
-                    <input type="submit" value="تأكيد" class="btn  my-btn btn-lg btn-primary">
+                    <input type="submit" value="تأكيد" class="btn my-btn btn-lg btn-primary">
                 </div>
             </form>
           </div>
@@ -189,7 +189,7 @@
   <div class="container-scroller">
 
     <div class="horizontal-menu">
-      <nav class="navbar top-navbar col-lg-12 col-12 p-0">
+      <nav class="p-0 navbar top-navbar col-lg-12 col-12">
         <div class="container">
           <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
             <a class="navbar-brand brand-logo" href="/home"><img src="/imgs/logo.jpeg" alt="logo"/></a>
@@ -221,7 +221,7 @@
             <ul class="navbar-nav navbar-nav-right">
               <li class="nav-item nav-date dropdown">
                 <a class="nav-link d-flex justify-content-center align-items-center" href="javascript:;">
-                  <h6 class="date mb-0">Today : {{ date("M d") }}</h6>
+                  <h6 class="mb-0 date">Today : {{ date("M d") }}</h6>
                   <i class="typcn typcn-calendar"></i>
                 </a>
               </li>
@@ -232,16 +232,16 @@
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" id="messageDropdown" href="#" data-bs-toggle="dropdown">
-                  <i class="typcn typcn-cog-outline mx-0"></i>
+                  <i class="mx-0 typcn typcn-cog-outline"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                  <p class="font-weight-normal float-right dropdown-header" style="text-align: right !important">الإعدادات</p>
+                  <p class="float-right font-weight-normal dropdown-header" style="text-align: right !important">الإعدادات</p>
                   <a class="dropdown-item preview-item" href="/info">
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-information-outline"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
-                      <h6 class="preview-subject  font-weight-normal text-right">
+                    <div class="flex-grow preview-item-content" align="right">
+                      <h6 class="text-right preview-subject font-weight-normal">
                         من نحن
                       </h6>
                     </div>
@@ -250,7 +250,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-home-map-marker"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         المُدُن
                       </h6>
@@ -260,7 +260,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-home-modern"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         المٌحافظات
                       </h6>
@@ -270,7 +270,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-coffee"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         أنواع النشاط
                       </h6>
@@ -280,7 +280,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-speedometer"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         وحدات القياس
                       </h6>
@@ -290,7 +290,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-wheelchair-accessibility"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         الجلسات النشطة
                       </h6>
@@ -300,7 +300,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-database"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                          الخدمات
                       </h6>
@@ -310,7 +310,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-information"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                          الأسئلة المتكررة
                       </h6>
@@ -320,7 +320,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-key-variant"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                          سياسة الخصوصية
                       </h6>
@@ -331,7 +331,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-lead-pencil"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                          أقسام المٌدونة
                       </h6>
@@ -341,7 +341,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-account-key"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         أنواع المستخدمين
                       </h6>
@@ -351,7 +351,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-key"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         الصلاحيات
                       </h6>
@@ -361,7 +361,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-account-multiple-plus"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         المستخدمين
                       </h6>
@@ -371,7 +371,7 @@
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-menu"></i>
                     </div>
-                    <div class="preview-item-content flex-grow" align="right">
+                    <div class="flex-grow preview-item-content" align="right">
                       <h6 class="preview-subject font-weight-normal">
                         Keys
                       </h6>
@@ -413,7 +413,7 @@
                 <span class="menu-title font-weight-bold">باقات الإشتراك</span>&nbsp;
                 <i class="menu-arrow"></i>
                 </a>
-                <div class="submenu text-right" dir="rtl">
+                <div class="text-right submenu" dir="rtl">
                     <ul class="submenu-item">
                       <li class="nav-item"><a class="nav-link" href="/packages">الباقات </a></li>
                       <li class="nav-item"><a class="nav-link" href="/majors">القائمة الرئيسية</a></li>
@@ -430,7 +430,7 @@
                   <span class="menu-title font-weight-bold">المشتركين</span>&nbsp;
                   <i class="menu-arrow"></i>
                   </a>
-                  <div class="submenu text-right" dir="rtl">
+                  <div class="text-right submenu" dir="rtl">
                       <ul class="submenu-item">
                           <!--li class="nav-item"><a class="nav-link" href="/demands">طلبات الباقة المجانية  </a></li-->
                           <li class="nav-item"><a class="nav-link" href="/customers">قائمة المشتركين </a></li>
@@ -449,7 +449,7 @@
                   <span class="menu-title font-weight-bold">نظام الولاء</span>&nbsp;
                   <i class="menu-arrow"></i>
                   </a>
-                  <div class="submenu text-right" dir="rtl">
+                  <div class="text-right submenu" dir="rtl">
                       <ul class="submenu-item">
                         <li class="nav-item"><a class="nav-link" href="/loyaltyAbout">عن النظام </a></li>
                         <li class="nav-item"><a class="nav-link" href="/loyaltySlider">  الصور المتحركة </a></li>
@@ -468,13 +468,14 @@
                   <span class="menu-title font-weight-bold">الموقع الإلكتروني</span>&nbsp;
                   <i class="menu-arrow"></i>
                   </a>
-                  <div class="submenu text-right" dir="rtl">
+                  <div class="text-right submenu" dir="rtl">
                       <ul class="submenu-item">
                           <li class="nav-item"><a class="nav-link" href="/questions"> طلبات الإشتراك </a></li>
                         <li class="nav-item"><a class="nav-link" href="/inquiries"> الإستفسارات </a></li>
                         <li class="nav-item"><a class="nav-link" href="/distributors"> الموزعين </a></li>
                         <li class="nav-item"><a class="nav-link" href="/friends"> الوسطاء </a></li>
                         <li class="nav-item"><a class="nav-link" href="/blogs"> المُدونة </a></li>
+                        <li class="nav-item"><a class="nav-link" href="/loyaltyCustomers/1">العملاء</a></
 
                       </ul>
                   </div>
@@ -525,7 +526,7 @@
                 <span class="menu-title font-weight-bold">التقارير</span>&nbsp;
                 <i class="menu-arrow"></i>
               </a>
-              <div class="submenu text-right" dir="rtl">
+              <div class="text-right submenu" dir="rtl">
                 <ul class="submenu-item">
                   <li class="nav-item"><a class="nav-link" href="/customer_systems_report">إحصائية المشتركين بالنظام</a></li>
                   <li class="nav-item"><a class="nav-link" href="/customer_towns_report">إحصائية المشتركين بالمٌدٌن</a></li>
@@ -552,7 +553,7 @@
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
             <div class="d-flex justify-content-between">
-                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2023 <a href="https://dash.wajen.net/" class="text-muted" target="_blank">Wajen</a>. All rights reserved.</span>
+                <span class="text-center text-muted d-block text-sm-left d-sm-inline-block">Copyright © 2023 <a href="https://dash.wajen.net/" class="text-muted" target="_blank">Wajen</a>. All rights reserved.</span>
             </div>
         </footer>
         <!-- partial -->

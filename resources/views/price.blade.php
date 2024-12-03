@@ -39,7 +39,7 @@
     <body>
         <div style="justify-content: space-between !important;" dir="rtl">
             <span>
-                <img src="{!! $info->bill !!}" width="140" height="40" class="billImg">
+                {{--  <img src="{!! $info->bill !!}" width="140" height="40" class="billImg">  --}}
             </span>
 
             <span class="bill">

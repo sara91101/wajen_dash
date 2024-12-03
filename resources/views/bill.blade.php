@@ -34,16 +34,26 @@
 
     <body onload="createQR()">
 
-        <div style="justify-content: space-between !important;">
+        <div style="justify-content: space-between !important; display:flex !important;">
             <span class="bill">
                ﻓﺎﺗﻮرة ﺿﺮﻳﺒﻴﺔ
-               <br> Tax Invoice
             </span>
 
             <span>
-                <img src="{!! $info->bill !!}" width="140" height="40" class="billImg">
+                <img src="{!! public_path($info->price) !!}" width="140" height="30" class="billImg">
             </span>
         </div>
+
+        <div style="justify-content: space-between !important; display:flex !important;">
+            <span class="bill">
+              Tax Invoice
+            </span>
+
+            <span>
+
+            </span>
+        </div>
+        <hr>
 
 
 
@@ -61,7 +71,7 @@
                         <label><b>إﻳﺼﺎل ﻓﺎﺗﻮرة ﻟـ  </b></label> <br>
                         <label>{{ $customer["first_name"] }} {{ $customer["last_name"] }}</label> <br>
                         <label>{{ $customer["phone_no"] }}</label> <br>
-                        <label>{{ $customer["city"] }} , {{ $customer["tax_number"] }}</label> <br>
+                        <!--label>{{ $customer["city"] }} , {{ $customer["tax_number"] }}</label> <br-->
                     </td>
                 </tr>
             </table>
@@ -74,7 +84,6 @@
                         <th class="under">المنتج</th>
                         <th class="under">السعر</th>
                         <th class="under">الخصم</th>
-                        <th class="under">الضريبة</th>
                         <th class="under">اﻟﻤﺠﻤﻮع</th>
                     </tr>
                 </thead>
@@ -90,30 +99,49 @@
                             //$sum = $taxx + $package->price - $discounts;
 
                             $sum = $package->final_amount;
+                            $real_price = $discounts + $package->final_amount;
                         @endphp
-                        <td class="under">{{ $sys->appreviation }} - {{ $package->package_ar }}</td>
-                        <td class="under">{{ number_format($package->price,0) }}</td>
-                        <td class="under">{{ number_format($discounts,0) }}</td>
-                        <td class="under">{{ number_format($taxx,0) }}</td>
-                        <td class="under">{{ number_format($package->final_amount,0) }}</td>
+                        <td class="under">{{ $sys->appreviation }} - @if($package->renew == 1)  تجديد @endif{{ $package->package_ar }}</td>
+                        <td class="under">{{ number_format($real_price,2) }}</td>
+                        <td class="under">{{ number_format($discounts,2) }}</td>
+                        <td class="under">{{ number_format($package->final_amount,2) }}</td>
                     </tr>
                     @foreach ($services as $serve)
                         @if($serve["package_id"] == $package->package_id)
                             <tr>
                                 <td class="under">{{ $serve["service"] }}</td>
-                                <td class="under">{{ number_format($serve["price"],0) }}</td>
-                                <td class="under"></td>
+                                <td class="under">{{ number_format($serve["price"],2) }}</td>
                                 <td class="under"></td>
                                 <td class="under">{{ $serve["price"] }}</td>
                             </tr>
-                            @php $sum += $serve["price"]; @endphp
+                            @php
+                                $sum += $serve["price"];
+                            @endphp
                         @endif
                     @endforeach
+
+                    @php
+                        $vat = $sum * 15 /100;
+                        $total = $sum + $vat;
+                    @endphp
+
                     <tr>
-                        <td colspan=3></td>
-                        <td><b>الإجمالي</b></td>
-                        <td><b>{{  number_format($sum,0) }} ر.س  </b></td>
+                        <td colspan=2></td>
+                        <td><b>المجموع الفرعي</b></td>
+                        <td><b>{{  number_format($sum,2) }} ر.س  </b></td>
                     </tr>
+                    @if($package->taxes != 0)
+                        <tr>
+                            <td colspan=2></td>
+                            <td><b>ضريبة القيمة المضافة</b></td>
+                            <td><b>{{  number_format($vat,2) }} ر.س  </b></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2></td>
+                            <td><b>المجموع الكٌلي</b></td>
+                            <td><b>{{  number_format($total,2) }} ر.س  </b></td>
+                        </tr>
+                    @endif
 
 
 
@@ -122,7 +150,7 @@
                 </tbody>
             </table>
         </div>
-
+<hr>
         <div style="justify-content: space-between;">
 
 
@@ -152,10 +180,10 @@
                         <!--img id="QR" width=25 height=25>
                         <!--{!! substr(QrCode::encoding('UTF-8')->size(400)->generate("{{ $info->name_ar }}{{ date('d M Y - H:m:s a') }}{{ $sum }}{{ sum }}"),38) !!}
                         {!!  substr(QrCode::encoding('UTF-8')->size(400)->generate("$name\n$date\n$sum"),38) !!}-->
-                        <br> <center>
+                        <br> <!--center>
                         رمز الإستجابة السريعة مشّفر بحسب متطلبات هيئة الزكاة والضريبة والجمارك للفوترة الإلكترونية <br>
                         This QR code is encoded as per ZATCA e-invoicing requirements
-                        </center>
+                        </center-->
                     </td>
                 </tr>
 
@@ -179,9 +207,10 @@
                     <td class="rightt">
                         <label><b>معلومات الدفع  </b></label> <br>
                         <label>{{ $info->name_ar }}</label> <br>
-                        <label>{{ $info->address_ar }}</label> <br>
-                        <label style="direction:rtl !important;">{{ $info->phone }} </label> <br>
-                        <label>{{ $info->email }}</label> <br>
+                        <label>المدينة المنورة</label> <br>
+                        <label>P.O BOX 42377 -CR:3550149108</label><br>
+                        <!--label style="direction:rtl !important;">{{ $info->phone }} </label> <br>
+                        <label>{{ $info->email }}</label> <br-->
                     </td>
                 </tr>
             </table>

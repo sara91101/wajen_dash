@@ -39,6 +39,7 @@ use App\Http\Controllers\LoyaltySplashController;
 use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\PriceShowController;
 use App\Http\Controllers\SkilltaxReports;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -361,5 +362,5 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::get('/paymentTransactionsPdf', [SkilltaxReports::class, 'paymentTransactionsPdf'])->name('paymentTransactionsPdf');
     Route::get('/paymentTransactionsExcel', [SkilltaxReports::class, 'paymentTransactionsExcel'])->name('paymentTransactionsExcel');
 
-
+    Route::get('/loyaltyStatus/{membership_no}/{status}', [CustomerController::class, 'loyaltyStatus'])->name('loyaltyStatus');
 });
