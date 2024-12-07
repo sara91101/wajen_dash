@@ -89,7 +89,7 @@
                         @endforeach
 
                         @php
-                        $vat = $sum * 15 /100;
+                        if(!is_null($package->taxes)){$vat = $sum * 15 /100;} else {$vat = 0;}
                         $total = $sum + $vat;
                         @endphp
                         </tr>
@@ -99,7 +99,7 @@
             </div>
         </div>
 
-        <div style="width:100%">
+        <div style="width:100%" class="mt-3">
             <div style="border-radius:.90rem;text-align:center !important;width:40%;border:1px ridge black;float: left;" dir="rtl" align="left">
                 <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>المجموع الفرعي : {{  number_format($sum,2) }} ر.س </b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b>ضريبة القيمة المضافة : {{  number_format($vat,2) }} ر.س </b></p>
@@ -146,7 +146,10 @@
                     <td class="text-start" style="text-align:right;width: 20%;float: right;">
                         P.O BOX 42377
                     </td>
-                    <td style="text-align:right;width: 65%;float: right;">
+                    <td style="text-align:center;width: 65%;float: right;">
+                        <a href="https://www.skilltax.sa" target="blank" style="color:cornflowerblue;">
+                            www.skilltax.sa
+                        </a>
                     </td>
                     <td class="text-start" style="text-align:left;width: 15%;float: left;">
                         CR:3550149108

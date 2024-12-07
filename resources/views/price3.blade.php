@@ -68,6 +68,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
 
                 <div class="text-end">
                     <br><p style="font-size:16px;">هذا العرض صالح لمدة (3) أيام من تاريخ الإصدار</p> <br>
@@ -90,5 +91,30 @@
                         <td style="width: 50%;"></td>
                     </tr>
                 </table>
+        </div>
+
+
+
+
+        <div style="position:fixed;bottom:0;margin-bottom: 0px;">
+            <hr>
+            <table style="width: 100%;" align="center">
+                <tr>
+                    <td class="text-start" style="text-align:right;width: 20%;float: right;">
+                        P.O BOX 42377
+                    </td>
+                    <td style="text-align:center;width: 65%;float: right;">
+                        <a href="https://www.skilltax.sa" target="blank" style="color:cornflowerblue;">
+                            www.skilltax.sa
+                        </a>
+                    </td>
+                    <td class="text-start" style="text-align:left;width: 15%;float: left;">
+                        CR:3550149108
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
 
 
