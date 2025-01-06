@@ -460,17 +460,17 @@
 
         if(!(discounts_value == ""))
         {
-            /*if(document.getElementById("discount_percent").checked)
+            if(document.getElementById("discount_percent").checked)
             {
-                discount = amount * discounts_value / 100;
+                discount = document.getElementById("final_amount").value * discounts_value / 100;
             }
             else
-            {*/
+            {
                 discount  = discounts_value;
-            //}
-            //document.getElementById("final_amount").value -=  parseInt(discount);
+            }
+            document.getElementById("discounts_value").value =  parseFloat(discount);
         }
-        document.getElementById("final_amount").value -=  parseFloat(discount);
+        document.getElementById("total_amount").value =document.getElementById("final_amount").value -  parseFloat(discount);
     }
 
     function services_price()
@@ -749,20 +749,25 @@
                         <input type="text" id="taxes" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
                     </div>  --}}
 
-                    <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1">
-                        الخصم على سعر الباقة<br><br>
-                            {{--  (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
+                        <input type="text" id="final_amount" class="form-control text-right" required>
+                    </div>
 
-                              نسبة  )  --}}
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1">
+                        الخصم على سعر الباقة
+                            (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                              نسبة  )
                         </label>
-                        <input type="text" onblur="taxes_discounts()" id="discounts" name="discounts" class="form-control text-right">
+                        <input type="text" onblur="taxes_discounts()" id="discounts" class="form-control text-right">
+                        <input type="hidden" id="discounts_value" name="discounts" class="form-control text-right">
                     </div>
 
 
-                    <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>إجمالي سعر الباقة<br><br></label>
-                        <input type="text" @if(isset($customer)) value=0 @endif  id="final_amount" name="amount" class="form-control text-right" required>
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-primary"></i>إجمالي  <br><br></label>
+                        <input type="text" @if(isset($customer)) value=0 @endif  id="total_amount" name="amount" class="form-control text-right" readonly>
                     </div>
                 </div>
                 <label data-toggle="tooltip" title=" Please fill the mandatory fields..!"  id="next1" class="next action-button">التالي</label>

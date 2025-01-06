@@ -16,7 +16,7 @@
                 </td>
                 <td style="width:60%"></td>
                 <td style="width:15%">
-                    <img src="{!! public_path($info->bill) !!}" width="140" height="30" class="billImg">
+                    <img src="{!! $info->price !!}" width="140" height="30" class="billImg">
                 </td>
             </tr>
         </table>
@@ -61,14 +61,14 @@
 
                             //$sum = $taxx + $package->price - $discounts;
 
-                            $real_price = $discounts + $package->final_amount;
+                            $real_price = $package->discounts + $package->final_amount;
 
                             $sum = $package->final_amount;
                         @endphp
                         <td>{{ $sys->appreviation }} - {{ $package->package_ar }}</td>
                         <td>1</td>
                         <td>{{ number_format($real_price,2) }}</td>
-                        <td>{{ number_format($discounts,2) }}</td>
+                        <td>{{ number_format($package->discounts,2) }}</td>
                         {{--  <td></td>  --}}
                         <td>{{ number_format($package->final_amount,2) }}</td>
                         </tr>
@@ -147,8 +147,8 @@
                         P.O BOX 42377
                     </td>
                     <td style="text-align:center;width: 65%;float: right;">
-                        <a href="https://www.skilltax.sa" target="blank" style="color:cornflowerblue;">
-                            www.skilltax.sa
+                        <a href="https://www.skilltax.sa" target="blank" style="color:black !important;text-decoration:none;">
+                            skilltax.sa
                         </a>
                     </td>
                     <td class="text-start" style="text-align:left;width: 15%;float: left;">

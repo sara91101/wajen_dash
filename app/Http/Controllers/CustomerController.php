@@ -580,6 +580,8 @@ class CustomerController extends Controller
         // echo $request->package_id;
         // exit;
         $url = "https://back.skilltax.sa/api/v1";
+        if($request->discount_percent) { $discount_percent = $request->discount_percent;}
+        else {$discount_percent = 1;}
         $data = [
             "first_name" => $request->input('first_name'),
             "last_name" => $request->input('second_name'),
@@ -599,7 +601,7 @@ class CustomerController extends Controller
             "taxes" => 15,
             "discounts" => $request->discounts,
             "taxes_type" => 2,
-            "discounts_type" => $request->discounts_type,
+            "discount_percent" => $discount_percent,
 
             "services"=>$request->service,
             "quantities"=>$request->quantity,

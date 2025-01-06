@@ -301,8 +301,7 @@
             let tax_no = parseInt(document.getElementById("tax_no").value);
 
             if(first_name != "" && second_name != ""
-            && bussiness_name != "" && phone != ""
-            && email)
+            && bussiness_name != "" && phone != "")
             //Add Class Active
             {
                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
@@ -442,7 +441,7 @@
         let tax = 0;
         let discount = 0;
 
-        let taxes_value = document.getElementById("taxes").value;
+        //let taxes_value = document.getElementById("taxes").value;
         let discounts_value = document.getElementById("discounts").value;
 
         /*if(!(taxes_value == ""))
@@ -459,17 +458,17 @@
 
         if(!(discounts_value == ""))
         {
-            /*if(document.getElementById("discount_percent").checked)
+            if(document.getElementById("discount_percent").checked)
             {
-                discount = amount * discounts_value / 100;
+                discount =  document.getElementById("final_amount").value * discounts_value / 100;
             }
             else
-            {*/
+            {
                 discount  = discounts_value;
-            //}
-            //document.getElementById("final_amount").value -=  parseInt(discount);
+            }
+            document.getElementById("discounts_value").value =  parseFloat(discount);
         }
-        document.getElementById("final_amount").value -=  parseInt(discount);
+        document.getElementById("total_amount").value =document.getElementById("final_amount").value -  parseFloat(discount);
     }
 
     function showGovernate(town_id)
@@ -657,11 +656,11 @@
                         <label id="phone_error" class="badge badge-danger text-white"></label>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> البريد الإلكتروني</label>
-                        <input value="{{ $customer['email'] }}" type="email" id="email" name="email" class="form-control text-right" required>
+                        <label for="exampleInputUsername1"> البريد الإلكتروني</label>
+                        <input value="{{ $customer['email'] }}" type="email" id="email" name="email" class="form-control text-right">
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الرقم الضريبي</label>
+                        <label for="exampleInputUsername1">الرقم الضريبي</label>
                         <input value="{{ $customer['tax_number'] }}" type="number" id="tax_no" name="tax_no" class="form-control text-right">
                     </div>
                     <div class="form-group col-lg-6">
@@ -735,20 +734,32 @@
                         </label>
                         <input type="text" id="taxes" value="{{ $customerPackage->taxes }}" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
                     </div>  --}}
-
-                    <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1">الخصومات
-                            (  <input value="2" @if($customerPackage->discounts_type == 2) checked @endif id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
-
-                              نسبة  )
-                        </label>
-                        <input type="text" onblur="taxes_discounts()" value="{{ $customerPackage->discounts }}" id="discounts" name="discounts" class="form-control text-right">
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
+                        <input type="text" id="final_amount" value="{{ $customerPackage->discounts + $customerPackage->final_amount }}" class="form-control text-right" required>
                     </div>
 
-
-                    <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
-                        <input type="text" id="final_amount" value="{{ $customerPackage->final_amount }}" name="amount" class="form-control text-right" required>
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1">الخصومات
+                            (  <input value="2" @if($customerPackage->discounts_type == 2) checked @endif id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                              نسبة  )
+                        </label>
+                        @php
+                            if($customerPackage->discounts_type == 2)
+                            {
+                                $discount_percent = (100 * $customerPackage->discounts) / ($customerPackage->discounts + $customerPackage->final_amount);
+                            }
+                            else
+                            {
+                                $discount_percent = $customerPackage->discounts;
+                            }
+                        @endphp
+                        <input type="text" onblur="taxes_discounts()" value="{{ $discount_percent }}" id="discounts"  class="form-control text-right">
+                        <input type="hidden" value="{{ $customerPackage->discounts }}" id="discounts_value" name="discounts" class="form-control text-right">
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-primary"></i>الإجمالي<br><br></label>
+                        <input type="text" id="total_amount" value="{{ $customerPackage->final_amount }}" name="amount" class="form-control text-right" readonly>
                     </div>
                 </div>
 
