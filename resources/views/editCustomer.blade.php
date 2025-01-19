@@ -280,6 +280,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     {{--  let amount = 0;  --}}
+    let counter = {{ count($services) }};
     $(document).ready(function()
     {
         //let city_id = {!! $towns[0]['id'] !!};
@@ -297,11 +298,13 @@
             var first_name = document.getElementById("first_name").value;
             var second_name = document.getElementById("second_name").value;
             var phone = document.getElementById("phone").value;
-            let email = validateEmail();
-            let tax_no = parseInt(document.getElementById("tax_no").value);
+            //let email = validateEmail();
+            let tax_no = document.getElementById("tax_no").value;
+            //let governate = document.getElementById("governate").value;
 
             if(first_name != "" && second_name != ""
-            && bussiness_name != "" && phone != "")
+            && bussiness_name != "" && phone != ""
+            && email )
             //Add Class Active
             {
                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
@@ -336,15 +339,11 @@
             next_fs = $(this).parent().next();
 
              //check values
-             var system_id = document.getElementById("systm_id").value;
              var package_id = document.getElementById("package_id").value;
-             //var password = document.getElementById("password").value;
              var start_date = document.getElementById("start_date").value;
              var end_date = document.getElementById("end_date").value;
 
-             if(system_id != "" && package_id != ""
-             &&  start_date != ""
-             && end_date != "")
+             if(package_id != ""&& start_date != "" && end_date != "")
              //Add Class Active
              {
 
@@ -373,7 +372,6 @@
                 toastr.error("الرجاء ملأ جميع الحقول بالطريقة الصحيحة","عٌذراً");
             }
         });
-
 
 
         $(".previous").click(function()
@@ -437,7 +435,7 @@
         var packagePrice = package.options[package.selectedIndex].getAttribute('data-price');
         let amount = parseInt(packagePrice);
 
-        //taxes computaions
+        //taxes computations
         let tax = 0;
         let discount = 0;
 
@@ -460,7 +458,7 @@
         {
             if(document.getElementById("discount_percent").checked)
             {
-                discount =  document.getElementById("final_amount").value * discounts_value / 100;
+                discount = document.getElementById("final_amount").value * discounts_value / 100;
             }
             else
             {
@@ -471,20 +469,36 @@
         document.getElementById("total_amount").value =document.getElementById("final_amount").value -  parseFloat(discount);
     }
 
-    function showGovernate(town_id)
+    function services_price(counter_value)
     {
-        var governates = document.getElementById("governate");
-        for (var i = 0; i < governates.length; i++)
+        var prices_sum = parseFloat(0);
+
+        for(var i=1;i<=counter;i++)
         {
-            if(parseInt(governates[i].className) != town_id || parseInt(governates[i].value) == 0)
+            var discount = parseFloat(0);
+            var quantity = document.getElementById('quantity'+i).value;
+            var unit_price = document.getElementById('unit_price'+i).value;
+
+            document.getElementById('prices'+i).value = parseFloat(unit_price * quantity);
+
+            if(document.getElementById('discounts'+i).value != "")
             {
-                governates[i].style.display = "none";
+                if(document.getElementById("discount_type"+i).checked)
+                {
+                    document.getElementById('discount_type_value'+i).value = 1;
+                    discount = document.getElementById('prices'+i).value * document.getElementById('discounts'+i).value / 100;
+                }
+                else
+                {
+                    discount  = document.getElementById('discounts'+i).value;
+                }
             }
-            else
-            {
-                governates[i].style.display = "block";
-            }
+            document.getElementById('full_prices'+i).value = parseFloat((unit_price * quantity) - discount);
+
+
+            prices_sum += parseFloat(document.getElementById('full_prices'+i).value);
         }
+        document.getElementById('final_amount').value = parseFloat(prices_sum);
     }
 
     function showPackages(sel)
@@ -509,11 +523,9 @@
     {
         var package=document.getElementById("package_id");
         var packagePrice = package.options[package.selectedIndex].getAttribute('data-price');
-
-        document.getElementById("serve").innerHTML = "";
-
-        document.getElementById("final_amount").value = parseInt(packagePrice);
+        //document.getElementById("final_amount").value = parseInt(packagePrice);
         document.getElementById("dash_id").value = package.options[package.selectedIndex].getAttribute('data-dash');
+
     }
 
     function checkPhoneLength()
@@ -534,7 +546,7 @@
     function checkPasswordLength()
     {
         let check_password_length = true;
-        if((document.getElementById("password").value.length != document.getElementById("password").minLength) && (document.getElementById("password").value != ""))
+        if(document.getElementById("password").value.length != document.getElementById("password").minLength)
         {
             document.getElementById("password_error").innerHTML = "الرجاء إدخال 6 أرقام";
             check_password_length = false;
@@ -551,7 +563,7 @@
     {
         let check_phone_length = checkPhoneLength();
         let check_password_length = checkPasswordLength();
-        if(check_phone_length && check_password_length)
+        if(check_phone_length)
         {
             document.forms['myform'].submit();
         }
@@ -559,11 +571,6 @@
 		{
             toastr.options={positionClass: "toast-center-center"}
             toastr.error("رقم الهاتف يجب أن تحتوي على 10 أرقام","عٌذراً");
-        }
-		if(!check_password_length && document.getElementById("password").value != "")
-		{
-            toastr.options={positionClass: "toast-center-center"}
-            toastr.error("كلمة المرور يجب أن تحتوي على 6 أرقام","عٌذراً");
         }
 
         event.preventDefault();
@@ -578,18 +585,26 @@
 
     function addService()
     {
+        counter++;
             var myDiv = document.createElement("div");
             myDiv.classList.add("row");
-            myDiv.innerHTML += '<div class="form-group col-lg-4">'+
-                '<label  class="form-label"> البند</label>'+
-                '<input type="text" name="service[]" class="form-control"><br>'+
-                '</div><div class="form-group col-lg-2">'+
-                '<label  class="form-label">العدد</label>'+
-                '<input type="text" name="quantity[]" class="form-control"><br>'+
-                '</div><div class="form-group col-lg-4">'+
-                '<label  class="form-label">المبلغ</label>'+
-                '<input type="text" name="price[]" class="form-control"><br></div>'+
-                '<div class="col-lg-2"><div class="form-group"><span><label class="btn btn-sm btn-danger" onclick="removeDiv(this)"><i class="mdi mdi-delete"></i></label></span></div></div></div>';
+            myDiv.innerHTML += '<div class="form-group col-lg-4"><span>'+
+                '<label onclick="removeDiv(this)"><i class="mdi mdi-delete text-danger"></i></label>'+
+                ' المنتج<br><br></span>'+
+                '<input name="service[]" class="form-control text-right"></div>'+
+                '<div class="form-group col-lg-1"><label> العدد<br><br></label>'+
+                '<input name="quantity[]" id="quantity'+counter+'" type="number" class="form-control text-right" onblur="services_price('+counter+')">'+
+                '</div><div class="form-group col-lg-1"><label> سعر الوحدة<br><br></label>'+
+                '<input id="unit_price'+counter+'"  type="number" step=".0001" class="form-control text-right" onblur="services_price('+counter+')">'+
+                '</div><div class="form-group col-lg-2"><label> المبلغ الكلي<br><br></label>'+
+                '<input name="price[]" id="prices'+counter+'"  type="number" step=".0001" class="form-control text-right">'+
+                '</div><div class="form-group col-lg-3"><label>الخصم على المنتج'+
+                ' (  <input value="1" id="discount_type'+counter+'" name="discount_types[]" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">'+
+                ' نسبة  )</label><input name="discount_type_value[]" value="0" id="discount_type_value'+counter+'"  type="hidden">'+
+                '<input value=0 name="item_discounts[]" id="discounts'+counter+'" onblur="services_price('+counter+')"  type="number" step=".0001" class="form-control text-right">'+
+                '</div><div class="form-group col-lg-1"><label>الإجمالي<br><br></label>'+
+                '<input name="full_prices[]" id="full_prices'+counter+'"  type="number" step=".0001" class="form-control text-right">'+
+                '</div></div>';
 
             var div = document.getElementById("serve");
 
@@ -598,12 +613,9 @@
 
     function removeDiv(row)
     {
-        var d = row.parentNode.parentNode.parentNode.parentNode.remove();
-    }
-
-    function removeDiv2(row)
-    {
-        var d = row.parentNode.parentNode.remove();
+        var d = row.parentNode.parentNode.parentNode.remove();
+        counter--;
+        services_price(counter);
     }
 
 </script>
@@ -686,16 +698,8 @@
 
             <fieldset>
                 <div class="form-card row text-right" dir="rtl">
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>النظام</label>
-                        <select name="systm_id" id="systm_id" class="form-select text-right" required onchange="showPackages(this)">
-                            @foreach ($systems as $s)
-                                    <option value={{ $s->id }} data-url="{{ $s->url }}">{{ $s->system_name_ar }}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الباقة</label>
                         <select name="package_id" id="package_id" class="form-select text-right" required onchange="price(this)">
                             <option value="">-</option>
@@ -709,7 +713,7 @@
                         <input type="hidden" name="dash_id" id="dash_id">
                     </div>
 
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1">
                              كلمة المرور (6 أرقام)
                             </label>
@@ -734,7 +738,7 @@
                         </label>
                         <input type="text" id="taxes" value="{{ $customerPackage->taxes }}" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
                     </div>  --}}
-                    <div class="form-group col-lg-4">
+                    {{--  <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
                         <input type="text" id="final_amount" value="{{ $customerPackage->discounts + $customerPackage->final_amount }}" class="form-control text-right" required>
                     </div>
@@ -760,7 +764,7 @@
                     <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-primary"></i>الإجمالي<br><br></label>
                         <input type="text" id="total_amount" value="{{ $customerPackage->final_amount }}" name="amount" class="form-control text-right" readonly>
-                    </div>
+                    </div>  --}}
                 </div>
 
                 <label data-toggle="tooltip" title=" Please fill the mandatory fields..!"  id="next1" class="next action-button">التالي</label>
@@ -782,23 +786,73 @@
                             @if($ser['package_id'] == $customer['package_id'])
                             <div class="row">
                                 <div class="form-group col-lg-4">
-                                    <label></i> البند</label>
+                                    <label>
+                                        @if(!$loop->first) <label onclick="removeDiv(this)"><i class="mdi mdi-delete text-danger"></i></label> @endif
+                                        المنتج<br><br></label>
                                     <input name="service[]" value="{{ $ser['service'] }}" class="form-control text-right">
                                 </div>
-                                <div class="form-group col-lg-2">
-                                    <label></i> العدد</label>
-                                    <input name="quantity[]" value="{{ $ser['quantity'] }}" type="number" class="form-control text-right">
+                                <div class="form-group col-lg-1">
+                                    <label> العدد<br><br></label>
+                                    <input name="quantity[]" value="{{ $ser['quantity'] }}" id="quantity{{ $loop->iteration }}" type="number" class="form-control text-right">
                                 </div>
-                                <div class="form-group col-lg-4">
-                                    <label> المبلغ</label>
-                                    <input name="price[]" value="{{ $ser['price'] }}"  type="text" class="form-control text-right">
+                                <div class="form-group col-lg-1">
+                                    <label> سعر الوحدة<br><br></label>
+                                    <input id="unit_price{{ $loop->iteration }}" value="{{ $ser['price'] / $ser['quantity'] }}"  type="number" step=".0001" class="form-control text-right" onblur="services_price(1)">
+                                </div>
+                                <div class="form-group col-lg-1">
+                                    <label> المبلغ الكلي<br><br></label>
+                                    <input name="price[]" value="{{ $ser['price'] }}" id="prices{{ $loop->iteration }}" type="text" class="form-control text-right">
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>
+                                        الخصم على المنتج
+                                            (  <input value="1" @if($ser['discount_type'] == 1) checked @endif id="discount_type{{ $loop->iteration }}" name="discount_types[]" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                                            نسبة  )
+                                    </label>
+                                    <input name="discount_type_value[]" value="{{ $ser['discount_type'] }}" id="discount_type_value{{ $loop->iteration }}"  type="hidden">
+                                    <input name="item_discounts[]" value="{{ $ser['discount'] }}" onblur="services_price({{ $loop->iteration }})" id="discounts{{ $loop->iteration }}"  type="number" step=".0001" class="form-control text-right">
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <label class="btn btn-sm btn-danger" onclick="removeDiv2(this)"><i class="mdi mdi-delete"></i></label>
+                                    <label>الإجمالي<br><br></label>
+                                    <input name="full_prices[]" value="{{ $ser['full_price'] }}" id="full_prices{{ $loop->iteration }}"  type="number" step=".0001" class="form-control text-right">
                                 </div>
                             </div>
                             @endif
                         @endforeach
+                    </div>
+
+                    <br>
+                    <div class="row text-white" style="background-color: #9E9E9E; border=1;border-radius:.90rem;">
+                        <div class="form-group col-lg-4">
+                            <label><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
+                            <input value="{{ $customerPackage->discounts + $customerPackage->final_amount }}" type="number" step=".0001" id="final_amount" class="form-control text-right" required>
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                            <label>
+                            الخصم على إجمالي الفاتوره
+                                (  <input value="2" @if($customerPackage->discounts_type == 2) checked @endif id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                                نسبة  )
+                            </label>
+                            @php
+                                if($customerPackage->discounts_type == 2)
+                                {
+                                    $discount_percent = (100 * $customerPackage->discounts) / ($customerPackage->discounts + $customerPackage->final_amount);
+                                }
+                                else
+                                {
+                                    $discount_percent = $customerPackage->discounts;
+                                }
+                            @endphp
+                            <input type="text" onblur="taxes_discounts()" value="{{ $discount_percent }}" id="discounts" class="form-control text-right">
+                            <input type="hidden" id="discounts_value" value="{{ $customerPackage->discounts }}" name="discounts" class="form-control text-right">
+                        </div>
+
+
+                        <div class="form-group col-lg-4">
+                            <label><i class="mdi mdi-star text-primary"></i>إجمالي  <br><br></label>
+                            <input type="number" step=".0001" value="{{ $customerPackage->final_amount }}" @if(isset($customer)) value=0 @endif  id="total_amount" name="amount" class="form-control text-right" readonly>
+                        </div>
                     </div>
 
                 </div>

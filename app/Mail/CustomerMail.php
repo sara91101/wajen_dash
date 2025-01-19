@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Attachment;
 
 class CustomerMail extends Mailable
 {
@@ -38,12 +39,18 @@ class CustomerMail extends Mailable
      */
     public function content(): Content
     {
+        $body = "";
+        if($this->details["body"] != "")
+        {
+            $body = $this->details["body"];
+        }
+
         return new Content(
-           view: 'mailing',
-                with: [
-                    'body' => $this->details["body"],
-                    ],
-        );
+            view: 'mailing',
+                 with: [
+                     'body' => $body,
+                     ],
+         );
     }
 
     /**
@@ -53,6 +60,17 @@ class CustomerMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        if($this->details['path'] != "")
+        {
+            return [
+                Attachment::fromPath(public_path($this->details['path']))
+                ->as("Invoice.pdf")
+                ->withMime('application/pdf'),
+            ];
+        }
+        else
+        {
+            return [];
+        }
     }
 }

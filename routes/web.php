@@ -52,7 +52,11 @@ use App\Http\Controllers\SkilltaxReports;
 */
 
 Route::get('/design', function () {
-    return view('send-mail');
+    $data["name"] = "sarah abbas";
+    $data["membership_no"] = "70088";
+    $data["subscription_start_at"] = "july 2025";
+    $data["subscription_end_at"] = "july 2028";
+    return view('send-mail',$data);
 });
 
 Route::get('/', [LoginController::class,'showLoginForm'])->name('login');
@@ -176,6 +180,8 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::get('/printCustomers', [CustomerController::class, 'printCustomers'])->name('printCustomers');
     Route::post('/customerSendMail', [CustomerController::class, 'customerSendMail'])->name('customerSendMail');
     Route::get('/destroyBranch/{branch_id}/{customer_id}', [CustomerController::class, 'archieveBranch'])->name('destroyBranch');
+    Route::post('/sendInvoice', [CustomerController::class, 'sendInvoice'])->name('sendInvoice');
+    Route::get('/sendSubscriptionDetails/{customer_id}', [CustomerController::class, 'sendSubscriptionDetails'])->name('sendSubscriptionDetails');
 
     Route::get('/inActivateCustomer/{customer_id}', [CustomerController::class, 'inActivateCustomer'])->name('inActivateCustomer');
     Route::get('/customerActivate/{customer_id}', [CustomerController::class, 'customerActivate'])->name('customerActivate');

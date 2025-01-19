@@ -16,7 +16,7 @@
                 </td>
                 <td style="width:60%"></td>
                 <td style="width:15%">
-                    <img src="{!! $info->price !!}" width="140" height="30" class="billImg">
+                    {{--  <img src="{!! $info->bill !!}" width="140" height="30" class="billImg">  --}}
                 </td>
             </tr>
         </table>
@@ -29,6 +29,7 @@
                     <p style="font-size: 16px;" class="text-end"><b>إﻳﺼﺎل ﻓﺎﺗﻮرة ﻟـ  </b></p>
                     <p style="font-size: 16px;">{{ $customer["first_name"] }} {{ $customer["last_name"] }}</p>
                     <p style="font-size: 16px;">{{ $customer["phone_no"] }}</p>
+                    <p style="font-size: 16px;">{{ $customer["tax_number"] }}</p>
                 </td>
                 <td style="width:50%"></td>
                 <td style="width:15%;font-size: 15px;text-align:left !important;float: left;">
@@ -51,46 +52,57 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-center" style="border-bottom: 1px solid black;">
-                            @php
-                            if($package->taxes_type == 2){$taxx = $package->price * $package->taxes / 100;}
-                            else{$taxx = $package->taxes;}
+                        @php $sum = 0; @endphp
+                        @if(!is_null($package->old_invoice))
+                            <tr class="text-center" style="border-bottom: 1px solid black;">
+                                @php
+                                if($package->taxes_type == 2){$taxx = $package->price * $package->taxes / 100;}
+                                else{$taxx = $package->taxes;}
 
-                            if($package->discounts_type == 2){$discounts = $package->price * $package->discounts / 100;}
-                            else{$discounts = $package->discounts;}
+                                if($package->discounts_type == 2){$discounts = $package->price * $package->discounts / 100;}
+                                else{$discounts = $package->discounts;}
 
-                            //$sum = $taxx + $package->price - $discounts;
+                                //$sum = $taxx + $package->price - $discounts;
 
-                            $real_price = $package->discounts + $package->final_amount;
+                                $real_price = $package->discounts + $package->final_amount;
 
-                            $sum = $package->final_amount;
-                        @endphp
-                        <td>{{ $sys->appreviation }} - {{ $package->package_ar }}</td>
-                        <td>1</td>
-                        <td>{{ number_format($real_price,2) }}</td>
-                        <td>{{ number_format($package->discounts,2) }}</td>
-                        {{--  <td></td>  --}}
-                        <td>{{ number_format($package->final_amount,2) }}</td>
-                        </tr>
+                                $sum = $package->final_amount;
+                            @endphp
+                            <td>{{ $sys->appreviation }} - {{ $package->package_ar }}</td>
+                            <td>1</td>
+                            <td>{{ number_format($real_price,2) }}</td>
+                            <td>{{ number_format($package->discounts,2) }}</td>
+                            {{--  <td></td>  --}}
+                            <td>{{ number_format($package->final_amount,2) }}</td>
+                            </tr>
+                        @endif
                         @foreach ($services as $serve)
+                            @php  @endphp
                             @if($serve["package_id"] == $package->package_id)
+
+                                @php
+                                    $serve_discount = 0;
+                                    if($serve["discount_type"] == 1){$serve_discount = $serve["price"] * $serve["discount"] / 100;}
+                                    else{$serve_discount = $serve["discount"];}
+                                @endphp
+
                                 <tr style="border-bottom: 1px solid black;">
                                     <td>{{ $serve["service"] }}</td>
                                     <td>{{ $serve["quantity"] }}</td>
                                     <td>{{ number_format($serve["price"],2) }}</td>
-                                    <td></td>
+                                    <td>{{ $serve_discount }}</td>
                                     {{--  <td></td>  --}}
-                                    <td>{{ $serve["price"] }}</td>
+                                    <td>{{ $serve["price"] - $serve_discount }}</td>
                                 </tr>
                                 @php
-                                    $sum += $serve["price"];
+                                    $sum += $serve["price"] - $serve_discount;
                                 @endphp
                             @endif
                         @endforeach
 
                         @php
                         if(!is_null($package->taxes)){$vat = $sum * 15 /100;} else {$vat = 0;}
-                        $total = $sum + $vat;
+                        $total = $sum + $vat  - $package->discounts;
                         @endphp
                         </tr>
 
@@ -102,6 +114,7 @@
         <div style="width:100%" class="mt-3">
             <div style="border-radius:.90rem;text-align:center !important;width:40%;border:1px ridge black;float: left;" dir="rtl" align="left">
                 <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>المجموع الفرعي : {{  number_format($sum,2) }} ر.س </b></p>
+                 <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>الخصم : {{  number_format($package->discounts,2) }} ر.س &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b>ضريبة القيمة المضافة : {{  number_format($vat,2) }} ر.س </b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b> المجموع الكُلي : {{  number_format($total,2) }} ر.س </b></p>
             </div>
@@ -132,6 +145,7 @@
                         <label><b>معلومات الدفع  </b></label> <br>
                         <label>شركة وجين لتقنية المعلومات</label> <br>
                         <label>المدينة المنورة</label> <br>
+                        <label>{{ $info->tax_no }} </label>
                         {{--  <label>P.O BOX 42377 -CR:3550149108</label><br>  --}}
                     </p>
                 </td>

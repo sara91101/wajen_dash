@@ -250,7 +250,7 @@
                 <tr>
                     <td >{!! $i !!}</td>
                     <td id="name{{ $c['id'] }}">
-                        {{ $c["first_name"] }} {{ $c["last_name"] }}
+                    {{ $c["first_name"] }} {{ $c["last_name"] }}
                     </td>
 
                      <td>{{ $c["business_name"] }}</td>
@@ -282,7 +282,7 @@
                         </span>
                         @endif
                     </td>
-                    
+
                     <td>
                         @if( $c['status'])
                         <a href="javascript:;" class="badge badge-success text-white" onclick="inActivateCustomer({{ $c['id'] }})">
@@ -311,7 +311,7 @@
                                         إرسال إشعار
                                     </a>
                                     <div role="separator" class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-right" href="/CustomerMessages/{{ $c['id'] }}/{{ $c['membership_no'] }}" style="text-decoration: none">
+                                    <a class="dropdown-item text-right" href="/emailCustomer/{{ $c['id'] }}" style="text-decoration: none">
                                         البريد الإلكتروني
                                     </a>
                                     <div role="separator" class="dropdown-divider"></div>
@@ -327,6 +327,12 @@
                                     <a class="dropdown-item text-right"  href="/visit/{{ $c['membership_no'] }}" style="text-decoration: none">
                                         زيارة الحساب في سكيل تاكس
                                     </a>
+                                    @if(!is_null($c['email']))
+                                        <div role="separator" class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-right"  href="/sendSubscriptionDetails/{{ $c['id'] }}" style="text-decoration: none">
+                                            إرسال بيانات الإشتراك
+                                        </a>
+                                    @endif
                                 </div>
                               </div>
                             </div>

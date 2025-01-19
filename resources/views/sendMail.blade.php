@@ -8,27 +8,27 @@
         <div class="card-header" dir="rtl">
             <div aria-label="breadcrumb">
                 <ol class="breadcrumb bg-inverse-primary justify-content-between">
-                    <li class="breadcrumb-item"><a href="#">      الأسئلة والإستفسارات</a>
-                        <span class="breadcrumb-item active" aria-current="page"> /  رد  </span>
+                    <li class="breadcrumb-item"><a href="#">     المشتركين</a>
+                        <span class="breadcrumb-item active" aria-current="page"> /  البريد الإلكتروني  </span>
                     </li>
                 </ol>
             </div>
         </div>
           <table class="table text-center">
-              <form method="POST" name="myform" action="/reply">
+              <form method="POST" name="myform" action="/sendInvoice" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="question_id" value="{{ $person['id'] }}">
+                <input type="hidden" name="customer_id" value="{{ $customer['id'] }}">
               <tr>
-                  <td >{{ $person['name'] }}</td>
+                  <td >{{ $customer['first_name'] }} {{ $customer['last_name'] }}</td>
                   <td class="font-weight-bold">إلى</td>
               </tr>
               <tr>
-                  <td><input class="form-control text-right" type="email" name="email" value="{{ $person['email'] }}" required></td>
+                  <td><input class="form-control text-right" type="email" name="email" value="{{ $customer['email'] }}" required></td>
                   <td class="font-weight-bold">البريد الإلكتروني</td>
               </tr>
               <tr>
                   <td><input dir="rtl" class="form-control text-right" type="text" name="title" required></td>
-                  <td class="font-weight-bold"> العنوان</td>
+                  <td class="font-weight-bold"> عنوان الرسالة</td>
               </tr>
               <tr>
                   <td>
@@ -38,12 +38,12 @@
                  </td>
                  <td class="font-weight-bold">الرسالة</td>
               </tr>
-              {{--  <tr>
+              <tr>
                 <td>
-                    <input type="file" name="attachments[]" class="form-control">
+                    <input type="file" name="attachment" class="form-control">
                </td>
-               <td class="font-weight-bold">المرفقات</td>
-            </tr>  --}}
+               <td class="font-weight-bold">المرفق</td>
+            </tr>
 
               <tr><td colspan="2">
                   <div align="center">

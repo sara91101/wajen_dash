@@ -83,12 +83,16 @@
                                 <td>
                                     @php $count = 1; @endphp
                                     @foreach ($packages as $cp)
-                                    <a href="/CustomerBill/{{$customer['id'] }}/{{$cp->package_id }}/2" class="badge badge-primary text-white" style="text-decoration:none;">{{$cp->package_ar }}</a>
+                                    <a href="/CustomerBill/{{$customer['id'] }}/{{$cp->package_id }}/2" class="badge badge-primary text-white" style="text-decoration:none;">@if($cp->renew == 1)  تجديد @endif {{$cp->package_ar }}</a>
                                     @if($count % 3 == 0) <br><br> @endif
                                     @if(!($loop->last))-  @endif
                                     @php $count++; @endphp
                                     @endforeach
                                 </td>
+                            </tr>
+                             <tr>
+                                <td>عدد الرسائل </td>
+                                <td>{{ $customer["available_messages"] }}</td>
                             </tr>
                         </tbody>
                   </table>
@@ -122,13 +126,13 @@
                             </tr>
                             <tr>
                                 <td>مبلغ الإشتراك</td>
-                                <td>{{ $last_customer_package->price }} ر.س</td>
+                                <td>{{ $last_customer_package->final_amount +  $last_customer_package->discounts }} ر.س</td>
                             </tr>
                             <tr>
                                 <td> الخصم</td>
                                 <td>
                                     {{$last_customer_package->discounts }}
-                                    @if($last_customer_package->discounts_type == 2 && !is_null($last_customer_package->discounts)) % @elseif(!is_null($last_customer_package->discounts)) ر.س @endif
+                                     ر.س
                                 </td>
                             </tr>
                             <tr>
@@ -142,6 +146,12 @@
                                 <td> الإجمالي</td>
                                 <td>
                                     {{$last_customer_package->final_amount }} ر.س
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <br></td>
+                                <td>
+                                    <br>
                                 </td>
                             </tr>
                         </tbody>
@@ -286,6 +296,8 @@
 </div>
 
 
+
+
 <br>
 <div class="row" dir="rtl">
     <div class="col-md-12">
@@ -310,6 +322,7 @@
                             <th class="font-weight-bold">الفرع بالإنجليزية</th>
                             <th class="font-weight-bold"> المدينة</th>
                             <th class="font-weight-bold"> رقم الهاتف</th>
+                            <th class="font-weight-bold"> الفاتورة</th>
                             <th class="font-weight-bold"> حذف</th>
                         </tr>
                         </thead>
@@ -322,6 +335,13 @@
                                         <td>{{ $branch->en_name }}</td>
                                         <td>{{ $branch->city }}</td>
                                         <td>{{ $branch->phone_number }}</td>
+                                        <td>
+                                            @if(!is_null($branch->price))
+                                            <a href="/branchBill/{{$customer['id'] }}/{{ $branch->id }}" class="btn btn-primary btn-sm btn-icon-text">
+                                                <i class="mdi mdi-newspaper"></i>
+                                            </a>
+                                            @endif
+                                        </td>
                                         <td>
                                             <a href="/destroyBranch/{{ $branch->id }}/{{$customer['id'] }}" class="btn btn-danger btn-sm btn-icon-text">
                                                 <i class="mdi mdi-delete"></i>

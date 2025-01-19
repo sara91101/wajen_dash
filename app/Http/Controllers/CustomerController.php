@@ -21,13 +21,10 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PDF;
-use GuzzleHttpClientException\ClientException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Session;
 use Carbon\Carbon;
-use GuzzleHttp\Exception\ClientException as ExceptionClientException;
-use Illuminate\Support\Facades\Redirect;
-// use Mpdf\Http\Exception\ClientException as HttpExceptionClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Prgayman\Zatca\Facades\Zatca;
 
 class CustomerController extends Controller
@@ -80,7 +77,7 @@ class CustomerController extends Controller
                 {
 
                     if($item["is_archived"] == 1) {$counter++;}
-                    return ($item["is_archived"] != 1) &&  (session('activity') != "" ? $item["activity_type"] == session('activity') - 1 : $item["is_archived"] != 1)
+                    return ($item["is_archived"] != 1) &&  (session('activity') != "" ? $item["activity_type"] == session('activity') : $item["is_archived"] != 1)
                     &&  (session('town_id') != "" ? $item["city_id"] == session('town_id') : $item["is_archived"] != 1)
                     &&  (session('package_id') != "" ? $item["package_id"] == session('package_id') : $item["is_archived"] != 1)
                     && ((session('customer') != "" ? str_contains($item["first_name"], session('customer'))  :  $item["is_archived"] != 1)
@@ -105,7 +102,7 @@ class CustomerController extends Controller
             $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
 
         }
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -117,137 +114,6 @@ class CustomerController extends Controller
         $systm = Systm::first();
 
         return view("customers", compact("customers","systm"),$data);
-    }
-
-    public function visit($membership_no)
-    {
-        $client = new Client();
-        $url = "https://back.skilltax.sa/api/v2/subscriberDashboardLogin";
-
-        $token = session("skillTax_token");
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $token
-        ];
-
-        try
-        {
-            $postResponse = $client->post($url, [
-            'headers' => $headers,
-            'json' => ["membership_no"=> $membership_no,"password"=> "Bhq3GQei9oH_d_hs5"],
-            'http_errors' => false
-            ]);
-
-            $returned_code = $postResponse->getStatusCode();
-            if($returned_code == 200)
-            {
-                $response = json_decode($postResponse->getBody()->getContents());
-
-                $first_name = $response->subscriber->first_name;
-                $last_name = $response->subscriber->last_name;
-                $email = $response->subscriber->email;
-                // echo $response;exit;
-
-                $visit_url = 'https://test.skilltax.sa/admin-access?membership_no='.$membership_no.'&token='.$response->token.'&first_name='.$first_name.'&last_name='.$last_name.'&email='.$email;
-
-                session(['visit_url'=> $visit_url]);
-
-
-                return redirect()->back();
-            }
-            else
-            {
-                return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
-            }
-
-        //  return json_decode($postResponse->getBody()->getCode());
-        }
-        catch (ExceptionClientException $e)
-        {
-            //return $e->getMessage();
-            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
-        }
-    }
-
-    public function sendNotification(Request $request)
-    {
-        $subscribers_ids = $request->subscribers;
-        $title = $request->title;
-        $message = $request->message;
-
-        $client = new Client();
-        $url = "https://back.skilltax.sa/api/v2/subscriberDashboardNotification";
-
-        $token = session("skillTax_token");
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $token
-        ];
-
-        try
-        {
-            $postResponse = $client->post($url, [
-            'headers' => $headers,
-            'json' => ["title"=> $title,"message"=> $message,"subscribers"=>$subscribers_ids]
-            ]);
-
-            $returned_code = $postResponse->getStatusCode();
-            if($returned_code == 201)
-            {
-                return redirect("/customers")->with("Message", " تم إرسال الإشعار");
-            }
-            else
-            {
-                return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
-            }
-
-        //  return json_decode($postResponse->getBody()->getCode());
-        }
-        catch (ExceptionClientException $e)
-        {
-            //return $e->getMessage();
-            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
-        }
-    }
-
-    public function notifyMultiple()
-    {
-        $client = new Client();
-
-        $token = session("skillTax_token");
-        $url = "https://back.skilltax.sa/api/v1";
-
-        $subscribers = $client->get("$url/subscribers",['headers' => ['Authorization' => 'Bearer ' . $token]]);
-        $customers = json_decode($subscribers->getBody()->getContents(), true);
-
-        //paginate result
-        $results = collect($customers)->map(function ($item) {
-                $activity_type = Activity::find($item["activity_type"]);
-                if($activity_type)
-                {
-                    $item["activity_ar"] = $activity_type->activity_ar;
-                }
-                else
-                {
-                    $item["activity_ar"] = "";
-                }
-                return $item;
-            })
-            ->filter(function ($item,$counter)
-            {
-
-                if($item["is_archived"] == 1) {$counter++;}
-                return ($item["is_archived"] != 1) &&  (session('activity') != "" ? $item["activity_type"] == session('activity') - 1 : $item["is_archived"] != 1)
-                &&  (session('town_id') != "" ? $item["city_id"] == session('town_id') : $item["is_archived"] != 1)
-                &&  (session('package_id') != "" ? $item["package_id"] == session('package_id') : $item["is_archived"] != 1)
-                && ((session('customer') != "" ? str_contains($item["first_name"], session('customer'))  :  $item["is_archived"] != 1)
-                || (session('customer') != "" ? str_contains($item["last_name"], session('customer'))  :  $item["is_archived"] != 1)
-                || (session('customer') != "" ? str_contains($item["membership_no"], session('customer'))  :  $item["is_archived"] != 1)
-                || (session('customer') != "" ? str_contains($item["phone_no"], session('customer'))  :  $item["is_archived"] != 1)
-                || (session('customer') != "" ? str_contains($item["email"], session('customer'))  :  $item["is_archived"] != 1));
-
-            });
-        return view("notifyMultiple",compact("results"));
     }
 
     public function showAll()
@@ -275,7 +141,7 @@ class CustomerController extends Controller
         $data["towns"] = json_decode(Http::get("$url/cities"), true);
 
         $data["systems"] = Systm::all();
-        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"), true);
+        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"),true);
 
         $data["packages"] = json_decode($client->get("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
@@ -305,7 +171,7 @@ class CustomerController extends Controller
 
          return json_decode($postResponse->getBody()->getContents());
         }
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -318,7 +184,6 @@ class CustomerController extends Controller
         // to put file data
         $fileName = $membership_no.".json";
         $fileStorePath = public_path('jsons/' . $fileName);
-
         $dataMajors = [];
         $package = Package::with(['packageMinor' => function ($query) {
             $query->join("minors", "minors.id", "package_minors.minor_id");
@@ -388,7 +253,6 @@ class CustomerController extends Controller
             "end_date" => $request->input('end_date'),
             "password" => $request->input('password'),
             "paid" => 1,
-            "is_testing_account"=>$request->is_testing_account,
             "password_confirmation" => $request->input('password'),
 
             "package_id" => $request->package_id,
@@ -403,9 +267,16 @@ class CustomerController extends Controller
             "prices"=>$request->price,
 
             "user_id" => Auth::user()->id,
+            "is_testing_account"=>$request->is_testing_account,
+
+            "item_discounts"=>$request->item_discounts,
+            "discount_types"=>$request->discount_type_value,
+            "full_prices"=>$request->full_prices,
+
         ];
 
         $subscriber = $this->skilltax_customer_register($data);
+
         if (!$subscriber)
         {
             //return $e->getMessage();
@@ -430,35 +301,68 @@ class CustomerController extends Controller
 
         $this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
 
-        $attach = $membership_no . "_" . $subscriber->package_id;
+        return redirect("/customers")->with("Message", "تمت الاضافة");
+    }
 
-        $fullname = $request->first_name . " " . $request->second_name;
+    public function sendSubscriptionDetails($subscriber_id)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v1";
+        $token = session("skillTax_token");
 
-        if($request->email)
-        {try
+        $subscriber = json_decode($client->get("$url/subscribers/$subscriber_id", [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            ])->getBody()->getContents(), true);
+
+        $this->CustomerBill($subscriber_id, $subscriber['package_id'], 1);
+
+        $attach = $subscriber['membership_no'] . "_" . $subscriber['package_id'];
+
+        $fullname = $subscriber['first_name'] . " " . $subscriber['last_name'];
+
+        try
         {
-            Mail::to($request->email)->send(new \App\Mail\SendMail(
+            Mail::to($subscriber['email'])->send(new \App\Mail\SendMail(
                 $fullname,
-                'Welcome to SkilTax POS system',
-                $membership_no,
-                $request->start_date,
-                $request->end_date,
+                'Welcome to SkillTax POS system',
+                $subscriber['membership_no'],
+                $subscriber['subscription_start_at'],
+                $subscriber['subscription_end_at'],
                 $attach
             ));
 
             $message = new Message();
-            $message->membership_no = $membership_no;
+            $message->membership_no = $subscriber['membership_no'];
             $message->title = "رسالة إكتمال التسجيل";
             $message->body = "Subscriber Name: $fullname <br>
-            Membership ID:  $membership_no <br>
-            Subscription Start Date / Time :  $request->start_date <br>
-            Subscription End Date / Time :  $request->end_date ";
+            Membership ID:  ".$subscriber['membership_no']." <br>
+            Subscription Start Date / Time :  ".$subscriber['subscription_start_at']." <br>
+            Subscription End Date / Time :".  $subscriber['subscription_end_at'] ;
             $message->save();
         }
-        catch (ExceptionClientException $e) {}}
+        catch (GuzzleException $e) { return response()->json(["error"=>$e],401);}
 
-        return redirect("/customers")->with("Message", "تمت الاضافة");
+        return redirect("customers")->with('Message','تم إرسال بيانات الإشتراك');
     }
+
+    public function sendInvoice(Request $request)
+    {
+        $path = "";
+        if ($request->hasFile('attachment')) {
+            if ($request->attachment && $request->attachment->isValid()) {
+                $file_name = time() . '.' . $request->attachment->extension();
+                $request->attachment->move(public_path('attachments'), $file_name);
+
+                $path = "attachments/$file_name";
+            }
+        }
+        $details = ['title' => $request->title, 'body' => $request->body, 'path' => $path];
+
+        Mail::to($request->email)->send(new \App\Mail\CustomerMail($details));
+
+        return redirect("customers")->with("Message","تم إرسال البريد الإلكتروني");
+    }
+
 
     /**
      * Display the specified resource.
@@ -490,8 +394,7 @@ class CustomerController extends Controller
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ])->getBody()->getContents());
 
-
-        $data["branches"] = json_decode($client->get("$url/loyalty/branches/".$membership_no, [
+        $data["branches"] = json_decode($client->get("$url/subscriberBranches/".$membership_no, [
                 'headers' => ['Authorization' => 'Bearer ' . $token],
                 ])->getBody()->getContents());
 
@@ -506,7 +409,7 @@ class CustomerController extends Controller
         return view("customer", $data);
     }
 
-    public function archieveBranch($branch_id,$customer_id)
+     public function archieveBranch($branch_id,$customer_id)
     {
         $client = new Client();
         $url = "https://back.skilltax.sa/api/v1";
@@ -541,9 +444,7 @@ class CustomerController extends Controller
 
         $data["towns"] = json_decode(Http::get("$url/cities"), true);
 
-        // $data["activities"] = Activity::all();
-
-        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"), true);
+        $data["activities"] = json_decode(Http::get("$url/loyalty/activityTypes"),true);
 
         $data["packages"] = json_decode($client->get("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
@@ -573,6 +474,7 @@ class CustomerController extends Controller
      */
     public function update(CustomerRequest $request,  $customer_id)
     {
+
         $client = new Client();
 
         $token = session("skillTax_token");
@@ -580,8 +482,6 @@ class CustomerController extends Controller
         // echo $request->package_id;
         // exit;
         $url = "https://back.skilltax.sa/api/v1";
-        if($request->discount_percent) { $discount_percent = $request->discount_percent;}
-        else {$discount_percent = 1;}
         $data = [
             "first_name" => $request->input('first_name'),
             "last_name" => $request->input('second_name'),
@@ -601,13 +501,20 @@ class CustomerController extends Controller
             "taxes" => 15,
             "discounts" => $request->discounts,
             "taxes_type" => 2,
-            "discount_percent" => $discount_percent,
+            "discount_percent" => $request->discount_percent,
 
             "services"=>$request->service,
             "quantities"=>$request->quantity,
             "prices"=>$request->price,
 
             "user_id" => Auth::user()->id,
+            "renew"=> $request->renew,
+            "is_testing_account"=>$request->is_testing_account,
+
+            "item_discounts"=>$request->item_discounts,
+            "discount_types"=>$request->discount_type_value,
+            "full_prices"=>$request->full_prices,
+
         ];
         $membership_no = $request->membership_no;
 
@@ -616,7 +523,7 @@ class CustomerController extends Controller
             'headers' => ['Authorization' => 'Bearer ' . $token],
             'json' => $data
         ]);}
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -635,7 +542,7 @@ class CustomerController extends Controller
                 'json' => json_decode($contents)
             ]);
             }
-            catch (ExceptionClientException $e)
+            catch (GuzzleException $e)
             {
                 //return $e->getMessage();
                 return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -654,7 +561,7 @@ class CustomerController extends Controller
         $token = session("skillTax_token");
 
         try{$client->post("$url/subscribers/archive/$customer_id", ['headers' => ['Authorization' => 'Bearer ' . $token]]);}
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -694,6 +601,71 @@ class CustomerController extends Controller
         return redirect("/showCustomer/$customer_id")->with("Message", "تم حذف المستخدم");
     }
 
+    /*public function CustomerBill($customer_id, $package_id, $status)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v1";
+        $token = session("skillTax_token");
+
+        $data["customer"] = json_decode($client->get("$url/subscribers/$customer_id", [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            ])->getBody()->getContents(), true);
+        $membership_no = $data["customer"]["membership_no"];
+
+        $subscriber_packages = json_decode($client->get("$url/subscribers/packages/$membership_no", [
+                'headers' => ['Authorization' => 'Bearer ' . $token],
+                ])->getBody()->getContents());
+
+        foreach($subscriber_packages as $subscriber_package)
+        {
+            if($subscriber_package->package_id == $package_id)
+            {
+                $data["package"] = $subscriber_package;
+                $data["user"] = User::find($subscriber_package->user_id);
+            }
+        }
+
+        $data["sys"] = Systm::first();
+        $data["info"] = Info::first();
+
+        if(!is_null($data["package"]->taxes)){$taxes = $data["package"]->taxes;}
+        else {$taxes = 0;}
+
+        if($data["package"]->taxes_type == 2){$taxes = $data["package"]->price * $data["package"]->taxes / 100;}
+
+        $date = Carbon::now()->toDateTimeString();
+        $data["base64"] = Zatca::sellerName($data["info"]->name_ar)
+                ->vatRegistrationNumber($data["info"]->tax_no)
+                ->timestamp($date)
+                ->totalWithVat($data["package"]->final_amount)
+                ->vatTotal($taxes)
+                ->toQrCode(
+                    qrCodeOptions()
+                      ->format("svg")
+                      ->size(150)
+                  );
+
+         $data["services"] = json_decode($client->get("$url/subscriber_service/$membership_no", [
+        'headers' => ['Authorization' => 'Bearer ' . $token],
+        ])->getBody()->getContents(), true);
+
+
+        $pdf = PDF::loadView('bill3', $data);
+        //return view("bill",$data);
+
+
+        $fileName = $membership_no."_".$package_id.".pdf";
+        //
+        if ($status == 1) {
+            return $pdf->save(public_path("bills/$fileName"));
+        } else {
+            $pdf->stream($membership_no."_invoice.pdf");
+        }
+    }*/
+
+
+
+
     public function CustomerBill($customer_id, $package_id, $status)
     {
         $sum = 0;
@@ -730,7 +702,7 @@ class CustomerController extends Controller
             if($subscriber_service["package_id"] == $package_id)
             {
                 $data["services"][] = $subscriber_service;
-                $sum += $subscriber_service["price"];
+                $sum += $subscriber_service["full_price"];
             }
         }
 
@@ -739,17 +711,17 @@ class CustomerController extends Controller
         $data["sys"] = Systm::first();
         $data["info"] = Info::first();
 
-        if(!is_null($data["package"]->taxes)){$taxes = $data["package"]->taxes;}
-        else {$taxes = 0;}
+        // if(!is_null($data["package"]->taxes)){$taxes = $data["package"]->taxes;}
+        // else {$taxes = 0;}
 
         if($data["package"]->taxes_type == 2){$taxes = $data["package"]->price * $data["package"]->taxes / 100;}
 
         $date = Carbon::now()->toDateTimeString();
 
-        $sum += $data["package"]->final_amount;
+        if(!is_null($data["package"]->old_invoice)){$sum += $data["package"]->final_amount;}
         if($data["package"]->taxes != 0) {$vat = $sum * 15 / 100;}
         else{$vat = 0;}
-        $sum_with_vat = $sum + $vat;
+        $sum_with_vat = $sum + $vat -  $data["package"]->discounts;
 
         $data["base64"] = Zatca::sellerName('شركة وجين لتقنية المعلومات')
                 ->vatRegistrationNumber($data["info"]->tax_no)
@@ -775,46 +747,6 @@ class CustomerController extends Controller
         } else {
             $pdf->stream($membership_no."_invoice.pdf");
         }
-    }
-
-    //branchBill
-    public function branchBill($customer_id,$branch_id)
-    {
-        $client = new Client();
-        $url = "https://back.skilltax.sa/api/v1";
-        $token = session("skillTax_token");
-
-        $data["customer"] = json_decode($client->get("$url/subscribers/$customer_id", [
-            'headers' => ['Authorization' => 'Bearer ' . $token],
-            ])->getBody()->getContents(), true);
-
-        $data["branch"] = json_decode($client->get("$url/branches/$branch_id", [
-            'headers' => ['Authorization' => 'Bearer ' . $token],
-            ])->getBody()->getContents(), true);
-
-
-        $data["info"] = Info::first();
-
-        $date = Carbon::now()->toDateTimeString();
-
-        $data["base64"] = Zatca::sellerName($data["info"]->name_ar)
-            ->vatRegistrationNumber($data["info"]->tax_no)
-            ->timestamp($date)
-            ->totalWithVat($data["branch"]["final_price"])
-            ->vatTotal($data["branch"]["taxes"])
-            ->toQrCode(
-                qrCodeOptions()
-                  ->format("svg")
-                  ->size(300)
-              );
-
-        $data["user"] = Auth::user()->name;
-
-        $pdf = PDF::loadView('branchBill', $data);
-
-        return $pdf->stream();
-
-        // return view("branchBill",$data);
     }
 
     public function printCustomers()
@@ -851,7 +783,7 @@ class CustomerController extends Controller
 
 
         }
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -964,7 +896,7 @@ class CustomerController extends Controller
 
         if($status == 1)
         {
-            $client->post("$url/staff/activate/$casheir_id", [
+            $client->get("$url/staff/activate/$casheir_id", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ]);
             $msg = "تم التفعيل";
@@ -1033,7 +965,7 @@ class CustomerController extends Controller
            $data["towns"] = json_decode(Http::get("$url/cities"), true);
         $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
         }
-        catch (ExceptionClientException $e)
+        catch (GuzzleException $e)
         {
             return $e->getMessage();
         }
@@ -1092,7 +1024,7 @@ class CustomerController extends Controller
             "phone_no" => $request->input('phone'),
             "business_name" => $request->input('bussiness_name'),
             "tax_number" => $request->input('tax_no'),
-            "activity_type" => $request->input('activity_id'),
+            "activity_type" => $request->input('activity_id') - 1,
             "city_id" => $request->input('town_id'),
             "governorate_id" => $request->input('governorate_id'),
             "start_date" => $request->input('start_date'),
@@ -1138,6 +1070,7 @@ class CustomerController extends Controller
         $this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
 
         $attach = $membership_no . "_" . $subscriber->package_id;
+        $attach = "";
 
         $fullname = $request->first_name . " " . $request->second_name;
 
@@ -1161,32 +1094,225 @@ class CustomerController extends Controller
             Subscription End Date / Time :  $request->end_date ";
             $message->save();
         }
-        catch (ExceptionClientException $e) {}
+        catch (GuzzleException $e) {}
 
         return response()->json($subscriber,201);
     }
 
-    public function notifyCustomer(Request $request)
+    public function createBranch(Request $request)
     {
+
         $client = new Client();
-        $url = "https://back.skilltax.sa/api/v2";
+        $url = "https://back.skilltax.sa/api/v1/branches";
         $token = session("skillTax_token");
-
-        $customer_id = $request->customer_id;
-        if($customer_id == 'all')
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ];
+        try
         {
 
+        $data = [
+            "ar_name" => $request->input('ar_name'),
+            "en_name" => $request->input('en_name'),
+            "phone_number" => $request->input('phone_number'),
+
+            "city_id" => $request->input('city_id'),
+            "membership_no" => $request->input('membership_no'),
+
+            "price" => $request->input('price'),
+            "discount" => $request->input('discount'),
+            "taxes" => $request->input('taxes'),
+            "final_price" => $request->input('final_price')
+            ];
+
+            $client->post($url, [
+            'headers' => $headers,
+            'json' => $data,
+            'http_errors' => false
+            ]);
+
+         return redirect("/customers")->with("Message", "تم إضافة الفرع");
         }
-        else
+        catch (GuzzleException $e)
         {
-            $data = ["subscribers"=> [$customer_id],"title" => $request->title,"message" => $request->message];
-
-            $client->post("$url/subscriberDashboardNotification", [
-                'headers' => ['Authorization' => 'Bearer ' . $token],
-                'json' => $data
-                ]);
+            //return $e->getMessage();
+            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
         }
     }
+
+
+    //branchBill
+    public function branchBill($customer_id,$branch_id)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v1";
+        $token = session("skillTax_token");
+
+        $data["customer"] = json_decode($client->get("$url/subscribers/$customer_id", [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            ])->getBody()->getContents(), true);
+
+        $data["branch"] = json_decode($client->get("$url/showBranch/$branch_id", [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            ])->getBody()->getContents(), true);
+
+        $data["user"] = Auth::user();
+        $data["info"] = Info::first();
+
+        $date = Carbon::now()->toDateTimeString();
+
+        $taxes = 0;
+        if(!is_null($data["branch"]["taxes"])) {$taxes = $data["branch"]["taxes"];}
+
+        $data["base64"] = Zatca::sellerName($data["info"]->name_ar)
+            ->vatRegistrationNumber($data["info"]->tax_no)
+            ->timestamp($date)
+            ->totalWithVat($data["branch"]["final_price"])
+            ->vatTotal($taxes)
+            ->toQrCode(
+                qrCodeOptions()
+                  ->format("svg")
+                  ->size(300)
+              );
+
+    $pdf = PDF::loadView('branchBill', $data);
+    return $pdf->stream();
+        //return view("branchBill",$data);
+    }
+
+
+    public function visit($membership_no)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v2/subscriberDashboardLogin";
+
+        $token = session("skillTax_token");
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        try
+        {
+            $postResponse = $client->post($url, [
+            'headers' => $headers,
+            'json' => ["membership_no"=> $membership_no,"password"=> "Bhq3GQei9oH_d_hs5"],
+            'http_errors' => false
+            ]);
+
+            $returned_code = $postResponse->getStatusCode();
+            if($returned_code == 200)
+            {
+                $response = json_decode($postResponse->getBody()->getContents());
+
+                $first_name = $response->subscriber->first_name;
+                $last_name = $response->subscriber->last_name;
+                $email = $response->subscriber->email;
+                // echo $response;exit;
+
+                $visit_url = 'https://v1.skilltax.sa/admin-access?membership_no='.$membership_no.'&token='.$response->token.'&first_name='.$first_name.'&last_name='.$last_name.'&email='.$email;
+
+                session(['visit_url'=> $visit_url]);
+
+
+                return redirect()->back();
+            }
+            else
+            {
+                return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+            }
+
+        //  return json_decode($postResponse->getBody()->getCode());
+        }
+        catch (GuzzleException $e)
+        {
+            //return $e->getMessage();
+            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+        }
+    }
+
+    public function sendNotification(Request $request)
+    {
+        $subscribers_ids = $request->subscribers;
+        $title = $request->title;
+        $message = $request->message;
+
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v2/subscriberDashboardNotification";
+
+        $token = session("skillTax_token");
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ];
+
+        try
+        {
+            $postResponse = $client->post($url, [
+            'headers' => $headers,
+            'json' => ["title"=> $title,"message"=> $message,"subscribers"=>$subscribers_ids]
+            ]);
+
+            $returned_code = $postResponse->getStatusCode();
+            if($returned_code == 201)
+            {
+                return redirect("/customers")->with("Message", " تم إرسال الإشعار");
+            }
+            else
+            {
+                return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+            }
+
+        //  return json_decode($postResponse->getBody()->getCode());
+        }
+        catch (GuzzleException $e)
+        {
+            //return $e->getMessage();
+            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+        }
+    }
+
+    public function notifyMultiple()
+    {
+        $client = new Client();
+
+        $token = session("skillTax_token");
+        $url = "https://back.skilltax.sa/api/v1";
+
+        $subscribers = $client->get("$url/subscribers",['headers' => ['Authorization' => 'Bearer ' . $token]]);
+        $customers = json_decode($subscribers->getBody()->getContents(), true);
+
+        //paginate result
+        $results = collect($customers)->map(function ($item) {
+                $activity_type = Activity::find($item["activity_type"]);
+                if($activity_type)
+                {
+                    $item["activity_ar"] = $activity_type->activity_ar;
+                }
+                else
+                {
+                    $item["activity_ar"] = "";
+                }
+                return $item;
+            })
+            ->filter(function ($item,$counter)
+            {
+
+                if($item["is_archived"] == 1) {$counter++;}
+                return ($item["is_archived"] != 1) &&  (session('activity') != "" ? $item["activity_type"] == session('activity') - 1 : $item["is_archived"] != 1)
+                &&  (session('town_id') != "" ? $item["city_id"] == session('town_id') : $item["is_archived"] != 1)
+                &&  (session('package_id') != "" ? $item["package_id"] == session('package_id') : $item["is_archived"] != 1)
+                && ((session('customer') != "" ? str_contains($item["first_name"], session('customer'))  :  $item["is_archived"] != 1)
+                || (session('customer') != "" ? str_contains($item["last_name"], session('customer'))  :  $item["is_archived"] != 1)
+                || (session('customer') != "" ? str_contains($item["membership_no"], session('customer'))  :  $item["is_archived"] != 1)
+                || (session('customer') != "" ? str_contains($item["phone_no"], session('customer'))  :  $item["is_archived"] != 1)
+                || (session('customer') != "" ? str_contains($item["email"], session('customer'))  :  $item["is_archived"] != 1));
+
+            });
+        return view("notifyMultiple",compact("results"));
+    }
+
 
     public function loyaltyStatus($membership_no,$status)
     {

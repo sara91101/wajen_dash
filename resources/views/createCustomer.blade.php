@@ -339,13 +339,12 @@
             next_fs = $(this).parent().next();
 
              //check values
-             var system_id = document.getElementById("systm_id").value;
              var package_id = document.getElementById("package_id").value;
              var password = document.getElementById("password").value;
              var start_date = document.getElementById("start_date").value;
              var end_date = document.getElementById("end_date").value;
 
-             if(system_id != "" && package_id != ""
+             if(package_id != ""
              && password != "" && start_date != ""
              && end_date != "")
              //Add Class Active
@@ -439,7 +438,7 @@
         var packagePrice = package.options[package.selectedIndex].getAttribute('data-price');
         let amount = parseInt(packagePrice);
 
-        //taxes computaions
+        //taxes computations
         let tax = 0;
         let discount = 0;
 
@@ -473,27 +472,36 @@
         document.getElementById("total_amount").value =document.getElementById("final_amount").value -  parseFloat(discount);
     }
 
-    function services_price()
+    function services_price(counter_value)
     {
-        let quantity = document.getElementById('quantity'+counter).value;
-        let unit_price = document.getElementById('unit_price'+counter).value;
-        document.getElementById('prices'+counter).value = unit_price * quantity;
-    }
+        var prices_sum = parseFloat(0);
 
-    function showGovernate(town_id)
-    {
-        var governates = document.getElementById("governate");
-        for (var i = 0; i < governates.length; i++)
+        for(var i=1;i<=counter;i++)
         {
-            if(parseInt(governates[i].className) != town_id || parseInt(governates[i].value) == 0)
+            var discount = parseFloat(0);
+            var quantity = document.getElementById('quantity'+i).value;
+            var unit_price = document.getElementById('unit_price'+i).value;
+
+            document.getElementById('prices'+i).value = parseFloat(unit_price * quantity);
+
+            if(document.getElementById('discounts'+i).value != "")
             {
-                governates[i].style.display = "none";
+                if(document.getElementById("discount_type"+i).checked)
+                {
+                    document.getElementById('discount_type_value'+i).value = 1;
+                    discount = document.getElementById('prices'+i).value * document.getElementById('discounts'+i).value / 100;
+                }
+                else
+                {
+                    discount  = document.getElementById('discounts'+i).value;
+                }
             }
-            else
-            {
-                governates[i].style.display = "block";
-            }
+            document.getElementById('full_prices'+i).value = parseFloat((unit_price * quantity) - discount);
+
+
+            prices_sum += parseFloat(document.getElementById('full_prices'+i).value);
         }
+        document.getElementById('final_amount').value = parseFloat(prices_sum);
     }
 
     function showPackages(sel)
@@ -518,7 +526,7 @@
     {
         var package=document.getElementById("package_id");
         var packagePrice = package.options[package.selectedIndex].getAttribute('data-price');
-        document.getElementById("final_amount").value = parseInt(packagePrice);
+        //document.getElementById("final_amount").value = parseInt(packagePrice);
         document.getElementById("dash_id").value = package.options[package.selectedIndex].getAttribute('data-dash');
 
     }
@@ -588,19 +596,23 @@
         counter++;
             var myDiv = document.createElement("div");
             myDiv.classList.add("row");
-            myDiv.innerHTML += '<div class="form-group col-lg-4">'+
-                '<label  class="form-label"> البند</label>'+
-                '<input type="text" name="service[]" class="form-control"><br>'+
-                '</div><div class="form-group col-lg-2">'+
-                '<label  class="form-label">العدد</label>'+
-                '<input type="text" name="quantity[]" id="quantity'+counter+'" class="form-control" onblur="services_price()"><br>'+
-                '</div><div class="form-group col-lg-2">'+
-                '<label> سعر الوحدة</label>'+
-                '<input id="unit_price'+counter+'"  type="text" class="form-control text-right" onblur="services_price()">'+
-                '</div><div class="form-group col-lg-2">'+
-                '<label  class="form-label">المبلغ الكلي</label>'+
-                '<input type="text" name="price[]" id="prices'+counter+'" class="form-control"><br></div>'+
-                '<div class="col-lg-2"><div class="form-group"><span><label class="btn btn-sm btn-danger" onclick="removeDiv(this)"><i class="mdi mdi-delete"></i></label></span></div></div></div>';
+            myDiv.innerHTML += '<div class="form-group col-lg-4"><span>'+
+                '<label onclick="removeDiv(this)"><i class="mdi mdi-delete text-danger"></i></label>'+
+                ' المنتج<br><br></span>'+
+                '<input name="service[]" class="form-control text-right"></div>'+
+                '<div class="form-group col-lg-1"><label> العدد<br><br></label>'+
+                '<input name="quantity[]" id="quantity'+counter+'" type="number" class="form-control text-right" onblur="services_price('+counter+')">'+
+                '</div><div class="form-group col-lg-1"><label> سعر الوحدة<br><br></label>'+
+                '<input id="unit_price'+counter+'"  type="number" step=".01" class="form-control text-right" onblur="services_price('+counter+')">'+
+                '</div><div class="form-group col-lg-2"><label> المبلغ الكلي<br><br></label>'+
+                '<input name="price[]" id="prices'+counter+'"  type="number" step=".01" class="form-control text-right">'+
+                '</div><div class="form-group col-lg-3"><label>الخصم على المنتج'+
+                ' (  <input value="1" id="discount_type'+counter+'" name="discount_types[]" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">'+
+                ' نسبة  )</label><input name="discount_type_value[]" value="0" id="discount_type_value'+counter+'"  type="hidden">'+
+                '<input value=0 name="item_discounts[]" id="discounts'+counter+'" onblur="services_price('+counter+')"  type="number" step=".01" class="form-control text-right">'+
+                '</div><div class="form-group col-lg-1"><label>الإجمالي<br><br></label>'+
+                '<input name="full_prices[]" id="full_prices'+counter+'"  type="number" step=".01" class="form-control text-right">'+
+                '</div></div>';
 
             var div = document.getElementById("serve");
 
@@ -609,7 +621,7 @@
 
     function removeDiv(row)
     {
-        var d = row.parentNode.parentNode.parentNode.parentNode.remove();
+        var d = row.parentNode.parentNode.parentNode.remove();
         counter--;
     }
 
@@ -642,42 +654,42 @@
             <fieldset>
                 <div class="form-card row text-right" dir="rtl">
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الإسم الأول</label>
+                        <label><i class="mdi mdi-star text-danger"></i>الإسم الأول</label>
                         <input @if(isset($customer)) value="{{ $customer['first_name'] }}" @endif type="text" name="first_name" id="first_name" class="form-control text-right" required>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الإسم الثاني</label>
+                        <label><i class="mdi mdi-star text-danger"></i>الإسم الثاني</label>
                         <input @if(isset($customer)) value="{{ $customer['last_name'] }}" @endif  type="text" id="second_name" name="second_name" class="form-control text-right" required>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1">إسم العمل</label>
+                        <label>إسم العمل</label>
                         <input @if(isset($customer)) value="{{ $customer['business_name'] }}" @endif  type="text" id="bussiness_name" name="bussiness_name" class="form-control text-right">
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>
+                        <label><i class="mdi mdi-star text-danger"></i>
                             رقم الهاتف (10 أرقام)
                         </label>
                         <input @if(isset($customer)) value="{{ $customer['phone_no'] }}" @endif  type="number" id="phone" minlength="10" maxlength="10" name="phone" class="form-control text-right" required onblur="checkPhoneLength()">
                         <label id="phone_error" class="badge badge-danger text-white"></label>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"> البريد الإلكتروني</label>
+                        <label> البريد الإلكتروني</label>
                         <input @if(isset($customer)) value="{{ $customer['email'] }}" @endif  type="email" id="email" name="email" class="form-control text-right">
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1">الرقم الضريبي</label>
+                        <label>الرقم الضريبي</label>
                         <input type="number"  id="tax_no" name="tax_no" @if(isset($customer)) value="{{ $customer['tax_number'] }}" @endif  class="form-control text-right">
                     </div>
 
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الغرض من الحساب</label>
+                        <label><i class="mdi mdi-star text-danger"></i>الغرض من الحساب</label>
                         <select name="is_testing_account" class="form-select text-right" required onchange="showGovernate(this.value)">
                             <option value="0">Production</option>
                             <option value="1">Testing</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المدينة</label>
+                        <label><i class="mdi mdi-star text-danger"></i>المدينة</label>
                         <select name="town_id" id="city" class="form-select text-right" required onchange="showGovernate(this.value)">
 
                             @foreach ($towns as $t)
@@ -686,7 +698,7 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> نوع النشاط</label>
+                        <label><i class="mdi mdi-star text-danger"></i> نوع النشاط</label>
                         <select name="activity_id" id="activity" class="form-select text-right" required>
                             @foreach ($activities as $a)
                                 <option value={{ $a['id'] }} @if(isset($customer) && ($customer['activity_type'] == $a['id'])) selected @endif>{{ $a['ar_activity'] }}</option>
@@ -699,8 +711,8 @@
 
             <fieldset>
                 <div class="form-card row text-right" dir="rtl">
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>النظام</label>
+                    {{--  <div class="form-group col-lg-4">
+                        <label><i class="mdi mdi-star text-danger"></i>النظام</label>
                         <select name="systm_id" id="systm_id" class="form-select text-right" required onchange="showPackages(this)">
                             <option value="">-</option>
                             @foreach ($systems as $s)
@@ -709,22 +721,22 @@
                                 @endif
                             @endforeach
                         </select>
-                    </div>
+                    </div>  --}}
 
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الباقة</label>
+                    <div class="form-group col-lg-6">
+                        <label><i class="mdi mdi-star text-danger"></i>الباقة</label>
                         <select name="package_id" id="package_id" class="form-select text-right" required onchange="price(this)">
                             <option value="">-</option>
                             @foreach ($packages as $package)
-                                <option @if(isset($customer) && ($customer['package_id'] == $package['id'])) selected @endif value={{ $package["id"] }} class="1" data-price = "{{ $package['price'] }}"  data-dash="{{ $package['dash_id'] }}">{{ $package['package_ar'] }}</option>
+                                <option value={{ $package["id"] }} class="1" data-price = "{{ $package['price'] }}"  data-dash="{{ $package['dash_id'] }}">{{ $package['package_ar'] }}</option>
                             @endforeach
                         </select>
 
                         <input type="hidden" name="dash_id" id="dash_id" @if(isset($customer)) value=12 @endif>
                     </div>
 
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>
+                    <div class="form-group col-lg-6">
+                        <label><i class="mdi mdi-star text-danger"></i>
                              كلمة المرور (6 أرقام)
                             </label>
                         <input @if(isset($customer)) value="{{ $customer['password'] }}" @endif type="number" id="password" name="password" minlength="6" maxlength="6" class="form-control text-right" required  onblur="checkPasswordLength()">
@@ -732,42 +744,13 @@
                     </div>
 
                     <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>تاريخ بداية الإشتراك </label>
+                        <label><i class="mdi mdi-star text-danger"></i>تاريخ بداية الإشتراك </label>
                         <input type="date" name="start_date" id="start_date" class="form-control text-right" @if(isset($customer)) value={{ $today }} @endif required>
                     </div>
 
                     <div class="form-group col-lg-6">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> تاريخ نهاية الإشتراك </label>
+                        <label><i class="mdi mdi-star text-danger"></i> تاريخ نهاية الإشتراك </label>
                         <input type="date" name="end_date" id="end_date" class="form-control text-right" @if(isset($customer)) value={{ $afterMonth }} @endif required>
-                    </div>
-
-                    {{--  <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1">الضريبة
-                            (  <input value="2" id="tax_percent" name="tax_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
-                              نسبة  )
-                        </label>
-                        <input type="text" id="taxes" name="taxes" class="form-control text-right" onblur="taxes_discounts()">
-                    </div>  --}}
-
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
-                        <input type="text" id="final_amount" class="form-control text-right" required>
-                    </div>
-
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1">
-                        الخصم على سعر الباقة
-                            (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
-                              نسبة  )
-                        </label>
-                        <input type="text" onblur="taxes_discounts()" id="discounts" class="form-control text-right">
-                        <input type="hidden" id="discounts_value" name="discounts" class="form-control text-right">
-                    </div>
-
-
-                    <div class="form-group col-lg-4">
-                        <label for="exampleInputUsername1"><i class="mdi mdi-star text-primary"></i>إجمالي  <br><br></label>
-                        <input type="text" @if(isset($customer)) value=0 @endif  id="total_amount" name="amount" class="form-control text-right" readonly>
                     </div>
                 </div>
                 <label data-toggle="tooltip" title=" Please fill the mandatory fields..!"  id="next1" class="next action-button">التالي</label>
@@ -780,30 +763,68 @@
             <fieldset>
                 <div class="form-card text-right" dir="rtl">
                     <div id="serve">
+                        <div>
+                            <label class="btn btn-success btn-sm" onclick="addService()">
+                                <i class="mdi mdi-plus"></i>
+                            </label>
+                        </div>
+                        <br>
                        <div class="row">
                             <div class="form-group col-lg-4">
-                                <label></i> البند</label>
+                                <label></i> المنتج<br><br></label>
                                 <input name="service[]" class="form-control text-right">
                             </div>
-                            <div class="form-group col-lg-2">
-                                <label></i> العدد</label>
-                                <input name="quantity[]" id="quantity1" type="number" class="form-control text-right" onblur="services_price()">
+                            <div class="form-group col-lg-1">
+                                <label></i> العدد<br><br></label>
+                                <input name="quantity[]" id="quantity1" type="number" class="form-control text-right" onblur="services_price(1)">
                             </div>
-                             <div class="form-group col-lg-2">
-                                <label> سعر الوحدة</label>
-                                <input id="unit_price1"  type="text" class="form-control text-right" onblur="services_price()">
-                            </div>
-                            <div class="form-group col-lg-2">
-                                <label> المبلغ الكلي</label>
-                                <input name="price[]" id="prices1"  type="text" class="form-control text-right">
+                            <div class="form-group col-lg-1">
+                                <label> سعر الوحدة<br><br></label>
+                                <input id="unit_price1"  type="number" step=".01" class="form-control text-right" onblur="services_price(1)">
                             </div>
                             <div class="form-group col-lg-2">
-                                <label class="btn btn-success btn-sm" onclick="addService()">
-                                    <i class="mdi mdi-plus"></i>
+                                <label> المبلغ الكلي<br><br></label>
+                                <input name="price[]" id="prices1"  type="number" step=".01" class="form-control text-right">
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <label>
+                                    الخصم على المنتج
+                                        (  <input value="1" id="discount_type1" name="discount_types[]" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                                        نسبة  )
                                 </label>
+                                <input name="discount_type_value[]" value="0" id="discount_type_value1"  type="hidden">
+                                <input value=0 name="item_discounts[]" onblur="services_price(1)" id="discounts1"  type="number" step=".01" class="form-control text-right">
+                            </div>
+                            <div class="form-group col-lg-1">
+                                <label>الإجمالي<br><br></label>
+                                <input name="full_prices[]" id="full_prices1"  type="number" step=".01" class="form-control text-right">
                             </div>
                        </div>
                     </div>
+                    <br>
+                    <div class="row text-white" style="background-color: #9E9E9E; border=1;border-radius:.90rem;">
+                        <div class="form-group col-lg-4">
+                            <label><i class="mdi mdi-star text-danger"></i>المبلغ<br><br></label>
+                            <input type="number" step=".01" id="final_amount" class="form-control text-right" required>
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                            <label>
+                            الخصم على إجمالي الفاتوره
+                                (  <input value="2" id="discount_percent" name="discount_percent" type="checkbox" class="form-check-input" style="width: 18px; height: 18px; border-radius: 2px;  border: solid #844fc1; border-width: 2px;">
+                                نسبة  )
+                            </label>
+                            <input type="text" onblur="taxes_discounts()" id="discounts" class="form-control text-right">
+                            <input type="hidden" id="discounts_value" name="discounts" class="form-control text-right">
+                        </div>
+
+
+                        <div class="form-group col-lg-4">
+                            <label><i class="mdi mdi-star text-primary"></i>إجمالي  <br><br></label>
+                            <input type="number" step=".01" @if(isset($customer)) value=0 @endif  id="total_amount" name="amount" class="form-control text-right" readonly>
+                        </div>
+                    </div>
+
 
                 </div>
 
