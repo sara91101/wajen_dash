@@ -327,12 +327,6 @@
                                     <a class="dropdown-item text-right"  href="/visit/{{ $c['membership_no'] }}" style="text-decoration: none">
                                         زيارة الحساب في سكيل تاكس
                                     </a>
-                                    @if(!is_null($c['email']))
-                                        <div role="separator" class="dropdown-divider"></div>
-                                        <a class="dropdown-item text-right"  href="/sendSubscriptionDetails/{{ $c['id'] }}" style="text-decoration: none">
-                                            إرسال بيانات الإشتراك
-                                        </a>
-                                    @endif
                                 </div>
                               </div>
                             </div>

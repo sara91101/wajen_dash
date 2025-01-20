@@ -101,8 +101,8 @@
                         @endforeach
 
                         @php
-                        if(!is_null($package->taxes)){$vat = $sum * 15 /100;} else {$vat = 0;}
-                        $total = $sum + $vat  - $package->discounts;
+                        $total = ($sum - $package->discounts) * 100 /115;
+                        if(!is_null($package->taxes)){$vat = ($sum - $package->discounts) - $total;} else {$vat = 0;}
                         @endphp
                         </tr>
 
@@ -113,10 +113,10 @@
 
         <div style="width:100%" class="mt-3">
             <div style="border-radius:.90rem;text-align:center !important;width:40%;border:1px ridge black;float: left;" dir="rtl" align="left">
-                <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>المجموع الفرعي : {{  number_format($sum,2) }} ر.س </b></p>
+                <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>المجموع الفرعي : {{  number_format($total,2) }} ر.س </b></p>
                  <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>الخصم : {{  number_format($package->discounts,2) }} ر.س &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b>ضريبة القيمة المضافة : {{  number_format($vat,2) }} ر.س </b></p>
-                <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b> المجموع الكُلي : {{  number_format($total,2) }} ر.س </b></p>
+                <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b> المجموع الكُلي : {{  number_format($sum,2) }} ر.س </b></p>
             </div>
         </div>
 

@@ -719,14 +719,18 @@ class CustomerController extends Controller
         $date = Carbon::now()->toDateTimeString();
 
         if(!is_null($data["package"]->old_invoice)){$sum += $data["package"]->final_amount;}
-        if($data["package"]->taxes != 0) {$vat = $sum * 15 / 100;}
+
+
+        $total = ($sum - $data["package"]->discounts) * 100 /115;
+
+        if($data["package"]->taxes != 0) {$vat = ($sum - $data["package"]->discounts) - $total;}
         else{$vat = 0;}
-        $sum_with_vat = $sum + $vat -  $data["package"]->discounts;
+        //$sum_with_vat = $sum + $vat -  $data["package"]->discounts;
 
         $data["base64"] = Zatca::sellerName('شركة وجين لتقنية المعلومات')
                 ->vatRegistrationNumber($data["info"]->tax_no)
                 ->timestamp($date)
-                ->totalWithVat($sum_with_vat)
+                ->totalWithVat($sum)
                 ->vatTotal($vat)
                 ->toQrCode(
                     qrCodeOptions()

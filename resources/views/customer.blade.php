@@ -21,6 +21,39 @@
         }
         $("#edit").modal("show");
     }
+
+    function sendSubscriptionDetails(customer_id,membership_no)
+    {
+        swal({
+                title: 'تأكيد',
+                text:"هل أنت متأكد من إرسال بيانات الإشتراك للمشترك ("+membership_no+")",
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/sendSubscriptionDetails/"+customer_id;}
+                });
+    }
 </script>
 
 <div class="col-12" dir="rtl">
@@ -31,11 +64,16 @@
                     <li class="breadcrumb-item"><a href="#">     المشتركين</a>
                         <span class="breadcrumb-item active" aria-current="page"> /  التفاصيل </span>
                     </li>
+                    <div>
                     @php $last_customer_package = $packages[sizeof($packages) - 1]; @endphp
                     <a style="text-decoration: none;" href="/CustomerBill/{{ $customer['id'] }}/{{ $last_customer_package->package_id }}/2" class="badge badge-primary text-white float-left">
                         <i class="mdi mdi-file-pdf"></i>
                         الفاتورة
                     </a>
+                    @if(!is_null($customer['email']))
+                        <a href="javascript:;" style="text-decoration: none;" class="badge badge-danger text-white float-left" onclick="sendSubscriptionDetails({{ $customer['id'] }},{{ $customer['membership_no'] }})">إرسال بيانات الإشتراك</a>
+                    @endif
+                    </div>
                 </ol>
             </div>
         </div>
