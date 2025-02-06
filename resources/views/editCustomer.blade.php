@@ -675,7 +675,15 @@
                         <label for="exampleInputUsername1">الرقم الضريبي</label>
                         <input value="{{ $customer['tax_number'] }}" type="number" id="tax_no" name="tax_no" class="form-control text-right">
                     </div>
-                    <div class="form-group col-lg-6">
+
+                    <div class="form-group col-lg-4">
+                        <label><i class="mdi mdi-star text-danger"></i>الغرض من الحساب</label>
+                        <select name="is_testing_account" class="form-select text-right" required onchange="showGovernate(this.value)">
+                            <option value="0" @if($customer['is_testing_account'] == 0) selected @endif>فعلي</option>
+                            <option value="1" @if($customer['is_testing_account'] == 1) selected @endif>تجريبي</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المدينة</label>
                         <select name="town_id" id="city" class="form-select text-right" required onchange="showGovernate(this.value)">
 
@@ -684,7 +692,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i> نوع النشاط</label>
                         <select name="activity_id" id="activity" class="form-select text-right" required>
                             @foreach ($activities as $a)

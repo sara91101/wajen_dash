@@ -22,6 +22,15 @@
         $("#edit").modal("show");
     }
 
+    function editDevice(device_id)
+    {
+        document.getElementById("id").value = device_id;
+        document.getElementById("device_id").value = document.getElementById("device"+device_id).innerHTML;
+        document.getElementById("terminal_id").value = document.getElementById("terminal"+device_id).innerHTML;
+        //var branch = document.getElementById("branch"+device_id).value;
+        $("#editDevice").modal("show");
+    }
+
     function sendSubscriptionDetails(customer_id,membership_no)
     {
         swal({
@@ -55,6 +64,38 @@
                 });
     }
 </script>
+
+<div class="modal fade" id="editDevice" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header align-self-center">
+            <h3 align="center" class="modal-title text-primary-purple"><b>تعديل بيانات الجهاز</b></h3>
+        </div>
+        <form method="POST" action="/editDevice">
+            @csrf
+            <div class="modal-body text-right font-weight-bold" dir="rtl">
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                        رقم الجهاز
+                    </label>
+                    <input type="hidden" id="id" name="id" class="form-control text-right" readonly>
+                    <input type="text" id="device_id" name="device_id" class="form-control text-right" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                        Terminal ID
+                    </label>
+                    <input type="test" id="terminal_id" name="terminal_id" class="form-control text-right">
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-center" align="center">
+                <input type="submit" value="تعديل" class="btn  my-btn btn-lg btn-primary">
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
 
 <div class="col-12" dir="rtl">
     <div class="card">
@@ -244,7 +285,7 @@
                 </div>
             </div>
         </div>
-    @endif
+@endif
 
 
 <br>
@@ -381,7 +422,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="/destroyBranch/{{ $branch->id }}/{{$customer['id'] }}" class="btn btn-danger btn-sm btn-icon-text">
+                                            <a href="javascript:;" onclick="destroyItem2( 'destroyBranch', {{ $branch->id }},{{$customer['id'] }})" class="btn btn-danger btn-sm btn-icon-text">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
                                         </td>
@@ -396,5 +437,61 @@
     </div>
 </div>
 
+
+<br>
+@if(count($devices) > 0)
+        <div class="row" dir="rtl">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" dir="rtl">
+                        <div aria-label="breadcrumb">
+                            <ol class="breadcrumb bg-inverse-primary justify-content-between">
+                                <li class="breadcrumb-item">
+                                    <a href="#">     الأجهزة</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive pt-3">
+                            <table class="text-center table ">
+                                <thead>
+                                <tr>
+                                    <th class="ms-5 font-weight-bold">#</th>
+                                    <th class="font-weight-bold">رقم الجهاز </th>
+                                    <th class="font-weight-bold">Terminal ID </th>
+                                    <th class="font-weight-bold"> الفرع</th>
+                                    <th class="font-weight-bold"> العمليات</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($devices as $device)
+                                            <tr>
+                                                <td >{!! $loop->iteration !!}</td>
+                                                <td id="device{{ $device["id"] }}">{{ $device["device_id"] }}</td>
+                                                <td id="terminal{{ $device["id"] }}">{{ $device["terminal_id"] }}</td>
+                                                <td id="branch{{ $device["id"] }}" style="display:none;">{{ $device["branch_id"] }}</td>
+                                                <td>{{ $device["ar_name"] }}</td>
+                                                
+                                                <td>
+                                                    <a onclick="editDevice({{ $device['id'] }})" href="javascript:;" class="btn btn-warning btn-sm btn-icon-text">
+                                                        <i class="mdi mdi-pencil"></i>
+                                                    </a>
+                                                    <a onclick="destroyItem( 'destroyCustomerDevice', {{ $device['id'] }})" href="javascript:;" class="btn btn-danger btn-sm btn-icon-text">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            @php $i++; @endphp
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+@endif
 
 @endsection

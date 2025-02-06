@@ -93,6 +93,38 @@
                 window.location = "/"+page+"/"+itemId;}
                 });
         }
+        function destroyItem2(page,itemId,anotherId)
+        {
+            swal({
+                title: 'تحذير',
+                text: "هل أنت متأكد من الحذف؟",
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/"+page+"/"+itemId+"/"+anotherId;}
+                });
+        }
     </script>
 
 </head>

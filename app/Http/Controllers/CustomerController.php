@@ -370,18 +370,18 @@ class CustomerController extends Controller
     public function show($customer_id)
     {
         $client = new Client();
-        $url = "https://back.skilltax.sa/api/v1";
+        $url = "https://back.skilltax.sa/api";
         $token = session("skillTax_token");
 
-        $data["customer"] = json_decode($client->get("$url/subscribers/$customer_id", [
+        $data["customer"] = json_decode($client->get("$url/v1/subscribers/$customer_id", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ])->getBody()->getContents(), true);
 
-        $data["casheirs"] = json_decode($client->get("$url/allCasheirs", [
+        $data["casheirs"] = json_decode($client->get("$url/v1/allCasheirs", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ])->getBody()->getContents(), true);
 
-        $employees = $client->get("$url/all_employees", [
+        $employees = $client->get("$url/v1/all_employees", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ]);
 
@@ -390,23 +390,51 @@ class CustomerController extends Controller
         $data["employees"] = json_decode($employees->getBody()->getContents());
 
         $membership_no = $data['customer']['membership_no'];
-        $data["packages"] = json_decode($client->get("$url/subscribers/packages/$membership_no", [
+        $data["packages"] = json_decode($client->get("$url/v1/subscribers/packages/$membership_no", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
             ])->getBody()->getContents());
 
-        $data["branches"] = json_decode($client->get("$url/subscriberBranches/".$membership_no, [
+        $data["branches"] = json_decode($client->get("$url/v1/subscriberBranches/".$membership_no, [
                 'headers' => ['Authorization' => 'Bearer ' . $token],
                 ])->getBody()->getContents());
 
 
-        $data["services"] = json_decode($client->get("$url/subscriber_service/$membership_no", [
+        $data["services"] = json_decode($client->get("$url/v1/subscriber_service/$membership_no", [
         'headers' => ['Authorization' => 'Bearer ' . $token],
         ])->getBody()->getContents(), true);
 
-
-
+        $data["devices"] = json_decode($client->get("$url/v2/subscriberDevices/$membership_no", [
+        'headers' => ['Authorization' => 'Bearer ' . $token],
+        ])->getBody()->getContents(), true);
 
         return view("customer", $data);
+    }
+
+    public function destroyCustomerDevice($device_id)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api";
+        $token = session("skillTax_token");
+
+        $client->get("$url/v2/deviceTerminals/$device_id/delete", [
+        'headers' => ['Authorization' => 'Bearer ' . $token],
+        ]);
+
+        return back()->with("Message", "تم حذف جهاز العميل");
+    }
+
+    public function editDevice(Request $request)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api";
+        $token = session("skillTax_token");
+
+        $client->post("$url/v2/deviceTerminals/".$request->id, [
+        'headers' => ['Authorization' => 'Bearer ' . $token],
+        'json' => ["device_id" => $request->device_id,"terminal_id" => $request->terminal_id]
+        ]);
+
+        return back()->with("Message", "تم تعديل بيانات الجهاز");
     }
 
      public function archieveBranch($branch_id,$customer_id)

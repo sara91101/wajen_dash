@@ -2,6 +2,7 @@
 use App\Http\Controllers\QuestionController;
 
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BlogDepartmentController;
@@ -40,5 +41,7 @@ Route::get('/v2/activityList', [ActivityController::class, 'activityList']);
 Route::get('/v2/blogDepartmentList', [BlogDepartmentController::class, 'blogDepartmentList']);
 Route::get('/v2/blogs/{dept_id}', [BlogDepartmentController::class, 'blogs']);
 Route::get('/v2/blog/{blog_id}', [BlogsController::class, 'show']);
+
+Route::get('/postman/{phone}', [LoginController::class, 'postman']);
 
 

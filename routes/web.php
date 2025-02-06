@@ -64,8 +64,14 @@ Route::get('login', [LoginController::class,'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class,'login']);
 Route::post('logout', [LoginController::class,'logout'])->name('logout');
 Route::get('/generate_pdf', [CustomerController::class, 'generate_pdf']);
+
+Route::group(['middleware' => 'auth'],function()
+{
+    Route::get('/sendOtpMessage', [LoginController::class, 'sendOtpMessage'])->name('sendOtpMessage');
+    Route::post('/checkVerificationCode', [LoginController::class, 'checkVerificationCode'])->name('checkVerificationCode');
+});
 // Auth::routes();
-Route::group(['middleware' => ['auth','Privilege']],function()
+Route::group(['middleware' => ['auth','Privilege','verified']],function()
 {
     //others
     Route::get('/changeMode', [HomeController::class, 'changeMode'])->name('changeMode');
@@ -182,6 +188,9 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::get('/destroyBranch/{branch_id}/{customer_id}', [CustomerController::class, 'archieveBranch'])->name('destroyBranch');
     Route::post('/sendInvoice', [CustomerController::class, 'sendInvoice'])->name('sendInvoice');
     Route::get('/sendSubscriptionDetails/{customer_id}', [CustomerController::class, 'sendSubscriptionDetails'])->name('sendSubscriptionDetails');
+    
+    Route::get('/destroyCustomerDevice/{device_id}', [CustomerController::class, 'destroyCustomerDevice'])->name('destroyCustomerDevice');
+    Route::post('/editDevice', [CustomerController::class, 'editDevice'])->name('editDevice');
 
     Route::get('/inActivateCustomer/{customer_id}', [CustomerController::class, 'inActivateCustomer'])->name('inActivateCustomer');
     Route::get('/customerActivate/{customer_id}', [CustomerController::class, 'customerActivate'])->name('customerActivate');
