@@ -428,13 +428,26 @@ class CustomerController extends Controller
         $client = new Client();
         $url = "https://back.skilltax.sa/api";
         $token = session("skillTax_token");
+        
+        if($request->remove_previous){$remove = true;}
+        else {$remove = false;}
 
-        $client->post("$url/v2/deviceTerminals/".$request->id, [
-        'headers' => ['Authorization' => 'Bearer ' . $token],
-        'json' => ["device_id" => $request->device_id,"terminal_id" => $request->terminal_id]
-        ]);
-
-        return back()->with("Message", "تم تعديل بيانات الجهاز");
+        try
+        {
+            $client->post("$url/v2/deviceTerminals/".$request->id, [
+            'headers' => ['Authorization' => 'Bearer ' . $token],
+            'json' => ["device_id" => $request->device_id,"terminal_id" => $request->terminal_id,"remove" =>$remove]
+            ]);
+            
+            return back()->with("Message", "تم تعديل بيانات الجهاز");
+        }
+        catch (\Exception $e)
+        {
+            //return $e->getMessage();
+            return back()->with("errorMessage","Terminal Given to another device");
+        }
+        //elseif($response->getStatusCode() == 400) {return back()->with("errorMessage","Terminal Given to another device");}
+       // else{return back()->with("errorMessage","Page Error");}
     }
 
      public function archieveBranch($branch_id,$customer_id)

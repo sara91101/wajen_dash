@@ -6,7 +6,7 @@
 
         if ($page <= 0) $page = 1;
 
-        $per_page = 15;
+        $per_page = 100;
 
         $i = (int)(!isset($_GET["i"]) ? ($page * $per_page) - $per_page + 1 : $_GET["i"]);
 
@@ -23,7 +23,7 @@
                 @csrf
                 <div class="modal-body text-right font-weight-bold" dir="rtl">
                     <div class="form-group text-right">
-                        <label for="exampleInputUsername1" class="text-primary-purple">رقم العضوية </label>
+                        <label for="exampleInputUsername1" class="text-primary-purple">رقم العضوية - رقم الهاتف </label>
                         <input type="text" name="membership_no" class="form-control text-right">
                     </div>
                 </div>

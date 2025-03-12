@@ -15,7 +15,7 @@ class LoyaltyCustomerController extends Controller
 
         $data["page"] = $page;
 
-        $json_data = ["pages" => 15];
+        $json_data = ["pages" => 100];
 
         if($request->membership_no)
         {
@@ -24,7 +24,7 @@ class LoyaltyCustomerController extends Controller
         // print_r($json_data);exit;
         $Customers = $client->get("$url/loyalty/allCustomers?page=$page",
         ['headers' => ['Authorization' => 'Bearer ' . $token],
-                'json'=> $json_data
+            'json'=> $json_data
         ]);
 
         // print_r(json_decode($Customers->getBody()->getContents(), true)["data"]);exit;

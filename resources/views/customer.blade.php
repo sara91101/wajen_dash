@@ -88,6 +88,15 @@
                     <input type="test" id="terminal_id" name="terminal_id" class="form-control text-right">
                 </div>
 
+                 <div class="form-group">
+                    <div class="form-check form-check-primary">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="remove_previous" value=1>
+                            حذفه من الجهاز السابق
+                        </label>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer justify-content-center" align="center">
                 <input type="submit" value="تعديل" class="btn  my-btn btn-lg btn-primary">
