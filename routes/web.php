@@ -378,4 +378,5 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
     Route::get('/paymentTransactionsExcel', [SkilltaxReports::class, 'paymentTransactionsExcel'])->name('paymentTransactionsExcel');
 
     Route::get('/loyaltyStatus/{membership_no}/{status}', [CustomerController::class, 'loyaltyStatus'])->name('loyaltyStatus');
+    Route::get('/screenPaymentStatus/{membership_no}/{status}', [CustomerController::class, 'screenPaymentStatus'])->name('screenPaymentStatus');
 });

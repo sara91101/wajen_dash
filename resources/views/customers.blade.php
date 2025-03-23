@@ -61,6 +61,90 @@
         document.getElementById("visit_membership_no").value = membershipNo;
         $("#visitDashboard").modal("show");
     }
+    
+    function changeLoyaltyStatus(customer_id,status)
+    {
+        var txt = "";
+        if(status == 'active')
+        {
+            txt = "هل أنت متأكد من تفعيل نقاط الولاء لهذا المشترك؟";
+        }
+        if(status == 'inactive')
+        {
+            txt = "هل أنت متأكد من إلغاء تفعيل نقاط الولاء لهذا المشترك؟";
+        }
+        swal({
+                title: 'عُذراً',
+                text: txt,
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/loyaltyStatus/"+customer_id+"/"+status;}
+                });
+    }
+    
+    function changeScreenPaymentStatus(customer_id,status)
+    {
+        var txt = "";
+        if(status == 'active')
+        {
+            txt = "هل أنت متأكد من تفعيل الدفع عبر الشاشه لهذا المشترك؟";
+        }
+        if(status == 'inactive')
+        {
+            txt = "هل أنت متأكد من إلغاء تفعيل الدفع عبر الشاشه لهذا المشترك؟";
+        }
+        swal({
+                title: 'عُذراً',
+                text: txt,
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/screenPaymentStatus/"+customer_id+"/"+status;}
+                });
+    }
 
 </script>
 
@@ -240,6 +324,7 @@
                 <th class="font-weight-bold"> إنتهاء الإشتراك</th>
                 <th class="font-weight-bold"> عدد الرسائل</th>
                 <th class="font-weight-bold"> تفعيل الولاء </th>
+                <th class="font-weight-bold"> الدفع عبر الشاشة </th>
                 <th class="font-weight-bold">الحالة</th>
                 <th class="font-weight-bold">العمليات</th>
             </thead>
@@ -277,6 +362,26 @@
                             طلب إلغاء تفعيل
                         </a>
                         @elseif( $c['loyalty_status'] == 'inactive')
+                        <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
+                            غير مفعل
+                        </span>
+                        @endif
+                    </td>
+
+                    <td>
+                        @if( $c['screen_payment_status'] == 'active')
+                        <span href="javascript:;" class="badge badge-success text-white">
+                            مفعل
+                        </span>
+                        @elseif( $c['screen_payment_status'] == 'pending')
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeScreenPaymentStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
+                            طلب تفعيل
+                        </a>
+                        @elseif( $c['screen_payment_status'] == 'inactivate pending')
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeScreenPaymentStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
+                            طلب إلغاء تفعيل
+                        </a>
+                        @elseif( $c['screen_payment_status'] == 'inactive')
                         <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
                             غير مفعل
                         </span>

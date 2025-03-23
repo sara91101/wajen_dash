@@ -1379,4 +1379,24 @@ class CustomerController extends Controller
         return back()->with("Message", $msg);
     }
 
+    public function screenPaymentStatus($membership_no,$status)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v2";
+        $token = session("skillTax_token");
+
+        if($status == 'active')
+        {
+            $msg = "تم تفعيل الدفع عبر الشاشة للمشترك $membership_no";
+            $client->post("$url/activateScreenPayment", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no]]);
+        }
+        else
+        {
+            $msg = "تم إلغاء تفعيل الدفع عبر الشاشة للمشترك $membership_no";
+            $client->post("$url/inactivateScreenPayment", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no]]);
+        }
+
+        return back()->with("Message", $msg);
+    }
+
 }
