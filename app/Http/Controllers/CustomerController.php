@@ -161,21 +161,24 @@ class CustomerController extends Controller
         $headers = [
             'Content-Type' => 'application/json',
         ];
-        try
-        {
+        //try
+        //{
             $postResponse = $client->post($url, [
             'headers' => $headers,
             'json' => $data,
             'http_errors' => false
             ]);
 
-         return json_decode($postResponse->getBody()->getContents());
-        }
-        catch (GuzzleException $e)
-        {
-            //return $e->getMessage();
-            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
-        }
+        $response = ["status"=> $postResponse->getStatusCode(),"data"=>$postResponse->getBody()->getContents()];
+        // echo "status code =".$postResponse->getStatusCode()."-".json_decode($postResponse->getBody()->getContents())->message;
+        //  return json_decode($postResponse->getBody()->getContents());
+        return $response;
+        //}
+        //catch (\Exception $e)
+        //{
+            // echo "error1 is:"; print_r($e);exit;
+           // return  $e->getMessage();
+        //}
 
     }
 
@@ -274,34 +277,43 @@ class CustomerController extends Controller
             "full_prices"=>$request->full_prices,
 
         ];
+        try{
+            $subscriber = $this->skilltax_customer_register($data);
+// echo "error is:"; print_r($subscriber);exit;
+            if ($subscriber['status'] != 201)
+            {
+                // echo "error is here:".print_r($subscriber);exit;
+                //return $e->getMessage();
+                return redirect("/customers")->with("errorMessage", $subscriber['data']->message);
+            }
 
-        $subscriber = $this->skilltax_customer_register($data);
+            $membership_no = $subscriber["data"]->membership_no;
 
-        if (!$subscriber)
-        {
-            //return $e->getMessage();
-            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+            $this->skilltax_customer_package($membership_no, $request->dash_id);
+
+            $fileName = $membership_no . ".json";
+            $contents = File::get(public_path('/jsons/' . $fileName));
+
+            // echo $contents;exit;
+            $client = new Client();
+
+            $token = session("skillTax_token");
+
+            $client->post("$url/permissionList", [
+                'headers' => ['Authorization' => 'Bearer ' . $token],
+                'json' => json_decode($contents)
+            ]);
+
+            $this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
+
+            return redirect("/customers")->with("Message", "تمت الاضافة");
         }
-        $membership_no = $subscriber->membership_no;
+        catch (\Exception $e)
+        {
+            // return  response()->json(["error"=>$e->getMessage(),"sub"=>json_encode($subscriber)]);
 
-        $this->skilltax_customer_package($membership_no, $request->dash_id);
-
-        $fileName = $membership_no . ".json";
-        $contents = File::get(public_path('/jsons/' . $fileName));
-
-        // echo $contents;exit;
-        $client = new Client();
-
-        $token = session("skillTax_token");
-
-        $client->post("$url/permissionList", [
-            'headers' => ['Authorization' => 'Bearer ' . $token],
-            'json' => json_decode($contents)
-        ]);
-
-        $this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
-
-        return redirect("/customers")->with("Message", "تمت الاضافة");
+            return redirect("/customers")->with("errorMessage", json_decode($subscriber['data'])->message);
+        }
     }
 
     public function sendSubscriptionDetails($subscriber_id)
@@ -1394,6 +1406,51 @@ class CustomerController extends Controller
         {
             $msg = "تم إلغاء تفعيل الدفع عبر الشاشة للمشترك $membership_no";
             $client->post("$url/inactivateScreenPayment", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no]]);
+        }
+
+        return back()->with("Message", $msg);
+    }
+
+
+    
+      
+    
+    public function zacatStatus($membership_no,$status)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v2";
+        $token = session("skillTax_token");
+
+        if($status == 1)
+        {
+            $msg = "تم تفعيل الزكاة للمشترك ";
+            $client->post("$url/fatooraSettings/changeStatus", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['id' => $membership_no , 'status' => $status]]);
+        }
+        else
+        {
+            $msg = "تم إلغاء تفعيل الزكاة للمشترك ";
+            $client->post("$url/fatooraSettings/changeStatus", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['id' => $membership_no , 'status' => $status]]);
+        }
+
+        return back()->with("Message", $msg);
+    }
+
+
+    public function insuranceStatus($membership_no,$status)
+    {
+        $client = new Client();
+        $url = "https://back.skilltax.sa/api/v1";
+        $token = session("skillTax_token");
+
+        if($status == 'active')
+        {
+            $msg = "تم تفعيل التأمينات للمشترك ";
+            $client->get("$url/insurances/changeStatus/$membership_no/$status", ['headers' => ['Authorization' => 'Bearer ' . $token]]);
+        }
+        else
+        {
+            $msg = "تم إلغاء تفعيل التأمينات للمشترك ";
+            $client->get("$url/insurances/changeStatus/$membership_no/$status", ['headers' => ['Authorization' => 'Bearer ' . $token]]);
         }
 
         return back()->with("Message", $msg);

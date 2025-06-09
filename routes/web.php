@@ -379,4 +379,7 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
 
     Route::get('/loyaltyStatus/{membership_no}/{status}', [CustomerController::class, 'loyaltyStatus'])->name('loyaltyStatus');
     Route::get('/screenPaymentStatus/{membership_no}/{status}', [CustomerController::class, 'screenPaymentStatus'])->name('screenPaymentStatus');
+    Route::get('/insuranceStatus/{membership_no}/{status}', [CustomerController::class, 'insuranceStatus'])->name('insuranceStatus');
+    Route::get('/zacatStatus/{membership_no}/{status}', [CustomerController::class, 'zacatStatus'])->name('zacatStatus');
+
 });

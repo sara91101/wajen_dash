@@ -131,8 +131,8 @@ class LoginController extends Controller
     {
         $user = Auth::user();
         $current_time = Carbon::now();
-        if(is_null($user->verification_code) || $request->resend == 1)
-        { 
+        //if(is_null($user->verification_code) || $request->resend == 1)
+        //{ 
             $text = "رمز التحقق هو";
 
             // Check if otp to loyalty app
@@ -176,8 +176,8 @@ class LoginController extends Controller
                 Log::error('Error in sending OTP '. $e->getMessage());
                 return response()->json(['message' => $e->getMessage()], 500);
             }
-        }
-        else{return view('verification_code');}
+       // }
+       // else{return view('verification_code');}
     }
 
     public function checkVerificationCode(Request $request)

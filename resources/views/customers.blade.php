@@ -145,6 +145,90 @@
                 window.location = "/screenPaymentStatus/"+customer_id+"/"+status;}
                 });
     }
+    
+    function changeZacatStatus(customer_id,status)
+    {
+        var txt = "";
+        if(status == 1)
+        {
+            txt = "هل أنت متأكد من تفعيل  الزكاة لهذا المشترك؟";
+        }
+        if(status == 0)
+        {
+            txt = "هل أنت متأكد من إلغاء تفعيل الزكاة لهذا المشترك؟";
+        }
+        swal({
+                title: 'عُذراً',
+                text: txt,
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/zacatStatus/"+customer_id+"/"+status;}
+                });
+    }
+    
+    function changeInsuranceStatus(customer_id,status)
+    {
+        var txt = "";
+        if(status == 'active')
+        {
+            txt = "هل أنت متأكد من تفعيل التأمينات لهذا المشترك؟";
+        }
+        if(status == 'inActive')
+        {
+            txt = "هل أنت متأكد من إلغاء تفعيل التأمينات لهذا المشترك؟";
+        }
+        swal({
+                title: 'عُذراً',
+                text: txt,
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+            actions: 'vertical-buttons',
+            cancelButton: 'top-margin'
+            },
+                buttons: {
+                cancel: {
+                    text: "لا",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-success",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "نعم",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+                }
+            }).then(okay => {
+            if (okay) {
+                window.location = "/insuranceStatus/"+customer_id+"/"+status;}
+                });
+    }
 
 </script>
 
@@ -325,6 +409,8 @@
                 <th class="font-weight-bold"> عدد الرسائل</th>
                 <th class="font-weight-bold"> تفعيل الولاء </th>
                 <th class="font-weight-bold"> الدفع عبر الشاشة </th>
+                <th class="font-weight-bold">الزكاة</th>
+                <th class="font-weight-bold">التأمين</th>
                 <th class="font-weight-bold">الحالة</th>
                 <th class="font-weight-bold">العمليات</th>
             </thead>
@@ -335,7 +421,7 @@
                 <tr>
                     <td >{!! $i !!}</td>
                     <td id="name{{ $c['id'] }}">
-                    {{ $c["first_name"] }} {{ $c["last_name"] }}
+                        {{ $c["first_name"] }} {{ $c["last_name"] }}
                     </td>
 
                      <td>{{ $c["business_name"] }}</td>
@@ -347,7 +433,7 @@
                     <td>{{ $c["package_ar"] }}</td>
                     <td>@if(!is_null($c['subscription_end_at'])){{date('Y-m-d', strtotime($c['subscription_end_at'])) }} @endif</td>
                     <td>{{ $c["available_messages"] }}</td>
-
+                    
                     <td>
                         @if( $c['loyalty_status'] == 'active')
                         <span href="javascript:;" class="badge badge-success text-white">
@@ -367,6 +453,8 @@
                         </span>
                         @endif
                     </td>
+                    
+                    
 
                     <td>
                         @if( $c['screen_payment_status'] == 'active')
@@ -387,7 +475,52 @@
                         </span>
                         @endif
                     </td>
+                    
+                    
+                    
 
+                    <td>
+                        @if( $c['is_phase_two_compliance'] == 1)
+                        <span href="javascript:;" class="badge badge-success text-white">
+                            مفعل
+                        </span>
+                        @elseif( $c['is_phase_two_compliance'] == 2)
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeZacatStatus({{ $c['id'] }},1)" style="cursor:hand;text-decoration:none">
+                            طلب تفعيل
+                        </a>
+                        @elseif( $c['is_phase_two_compliance'] == 3)
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeZacatStatus({{ $c['id'] }},0)"  style="cursor:hand;text-decoration:none">
+                            طلب إلغاء تفعيل
+                        </a>
+                        @elseif( $c['is_phase_two_compliance'] == 0)
+                        <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
+                            غير مفعل
+                        </span>
+                        @endif
+                    </td>
+
+                    
+                    <td>
+                        @if( $c['insurance'] == 'active')
+                        <span href="javascript:;" class="badge badge-success text-white">
+                            مفعل
+                        </span>
+                        @elseif( $c['insurance'] == 'requestActive')
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeInsuranceStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
+                            طلب تفعيل
+                        </a>
+                        @elseif( $c['insurance'] == 'requestInActive')
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeInsuranceStatus({{ $c['membership_no'] }},'inActive')"  style="cursor:hand;text-decoration:none">
+                            طلب إلغاء تفعيل
+                        </a>
+                        @elseif( $c['insurance'] == 'inActive')
+                        <span href="javascript:;" class="badge badge-danger text-white">
+                            غير مفعل
+                        </span>
+                        @endif
+                    </td>
+                    
+                    
                     <td>
                         @if( $c['status'])
                         <a href="javascript:;" class="badge badge-success text-white" onclick="inActivateCustomer({{ $c['id'] }})">
@@ -426,12 +559,13 @@
                                     <div role="separator" class="dropdown-divider"></div>
                                     <a class="dropdown-item text-right" onclick="destroyItem( 'destroyCustomer', {{ $c['id'] }})"  href="javascript:;" style="text-decoration: none">
                                         أرشفة
-                                    </a>
+                                    </a> 
                                     <div role="separator" class="dropdown-divider"></div>
 
                                     <a class="dropdown-item text-right"  href="/visit/{{ $c['membership_no'] }}" style="text-decoration: none">
                                         زيارة الحساب في سكيل تاكس
-                                    </a>
+                                    </a> 
+                                    
                                 </div>
                               </div>
                             </div>

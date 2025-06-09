@@ -161,4 +161,28 @@ class UnitController extends Controller
 
         return redirect("/units")->with("Message","تم الحذف");
     }
+
+
+
+    public function sync_qoyod_categories()
+    {
+        $user = Auth::user();
+
+        try {
+            DB::transaction(function () use ($user) {
+                $un_sync_categories = Category::whereNull('qoyod_id')->get();
+
+                foreach($un_sync_categories as $category)
+                {
+                    $this->qoyodService->store($user->qoyod_key,$category->id,$category->ar_name,$category->en_name);
+                }
+            });
+
+            return response()->json(['message'=>'categories synchronization succeed'],201);
+        }
+        catch(\Exception $e)
+        {
+            return response()->json(['message'=>'categories synchronization failed'],400);
+        }
+    }
 }
