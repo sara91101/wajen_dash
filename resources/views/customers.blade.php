@@ -40,7 +40,26 @@
                 window.location = "/inActivateCustomer/"+customer_id;}
                 });
     }
-
+    
+    function createBranch(customer_id)
+    {
+        document.getElementById("membershipNo").value = document.getElementById("membership_no"+customer_id).innerHTML;
+        $("#createBranch").modal("show");
+    }
+    
+    function computeFinalBrice()
+    {
+        let price = parseFloat(document.getElementById("price").value);
+        
+        let taxes = parseFloat(document.getElementById("taxes").value);
+        if(isNaN(taxes)) { taxes = 0;}
+         
+        let discount = parseFloat(document.getElementById("discount").value);
+        if(isNaN(discount)) { discount = 0;}
+        
+        document.getElementById("final_price").value = price + taxes - discount;
+    }
+    
     function notifyCustomer(customer_id)
     {
         document.getElementById("notify_customer_id").value = customer_id;
@@ -62,7 +81,7 @@
         $("#visitDashboard").modal("show");
     }
     
-    function changeLoyaltyStatus(customer_id,status)
+     function changeLoyaltyStatus(customer_id,status)
     {
         var txt = "";
         if(status == 'active')
@@ -103,6 +122,8 @@
                 window.location = "/loyaltyStatus/"+customer_id+"/"+status;}
                 });
     }
+    
+    
     
     function changeScreenPaymentStatus(customer_id,status)
     {
@@ -146,14 +167,16 @@
                 });
     }
     
+    
+    
     function changeZacatStatus(customer_id,status)
     {
         var txt = "";
-        if(status == 1)
+        if(status == true)
         {
             txt = "هل أنت متأكد من تفعيل  الزكاة لهذا المشترك؟";
         }
-        if(status == 0)
+        if(status == false)
         {
             txt = "هل أنت متأكد من إلغاء تفعيل الزكاة لهذا المشترك؟";
         }
@@ -188,16 +211,17 @@
                 });
     }
     
-    function changeInsuranceStatus(customer_id,status)
+        
+     function changeOnlineOrderStatus(customer_id,status)
     {
         var txt = "";
         if(status == 'active')
         {
-            txt = "هل أنت متأكد من تفعيل التأمينات لهذا المشترك؟";
+            txt = "هل أنت متأكد من تفعيل الطلبات الأونلاين لهذا المشترك؟";
         }
-        if(status == 'inActive')
+        if(status == 'inactive')
         {
-            txt = "هل أنت متأكد من إلغاء تفعيل التأمينات لهذا المشترك؟";
+            txt = "هل أنت متأكد من إلغاء تفعيل الطلبات الأونلاين لهذا المشترك؟";
         }
         swal({
                 title: 'عُذراً',
@@ -226,10 +250,9 @@
                 }
             }).then(okay => {
             if (okay) {
-                window.location = "/insuranceStatus/"+customer_id+"/"+status;}
+                window.location = "/onlineOrderStatus/"+customer_id+"/"+status;}
                 });
     }
-
 </script>
 
     @if (session()->has('visit_url'))
@@ -250,7 +273,7 @@
             <div class="modal-body text-right font-weight-bold" dir="rtl">
                 <div class="form-group">
                     <label for="exampleInputUsername1" class="text-primary-purple">
-                        الإسم - رقم الهاتف - البريد الإلكتروني - رقم العضوية
+                        الإسم - رقم الهاتف - البريد الإلكتروني - رقم العضوية 
                     </label>
                     <input type="text" name="customer" class="form-control text-right">
                 </div>
@@ -292,6 +315,94 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="createBranch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header align-self-center">
+            <h3 align="center" class="modal-title text-primary-purple"><b> إضافة فرع للمشترك </b></h3>
+        </div>
+        <form method="POST" action="/storeCustomerBranch">
+            @csrf
+            <div class="modal-body text-right font-weight-bold" dir="rtl">
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                         رقم العضوية 
+                    </label>
+                    <input type="text" name="membership_no" id="membershipNo" readonly class="form-control text-right">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                        <i class="text-danger">*</i>
+                          الفرع بالعربية 
+                    </label>
+                    <input type="text" name="ar_name" class="form-control text-right">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                         الفرع بالإنجليزية  
+                    </label>
+                    <input type="text" name="en_name" class="form-control text-right">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                        <i class="text-danger">*</i>
+                         رقم الهاتف   
+                    </label>
+                    <input type="number" name="phone_number" class="form-control text-right">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputUsername1" class="text-primary-purple">
+                        <i class="text-danger">*</i>
+                        المدينة</label>
+                    <select name="city_id" class="form-select text-right">
+                        <option value="">-</option>
+                        @foreach ($towns as $t)
+                            <option value="{{ $t['id'] }}">{{ $t['ar_name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            <i class="text-danger">*</i> 
+                            التكلفة  
+                        </label>
+                        <input type="text" id="price" name="price" class="form-control text-right" onBlur="computeFinalBrice()">
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            الضريبة  
+                        </label>
+                        <input type="text" id="taxes" name="taxes" class="form-control text-right" onBlur="computeFinalBrice()">
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            الخصم  
+                        </label>
+                        <input type="text" id="discount" name="discount" class="form-control text-right" onBlur="computeFinalBrice()">
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            الإجمالي  
+                        </label>
+                        <input type="text" id="final_price" name="final_price" readonly class="form-control text-right">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <input type="submit" value="إضافة" class="btn btn-lg btn-primary">
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+
 <div class="modal fade" id="notifyCustomer" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -330,39 +441,6 @@
     </div>
 </div>
 
-
-
-<div class="modal fade" id="visitDashboard" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header align-self-center">
-            <h3 align="center" class="modal-title text-primary-purple"><b>زيارة حساب سكيل تاكس</b></h3>
-        </div>
-        <form method="POST" action="/visit">
-            @csrf
-            <div class="modal-body text-right font-weight-bold" dir="rtl">
-                <div class="form-group">
-                    <label for="exampleInputUsername1" class="text-primary-purple">
-                        رقم العضوية
-                    </label>
-                    <input type="text" name="membership_no" id="visit_membership_no" class="form-control text-right" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputUsername1" class="text-primary-purple">
-                        كلمة المرور
-                    </label>
-                    <input type="password" name="password" class="form-control text-right">
-                </div>
-
-            </div>
-            <div class="modal-footer justify-content-center" align="center">
-                <input type="submit" value="إرسال" class="btn  my-btn btn-lg btn-primary">
-            </div>
-        </form>
-      </div>
-    </div>
-</div>
-
 <div class="card">
 
     <div class="card-header" dir="rtl">
@@ -382,7 +460,6 @@
                                     <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#search" data-whatever="@fat" href="javascript:;">بحث</a></li>
                                     <li><a class="dropdown-item" href="/addCustomer">إضافة</a></li>
                                     <li><a class="dropdown-item" href="/notifyMultiple">إشعار مجموعة المشتركين</a></li>
-                                    <li><a class="dropdown-item" href="/printCustomers">طباعة</a></li>
                                 </ul>
                             </div>
                         </label>
@@ -393,25 +470,27 @@
 
     <div class="card-body">
         @if(count($customers) > 0)
-        <div class="table-responsive-xl">
+        <div class="table-responsive">
             <table class="table text-center" dir="rtl">
             <thead>
                 <th class="font-weight-bold">#</th>
                 <th class="font-weight-bold"> الإسم</th>
                                 <th class="font-weight-bold"> إسم النشاط</th>
 
-                <th class="font-weight-bold"> رقم العضوية</th>
-                <th class="font-weight-bold"> المدينة</th>
+                <th class="font-weight-bold">رقم العضوية</th>
+                <th class="font-weight-bold">المدينة</th>
                 <!--th class="font-weight-bold"> المحافظة</th-->
-                <th class="font-weight-bold"> النشاط</th>
-                <th class="font-weight-bold"> الباقة</th>
-                <th class="font-weight-bold"> إنتهاء الإشتراك</th>
-                <th class="font-weight-bold"> عدد الرسائل</th>
-                <th class="font-weight-bold"> تفعيل الولاء </th>
+                <th class="font-weight-bold">النشاط</th>
+                <th class="font-weight-bold">الباقة</th>
+                <th class="font-weight-bold">إنتهاء الإشتراك</th>
+                <!--th class="font-weight-bold">الرسائل</th-->
+                <th class="font-weight-bold">الولاء </th>
+                    <th class="font-weight-bold">الطلبات الأونلاين </th>
                 <th class="font-weight-bold"> الدفع عبر الشاشة </th>
-                <th class="font-weight-bold">الزكاة</th>
-                <th class="font-weight-bold">التأمين</th>
-                <th class="font-weight-bold">الحالة</th>
+                                 <th class="font-weight-bold">الزكاة</th>
+
+                <th class="font-weight-bold">نوع الحساب</th>
+                <!--th class="font-weight-bold">الحالة</th-->
                 <th class="font-weight-bold">العمليات</th>
             </thead>
 
@@ -423,22 +502,22 @@
                     <td id="name{{ $c['id'] }}">
                         {{ $c["first_name"] }} {{ $c["last_name"] }}
                     </td>
-
+                    
                      <td>{{ $c["business_name"] }}</td>
-
-                    <td>{{ $c["membership_no"] }}</td>
+                     
+                    <td id="membership_no{{$c['id']}}">{{ $c["membership_no"] }}</td>
                     <td>{{ $c["city"]}}</td>
                     <td>{{ $c["ar_activity"] }}</td>
-
+                   
                     <td>{{ $c["package_ar"] }}</td>
                     <td>@if(!is_null($c['subscription_end_at'])){{date('Y-m-d', strtotime($c['subscription_end_at'])) }} @endif</td>
-                    <td>{{ $c["available_messages"] }}</td>
+                    <!--td>{{ $c["available_messages"] }}</td-->
                     
-                    <td>
+                     <td>
                         @if( $c['loyalty_status'] == 'active')
-                        <span href="javascript:;" class="badge badge-success text-white">
+                       <a href="javascript:;" class="badge badge-success text-white" onclick="changeLoyaltyStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
                             مفعل
-                        </span>
+                        </a>
                         @elseif( $c['loyalty_status'] == 'pending')
                         <a href="javascript:;" class="badge badge-warning text-white" onclick="changeLoyaltyStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
                             طلب تفعيل
@@ -448,19 +527,42 @@
                             طلب إلغاء تفعيل
                         </a>
                         @elseif( $c['loyalty_status'] == 'inactive')
-                        <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
+                        <span href="javascript:;" class="badge badge-danger text-white">
                             غير مفعل
                         </span>
                         @endif
                     </td>
                     
                     
+                    
+                     <td>
+                        @if( $c['online_order_status'] == 'active')
+                       <a href="javascript:;" class="badge badge-success text-white" onclick="changeOnlineOrderStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
+                            مفعل
+                        </a>
+                        @elseif( $c['online_order_status'] == 'pending')
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeOnlineOrderStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
+                            طلب تفعيل
+                        </a>
+                        @elseif( $c['online_order_status'] == 'inactivate pending')
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeOnlineOrderStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
+                            طلب إلغاء تفعيل
+                        </a>
+                        @elseif( $c['online_order_status'] == 'inactive')
+                        <span href="javascript:;" class="badge badge-danger text-white">
+                            غير مفعل
+                        </span>
+                        @endif
+                    </td>
+                    
+                    
+                    
 
                     <td>
                         @if( $c['screen_payment_status'] == 'active')
-                        <span href="javascript:;" class="badge badge-success text-white">
+                        <a href="javascript:;" class="badge badge-success text-white" onclick="changeScreenPaymentStatus({{ $c['membership_no'] }},'inactive')"  style="cursor:hand;text-decoration:none">
                             مفعل
-                        </span>
+                        </a>
                         @elseif( $c['screen_payment_status'] == 'pending')
                         <a href="javascript:;" class="badge badge-warning text-white" onclick="changeScreenPaymentStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
                             طلب تفعيل
@@ -476,52 +578,29 @@
                         @endif
                     </td>
                     
-                    
-                    
-
-                    <td>
+                     <td>
                         @if( $c['is_phase_two_compliance'] == 1)
-                        <span href="javascript:;" class="badge badge-success text-white">
+                        <a href="javascript:;" class="badge badge-success text-white" onclick="changeZacatStatus({{ $c['membership_no'] }},0)"  style="cursor:hand;text-decoration:none">
                             مفعل
-                        </span>
+                        </a>
                         @elseif( $c['is_phase_two_compliance'] == 2)
-                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeZacatStatus({{ $c['id'] }},1)" style="cursor:hand;text-decoration:none">
+                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeZacatStatus({{ $c['membership_no'] }},1)" style="cursor:hand;text-decoration:none">
                             طلب تفعيل
                         </a>
                         @elseif( $c['is_phase_two_compliance'] == 3)
-                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeZacatStatus({{ $c['id'] }},0)"  style="cursor:hand;text-decoration:none">
+                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeZacatStatus({{ $c['membership_no'] }},0)"  style="cursor:hand;text-decoration:none">
                             طلب إلغاء تفعيل
                         </a>
                         @elseif( $c['is_phase_two_compliance'] == 0)
-                        <span href="/customerActivate/{{ $c['id'] }}" class="badge badge-danger text-white">
-                            غير مفعل
-                        </span>
-                        @endif
-                    </td>
-
-                    
-                    <td>
-                        @if( $c['insurance'] == 'active')
-                        <span href="javascript:;" class="badge badge-success text-white">
-                            مفعل
-                        </span>
-                        @elseif( $c['insurance'] == 'requestActive')
-                        <a href="javascript:;" class="badge badge-warning text-white" onclick="changeInsuranceStatus({{ $c['membership_no'] }},'active')" style="cursor:hand;text-decoration:none">
-                            طلب تفعيل
-                        </a>
-                        @elseif( $c['insurance'] == 'requestInActive')
-                        <a href="javascript:;" class="badge badge-primary text-white" onclick="changeInsuranceStatus({{ $c['membership_no'] }},'inActive')"  style="cursor:hand;text-decoration:none">
-                            طلب إلغاء تفعيل
-                        </a>
-                        @elseif( $c['insurance'] == 'inActive')
-                        <span href="javascript:;" class="badge badge-danger text-white">
+                        <span href="javascript:;" class="badge badge-danger text-white" >
                             غير مفعل
                         </span>
                         @endif
                     </td>
                     
                     
-                    <td>
+                    <td>@if(!$c["is_testing_account"]) فعلي @else تجريبي @endif</td>
+                    <!--td>
                         @if( $c['status'])
                         <a href="javascript:;" class="badge badge-success text-white" onclick="inActivateCustomer({{ $c['id'] }})">
                             <i class="mdi mdi-check-circle"></i>
@@ -531,10 +610,10 @@
                             <i class="mdi mdi-close-circle"></i>
                         </a>
                         @endif
-                    </td>
+                    </td-->
 
                     <td>
-                        {{--  @if($c["id"] != 1)  --}}
+                       
                             <div class="input-group text-right" style="text-align: right;">
                               <div class="input-group-prepend">
                                 <button class="badge badge-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -548,10 +627,17 @@
                                     <a class="dropdown-item text-right" onclick="notifyCustomer({{ $c['id'] }})"  href="javascript:;" style="text-decoration: none">
                                         إرسال إشعار
                                     </a>
-                                    <div role="separator" class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-right" href="/emailCustomer/{{ $c['id'] }}" style="text-decoration: none">
-                                        البريد الإلكتروني
+                                    @if(!is_null($c['email']))
+                                        <div role="separator" class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-right" href="/emailCustomer/{{ $c['id'] }}" style="text-decoration: none">
+                                            البريد الإلكتروني
+                                        </a>
+                                    @endif
+                                     <div role="separator" class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-right" onclick="createBranch({{ $c['id'] }})"  href="javascript:;" style="text-decoration: none">
+                                        إضافة فرع
                                     </a>
+                                    
                                     <div role="separator" class="dropdown-divider"></div>
                                     <a class="dropdown-item text-right" href="/editCustomer/{{ $c['id'] }}" style="text-decoration: none">
                                         تعديل
@@ -559,18 +645,29 @@
                                     <div role="separator" class="dropdown-divider"></div>
                                     <a class="dropdown-item text-right" onclick="destroyItem( 'destroyCustomer', {{ $c['id'] }})"  href="javascript:;" style="text-decoration: none">
                                         أرشفة
-                                    </a> 
+                                    </a>
                                     <div role="separator" class="dropdown-divider"></div>
 
                                     <a class="dropdown-item text-right"  href="/visit/{{ $c['membership_no'] }}" style="text-decoration: none">
                                         زيارة الحساب في سكيل تاكس
-                                    </a> 
+                                    </a>
                                     
+                                    <div role="separator" class="dropdown-divider"></div>
+                                    
+                                    @if( $c['status'])
+                                    <a class="dropdown-item text-right" href="javascript:;" onclick="inActivateCustomer({{ $c['id'] }})">
+                                        إلغاء التفعيل
+                                    </a>
+                                    @else
+                                    <a class="dropdown-item text-right" href="/customerActivate/{{ $c['id'] }}" >
+                                        تفعيل
+                                    </a>
+                                    @endif
                                 </div>
                               </div>
                             </div>
-                        {{--  @endif  --}}
-                        {{--  <label class="badge badge-primary text-white text-right">
+                       
+                          {{--<label class="badge badge-primary text-white text-right">
                             <div class="dropdown dropstart">
                                 <a href="javascript:;" class="link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="mdi mdi-dots-horizontal  text-white"></i>
@@ -582,7 +679,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item text-right" href="/CustomerMessages/{{ $c['id'] }}/{{ $c['membership_no'] }}" style="text-decoration: none">
+                                        <a class="dropdown-item text-right" href="/emailCustomer/{{ $c['id'] }}" style="text-decoration: none">
                                             البريد الإلكتروني
                                         </a>
                                     </li>

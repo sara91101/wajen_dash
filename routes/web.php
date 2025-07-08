@@ -351,7 +351,11 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
 
     //Loyalty Customers
     Route::get('/loyaltyCustomers/{page}', [LoyaltyCustomerController::class, 'index'])->name("loyaltyCustomers");
+    Route::get('/notifyMultipleLoyalty', [LoyaltyCustomerController::class, 'notifyMultipleLoyalty'])->name("notifyMultipleLoyalty");
+    Route::get('/messageMultipleLoyalty', [LoyaltyCustomerController::class, 'messageMultipleLoyalty'])->name("messageMultipleLoyalty");
     Route::post('/loyaltyCustomers/{page}', [LoyaltyCustomerController::class, 'index'])->name("loyaltyCustomers");
+    Route::post('/sendLoyaltyNotification', [LoyaltyCustomerController::class, 'sendLoyaltyNotification'])->name("sendLoyaltyNotification");
+    Route::post('/sendLoyaltyMessage', [LoyaltyCustomerController::class, 'sendLoyaltyMessage'])->name("sendLoyaltyMessage");
 
     Route::get('/visit/{membership_no}', [CustomerController::class, 'visit'])->name("visit");
 

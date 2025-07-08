@@ -19,7 +19,7 @@
             <div class="modal-header align-self-center">
                 <h3 align="center" class="modal-title text-primary-purple"><b>البحث عن عميل</b></h3>
             </div>
-            <form method="POST" action="/loyaltyCustomers/{{ $page }}" enctype="multipart/form-data">
+            <form method="GET" action="/loyaltyCustomers/{{ $page }}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body text-right font-weight-bold" dir="rtl">
                     <div class="form-group text-right">
@@ -45,9 +45,18 @@
                             <span class="breadcrumb-item active" aria-current="page"> /    العملاء </span>
                         </li>
 
-                        <a href="javascript:;" class="badge badge-primary text-white" data-bs-toggle="modal" data-bs-target="#add" data-whatever="@fat">
-                            <i class="mdi mdi-magnify"></i>
-                        </a>
+                        <label class="badge badge-primary text-white">
+                            <div class="dropdown dropstart">
+                                <a href="#" class="link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical  text-white"></i>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#add" data-whatever="@fat" href="javascript:;">بحث</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('notifyMultipleLoyalty',array_merge(request()->query(), ['page' => $page])) }}">إشعار العملاء</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('messageMultipleLoyalty',array_merge(request()->query(), ['page' => $page])) }}">رسائل نصيه</a></li>
+                                </ul>
+                            </div>
+                        </label>
                         </ol>
 
                     </div>
@@ -72,8 +81,8 @@
                         @foreach ($loyaltyCustomers as $customer)
                             <tr>
                                 <td>{{ $i }}</td>
-                                <td>{{ $customer['membership_no'] }}</td>
                                 <td>{{ $customer['full_name'] }}</td>
+                                <td>{{ $customer['membership_no'] }}</td>
                                 <td>{{ $customer['phone_no'] }}</td>
                                 <td>{{ $customer['business_name'] }}</td>
                                 <td>{{ $customer['address'] }}</td>
