@@ -192,7 +192,7 @@ class LoginController extends Controller
         }
         else
         {
-            return back()->with('verification_message','رمز التحقق غير صحيح');
+            return view('verification_code')->with('verification_message','رمز التحقق غير صحيح');
         }
     }
 }

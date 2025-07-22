@@ -1466,7 +1466,7 @@ class CustomerController extends Controller
         else
         {
             $msg = "تم إلغاء تفعيل الزكاة للمشترك ";
-            $client->get("$url/fatooraSettings/changeStatus", ['headers' => ['Authorization' => 'Bearer ' . $token],'json'=> ['membership_no' => $membership_no , 'status' => false]]);
+            $client->get("$url/fatooraSettings/inActivate/$membership_no", ['headers' => ['Authorization' => 'Bearer ' . $token]]);
         }
 
         return back()->with("Message", $msg);

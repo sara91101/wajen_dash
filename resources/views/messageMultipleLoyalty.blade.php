@@ -69,7 +69,7 @@
                                 <td>{{ $customer['points_balance'] }}</td>
 
                                 <td>
-                                    <input type="checkbox" name="loyalties[]" value="{{ $customer['phone_no'] }}" class="subs">
+                                    <input type="checkbox" name="phones[]" value="{{ $customer['phone_no'] }}" class="subs">
                                 </td>
                             </tr>
                             @php $i++; @endphp

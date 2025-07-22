@@ -160,8 +160,8 @@
           <div class="row w-100 mx-0">
             <div class="col-lg-4 mx-auto">
 
-                @if(session('verification_message'))
-                    <div class="alert alert-danger text-right" align="right">{{ session::get('verification_message') }}</div>
+                @if(isset($verification_message))
+                    <div class="alert alert-danger text-right" align="right">{{ $verification_message }}</div>
                 @endif
               <div class="auth-form-transparent text-start py-5 px-4 px-sm-5">
                         <form class="pt-3" action="/checkVerificationCode" method="post">

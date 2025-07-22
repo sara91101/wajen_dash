@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class LoyaltyCustomerController extends Controller
 {
@@ -141,22 +142,31 @@ class LoyaltyCustomerController extends Controller
         $message = $request->message;
 
         $phones = $request->phones;
+
+        //dd($phones);
+
+        $responseStatusCode = 200;
         
         try {
                 $apiUrl = 'https://www.msegat.com/gw/sendsms.php';
-                $data = [
-                    'userName' => 'Wajen5188',
-                    'apiKey' => env('OTP_MESSAGE_KEY'),
-                    'numbers' => $phones,
-                    'userSender' => 'Skilltax',
-                    'msg' => $message,
-                ];
 
-                // Make request to msegat api
-                $response = Http::post($apiUrl, $data);
-                $responseData = $response->json();
-                // return $responseData;
-                $responseStatusCode = $response->status(); // Get the status code of the response
+                foreach($phones as $phone){
+                    $data = [
+                        'userName' => 'Wajen5188',
+                        'apiKey' => env('OTP_MESSAGE_KEY'),
+                        'numbers' => $phone,
+                        'userSender' => 'WAJEN',
+                        'msg' => $message,
+                    ];
+
+                    // Make request to msegat api
+                    $response = Http::post($apiUrl, $data);
+
+                    
+                    $responseData = $response->json();
+                    // return $responseData;
+                    $responseStatusCode = $response->status(); // Get the status code of the response
+                }
 
                 // $responseStatusCode = 200;
 
