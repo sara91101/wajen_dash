@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
 class LoginController extends Controller
 {
     /*
@@ -62,6 +64,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        Session(['mode' => "light"]);
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return redirect('/sendOtpMessage');
         }  else {

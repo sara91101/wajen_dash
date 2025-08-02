@@ -104,19 +104,5 @@ class HomeController extends Controller
         return redirect("/info");
     }
 
-    public function changeMode()
-    {
-        $mode = Session("mode");
-        if($mode == "dark")
-        {
-            Session(['mode' => "light"]);
-        }
-        else
-        {
-            Session(['mode' => "dark"]);
-        }
-
-        return back();
-    }
 
 }

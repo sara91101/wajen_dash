@@ -9,13 +9,14 @@
 </head>
 <body>
     <div class="container" dir="rtl">
-        <table>
+         <table>
             الإسم: {!! $details["name"] !!} <br><br>
             رقم الهاتف: {!! $details["phone"] !!} <br><br>
             البريد الإلكتروني: {!! $details["email"] !!} <br><br>
             المدينة : {!! $details["town"] !!} <br><br>
-            نوع النشاط: {!! $details["activity_type"] !!} <br><br>
-            الرسالة : {!! $details["activity_name"] !!} <br><br>
+            إسم النشاط التجاري: {!! $details["activity_name"] !!} <br><br>
+            الوقت المفضل للإتصال : {!! $details["contact_time"] !!} <br><br>
+            الرسالة : {!! $details["message"] !!} <br><br>
         </table>
     </div>
 </body>

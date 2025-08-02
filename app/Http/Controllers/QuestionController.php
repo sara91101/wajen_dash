@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuestionRequest;
 use App\Mail\QuestionMail;
 
 use App\Models\Answer;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException as ExceptionClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -44,7 +46,7 @@ class QuestionController extends Controller
                 ['path' => request()->url(), 'query' => request()->query()]
            );
         }
-        catch (ClientException $e) {
+        catch (ExceptionClientException $e) {
 
             return $e->getMessage();
         }
@@ -105,12 +107,25 @@ class QuestionController extends Controller
         ->where("question_id",$question_id)->get();
         return view("/detailsQuestion",$data);
 
-    }
-
-    public function sendToEmail(Request $request)
+    }  
+    
+    public function sendToEmail(QuestionRequest $request)
     {
-        $details = ['name' => $request->name, 'email' => $request->email, 'phone' => $request->phone,
-        'activity_name' => $request->activity_name, 'activity_type' => $request->activity_type, 'town' => $request->town];
-        Mail::to("support@skilltax.sa")->send(new QuestionMail($details));
+        $details = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'message' => $request->message,
+            'activity_name' => $request->activity_name,
+            'contact_time' => $request->contact_time,
+            'town' => $request->town,
+        ];
+    
+        try {
+            Mail::to("support@skilltax.sa")->send(new QuestionMail($details));
+            return response()->json(['message' => 'Request Sent Successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error Occurred', 'error' => $e->getMessage()], 400);
+        }
     }
 }

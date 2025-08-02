@@ -59,42 +59,6 @@
             direction: rtl !important;
         }
     </style>
-    <script src="/js/sweetAlert.js"></script>
-        <script>
-            function destroyItem(page,itemId)
-            {
-                swal({
-                    title: 'تحذير',
-                    text: "هل أنت متأكد من الحذف؟",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    customClass: {
-                actions: 'vertical-buttons',
-                cancelButton: 'top-margin'
-                },
-                    buttons: {
-                    cancel: {
-                        text: "لا",
-                        value: null,
-                        visible: true,
-                        className: "btn btn-success",
-                        closeModal: true,
-                    },
-                    confirm: {
-                        text: "نعم",
-                        value: true,
-                        visible: true,
-                        className: "btn btn-danger",
-                        closeModal: true
-                    }
-                    }
-                }).then(okay => {
-                if (okay) {
-                    window.location = "/"+page+"/"+itemId;}
-                    });
-            }
-        </script>
-
     </head>
 
     <body>
@@ -133,11 +97,11 @@
                             <i class="typcn typcn-calendar"></i>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link d-flex justify-content-center align-items-center" href="/changeMode">
                             <i class="mdi mdi-theme-light-dark"></i>
                             </a>
-                        </li>
+                        </li> -->
                         </ul>
                         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
                         <span class="typcn typcn-th-menu"></span>
@@ -168,7 +132,7 @@
                             @csrf
                             <div class="form-group text-right" align="right">
                                 <label class="text-right">رمز التحقق</label>
-                                <input type="number" class="form-control form-control-lg" name="code">
+                                <input type="text" name="code" inputmode="numeric" class="form-control form-control-lg" pattern="\d{4}" maxlength="4" placeholder="4 digits" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                             <div class="mt-3 d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-lg fw-medium auth-form-btn">إرسال</button>

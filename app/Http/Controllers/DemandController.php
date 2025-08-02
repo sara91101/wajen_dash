@@ -18,7 +18,7 @@ class DemandController extends Controller
      */
     public function index()
     {
-        $url = "https://backend.skilltax.sa/api/v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $client = new Client();
         $token = session("skillTax_token");
         try {
@@ -49,7 +49,7 @@ class DemandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Demand $demand)
+    public function show( $demand)
     {
         //
     }
@@ -57,7 +57,7 @@ class DemandController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Demand $demand)
+    public function edit( $demand)
     {
         //
     }
@@ -65,7 +65,7 @@ class DemandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Demand $demand)
+    public function update(Request $request,  $demand)
     {
         //
     }
@@ -76,7 +76,7 @@ class DemandController extends Controller
     public function destroy( $demand)
     {
         $client = new Client();
-        $url = "https://backend.skilltax.sa/api/v1/freeTrials";
+        $url = "https://back.skilltax.sa/api/v1/freeTrials";
         $token = session("skillTax_token");
 
         $client->delete("$url/$demand", ['headers' => ['Authorization' => 'Bearer ' . $token]]);
@@ -87,7 +87,7 @@ class DemandController extends Controller
     public function registerDemand($demand)
     {
         $client = new Client();
-        $url = "https://backend.skilltax.sa/api/v1";
+        $url = "https://back.skilltax.sa/api/v1";
         $token = session("skillTax_token");
 
         $data["customer"] = json_decode($client->get("$url/freeTrials/$demand", [

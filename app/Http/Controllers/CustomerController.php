@@ -25,7 +25,8 @@ use GuzzleHttpClientException\ClientException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Session;
 use Carbon\Carbon;
-
+use GuzzleHttp\Exception\ClientException as ExceptionClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Prgayman\Zatca\Facades\Zatca;
 
 class CustomerController extends Controller
@@ -172,7 +173,7 @@ class CustomerController extends Controller
 
          return json_decode($postResponse->getBody()->getContents());
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
