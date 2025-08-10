@@ -275,6 +275,16 @@
                       </h6>
                     </div>
                   </a>
+                  <a class="dropdown-item preview-item" href="casheirServices">
+                    <div class="preview-thumbnail">
+                        <i class="mdi mdi-home-map-marker"></i>
+                    </div>
+                    <div class="preview-item-content flex-grow" align="right">
+                      <h6 class="preview-subject font-weight-normal">
+                        خدمات الكاشير
+                      </h6>
+                    </div>
+                  </a>
                   <a class="dropdown-item preview-item" href="/systems">
                     <div class="preview-thumbnail">
                         <i class="mdi mdi-home-modern"></i>
@@ -528,6 +538,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/paymentTransactions">تقرير المدفوعات</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/skilltaxLoginReport">تقرير تسجيل الدخول</a>
+                            </li>
                         </ul>
                         </div>
                         <div class="col-group col-md-6">
@@ -538,6 +551,7 @@
                             <!--li class="nav-item"><a class="nav-link" href="/customer_governorates_report">إحصائية المشتركين بالمحافظات</a></li-->
                             <li class="nav-item"><a class="nav-link" href="/customer_packages_report">إحصائية المشتركين بالباقات</a></li>
                             <li class="nav-item"><a class="nav-link" href="/customer_substraction_report"> إحصائية المشتركين بالإشتراك</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/free_trial_repot">تقرير الباقه المجانيه</a></li>
                         </ul>
                         </div>
                     </div>

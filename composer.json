@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "ab-alselwi/laravel-arabic-html": "^0.2.0",
+        "arcanedev/log-viewer": "^10.1",
         "barryvdh/laravel-dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^10.10",

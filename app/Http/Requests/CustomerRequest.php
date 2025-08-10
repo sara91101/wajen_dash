@@ -35,7 +35,7 @@ class CustomerRequest extends FormRequest
             'amount' => "required|numeric",
             'taxes' => "nullable|numeric",
             'discounts' => "nullable|numeric",
-            'activity_id' => "required|numeric|exists:activities,id",
+            'activity_id' => "required|numeric",
             'governorate_id' => "nullable|numeric",
             'package_id' => "required|numeric"
         ];

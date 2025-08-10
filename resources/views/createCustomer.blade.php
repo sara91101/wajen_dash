@@ -283,6 +283,9 @@
     let counter = 1;
     $(document).ready(function()
     {
+        $('#package_time').on('change', function() {
+            package_time(this);
+        });
         //let city_id = {!! $towns[0]['id'] !!};
         //showGovernate(city_id);
 
@@ -415,7 +418,44 @@
             return true;
         })
 
+        
+
     });
+
+    // This is now in the global scope
+function package_time(select) {
+    let startDateInput = document.getElementById('start_date');
+    let endDateInput   = document.getElementById('end_date');
+
+    let startDateValue = startDateInput.value;
+    let packageValue   = select.value;
+
+    if (!startDateValue || !packageValue) {
+        endDateInput.value = '';
+        return;
+    }
+
+    let date = new Date(startDateValue);
+
+    switch (packageValue) {
+        case 'day': date.setDate(date.getDate() + 1); break;
+        case '14day': date.setDate(date.getDate() + 14); break;
+        case 'month': date.setMonth(date.getMonth() + 1); break;
+        case '3month': date.setMonth(date.getMonth() + 3); break;
+        case '6month': date.setMonth(date.getMonth() + 6); break;
+        case 'year': date.setFullYear(date.getFullYear() + 1); break;
+        default:
+            endDateInput.value = '';
+            return;
+    }
+
+    let yyyy = date.getFullYear();
+    let mm   = String(date.getMonth() + 1).padStart(2, '0');
+    let dd   = String(date.getDate()).padStart(2, '0');
+
+    endDateInput.value = `${yyyy}-${mm}-${dd}`;
+}
+
 
     function addPackagePrice(checkbox,price)
     {
@@ -723,7 +763,7 @@
                         </select>
                     </div>  --}}
 
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-4">
                         <label><i class="mdi mdi-star text-danger"></i>الباقة</label>
                         <select name="package_id" id="package_id" class="form-select text-right" required onchange="price(this)">
                             <option value="">-</option>
@@ -735,7 +775,12 @@
                         <input type="hidden" name="dash_id" id="dash_id" @if(isset($customer)) value=12 @endif>
                     </div>
 
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-4">
+                        <label><i class="mdi mdi-star text-danger"></i>رسوم تطبيق تود (%)</label>
+                        <input type="nmber" step="any" name="application_fees" value=0>
+                    </div>
+
+                    <div class="form-group col-lg-4">
                         <label><i class="mdi mdi-star text-danger"></i>
                              كلمة المرور (6 أرقام)
                             </label>
@@ -743,12 +788,27 @@
                         <label id="password_error" class="badge badge-danger text-white"></label>
                     </div>
 
-                    <div class="form-group col-lg-6">
+                    @php $today = date('Y-m-d'); @endphp
+
+                    <div class="form-group col-lg-4">
                         <label><i class="mdi mdi-star text-danger"></i>تاريخ بداية الإشتراك </label>
-                        <input type="date" name="start_date" id="start_date" class="form-control text-right" @if(isset($customer)) value={{ $today }} @endif required>
+                        <input type="date" name="start_date" id="start_date" class="form-control text-right" value={{ $today }} required>
                     </div>
 
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-4">
+                        <label>الفتره الزمنيه </label>
+                        <select name="package_time" id="package_time" class="form-select text-right" >
+                            <option value="">-</option>
+                            <option value="day">يوم</option>
+                            <option value="14day">14 يوم</option>
+                            <option value="month">شهر</option>
+                            <option value="3month">3 أشهر</option>
+                            <option value="6month">6 أشهر</option>
+                            <option value="year">عام</option>
+                        </select>                    
+                    </div>
+
+                    <div class="form-group col-lg-4">
                         <label><i class="mdi mdi-star text-danger"></i> تاريخ نهاية الإشتراك </label>
                         <input type="date" name="end_date" id="end_date" class="form-control text-right" @if(isset($customer)) value={{ $afterMonth }} @endif required>
                     </div>
@@ -835,5 +895,8 @@
     </div>
     </div>
 </div>
+
+<!-- Your form fields here -->
+
 
 @endsection

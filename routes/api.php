@@ -7,7 +7,9 @@ use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BlogDepartmentController;
 use App\Http\Controllers\BlogsController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistributorController;
+use App\Http\Controllers\FreeTrialOtpController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InquiryController;
 use App\Models\BlogDepartment;
@@ -29,7 +31,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/apiFaqs', [FaqController::class, 'apiFaqs'])->name('apiFaqs');
 Route::get('/privacies', [PrivacyFirstController::class, 'index'])->name('privacies');
 Route::get('/apiActivities', [ActivityController::class, 'apiActivities'])->name('apiActivities');
-//Route::post('/subscribers/register', [CustomerController::class, 'subscribersRegister'])->name('subscribersRegister');
+
+Route::post('/freeTrialOTP', [FreeTrialOtpController::class, 'sendOTP'])->name('freeTrialOTP');
+Route::post('/freeTrialVerifyOTP', [FreeTrialOtpController::class, 'checkVerificationCode'])->name('freeTrialVerifyOTP');
+Route::post('/freeTrial', [CustomerController::class, 'subscribersRegister'])->name('subscribersRegister');
 
 Route::post('/sendToEmail', [QuestionController::class, 'sendToEmail'])->name('sendToEmail');
 

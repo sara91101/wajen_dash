@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TownRequest;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException as ExceptionClientException;
 use Illuminate\Support\Facades\Http;
-use GuzzleHttpClientException\ClientException;
 use Illuminate\Pagination\LengthAwarePaginator;
 class TownController extends Controller
 {
@@ -38,7 +38,7 @@ class TownController extends Controller
                 ['path' => request()->url(), 'query' => request()->query()]
            );
         }
-        catch (ClientException $e) {
+        catch (ExceptionClientException $e) {
 
             return $e->getMessage();
         }

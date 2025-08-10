@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\FreeTrialRequest;
+use App\Mail\FreeTrialMail;
 use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\CustomerService;
 use App\Models\CustomerUser;
+use App\Models\FreeTrialOtp;
 use App\Models\Info;
 use App\Models\Major;
 use App\Models\Message;
@@ -27,6 +30,7 @@ use Session;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException as ExceptionClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Mpdf\Http\Exception\ClientException as HttpExceptionClientException;
 use Prgayman\Zatca\Facades\Zatca;
 
 class CustomerController extends Controller
@@ -104,7 +108,7 @@ class CustomerController extends Controller
             $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
         
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -175,8 +179,8 @@ class CustomerController extends Controller
         }
         catch (ExceptionClientException $e)
         {
-            //return $e->getMessage();
-            return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
+            return $e->getMessage();
+            //return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
         }
 
     }
@@ -275,6 +279,7 @@ class CustomerController extends Controller
             "item_discounts"=>$request->item_discounts,
             "discount_types"=>$request->discount_type_value,
             "full_prices"=>$request->full_prices,
+            "application_fees"=>$request->application_fees
 
         ];
 
@@ -572,6 +577,7 @@ class CustomerController extends Controller
             "services"=>$request->service,
             "quantities"=>$request->quantity,
             "prices"=>$request->price,
+            "application_fees"=>$request->application_fees,
 
             "user_id" => Auth::user()->id,
             "renew"=> $request->renew,
@@ -627,7 +633,7 @@ class CustomerController extends Controller
         $token = session("skillTax_token");
 
         try{$client->post("$url/subscribers/archive/$customer_id", ['headers' => ['Authorization' => 'Bearer ' . $token]]);}
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -856,7 +862,7 @@ class CustomerController extends Controller
            
         
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/home")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -1038,7 +1044,7 @@ class CustomerController extends Controller
            $data["towns"] = json_decode(Http::get("$url/cities"), true);
         $data["governorates"] = json_decode(Http::get("$url/governorates"), true);
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             return $e->getMessage();
         }
@@ -1086,90 +1092,135 @@ class CustomerController extends Controller
 
         return redirect("/customers")->with("Message", "تم تفعيل المشترك");
     }
-    
-    public function subscribersRegister(CustomerRequest $request)
-     {
+
+    public function subscribersRegister(FreeTrialRequest $request)
+    {
+        $start_date = now()->format('Y-m-d');
+        $end_date = now()->addDays(14)->format('Y-m-d');
+
         $url = "https://back.skilltax.sa/api/v1";
         $data = [
             "first_name" => $request->input('first_name'),
             "last_name" => $request->input('second_name'),
-            "email" => $request->input('email'),
-            "phone_no" => $request->input('phone'),
             "business_name" => $request->input('bussiness_name'),
             "tax_number" => $request->input('tax_no'),
-            "activity_type" => $request->input('activity_id') - 1,
-            "city_id" => $request->input('town_id'),
-            "governorate_id" => $request->input('governorate_id'),
-            "start_date" => $request->input('start_date'),
-            "end_date" => $request->input('end_date'),
+            "email" => $request->input('email'),
+            "phone_no" => $request->input('phone'),
+            "activity_type" => $request->input('activity_type'),
+            "city_id" => $request->input('town'),
+            "start_date" => $start_date,
+            "end_date" => $end_date,
             "password" => $request->input('password'),
+            "registeration_no" => $request->input('registeration_no'),
             "paid" => 1,
             "password_confirmation" => $request->input('password'),
 
-            "package_id" => $request->package_id,
-            "final_amount" => $request->amount,
-            "taxes" => $request->taxes,
-            "discounts" => $request->discounts,
-            "taxes_type" => $request->taxes_type,
-            "discounts_type" => $request->discounts_type,
-            "user_id" => $request->user_id,
+            "package_id" => 9,
+            "final_amount" => 0,
+            "taxes" => 0,
+            "discounts" => 0,
+            "taxes_type" => 0,
+            "discounts_type" => 0,
+            "user_id" => 1,
+            "free_trial" => "yes",
+            "is_testing_account" => false,
+
+            'branches_number' =>  $request->branches_number,
+            'use_casheir' => $request->use_casheir, 
+            'change_reason' =>  $request->change_reason, 
+            'service' =>  $request->service, 
+            'contact_time' =>  $request->contact_time
         ];
 
-        $subscriber = $this->skilltax_customer_register($data);
-
-        $membership_no = $subscriber->membership_no;
-
-        $this->skilltax_customer_package($membership_no, $request->dash_id);
-
-        $fileName = $membership_no . ".json";
-        $contents = File::get(public_path('/jsons/' . $fileName));
-
-        // echo $contents;exit;
         $client = new Client();
 
-        $login = $client->post("$url/subscribers/login", [
-            'headers' => ['Content-Type' => 'application/json'],
-            'json' => ['membership_no' => 700000, 'password' => 123456]
-        ]);
+        try{
 
-        $token = json_decode($login->getBody()->getContents())->token;
-        Session(['skillTax_token' => $token]);
+            $login = $client->post("https://back.skilltax.sa/api/v1/subscribers/login", [
+                'headers' => ['Content-Type' => 'application/json'],
+                'json' => ['membership_no' => 701292, 'password' => "888888"]
+            ]);
 
-        $client->post("$url/permissionList", [
-            'headers' => ['Authorization' => 'Bearer ' . $token],
-            'json' => json_decode($contents)
-        ]);
+            $token = json_decode($login->getBody()->getContents())->token;
+            Session(['skillTax_token' => $token]);
 
-        //$this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
+            $headers = [
+                'Content-Type' => 'application/json',
+            ];
 
-        //$attach = $membership_no . "_" . $subscriber->package_id;
-        $attach = "";
+            $postResponse = $client->post($url."/subscribers/register", [
+                'headers' => $headers,
+                'json' => $data,
+                'http_errors' => false
+                ]);
 
-        $fullname = $request->first_name . " " . $request->second_name;
+            $statusCode = $postResponse->getStatusCode();
 
-        try
-        {
-            Mail::to($request->email)->send(new \App\Mail\SendMail(
-                $fullname,
-                'Welcome to SkilTax POS system',
-                $membership_no,
-                $request->start_date,
-                $request->end_date,
-                $attach
-            ));
+            // Decode JSON body
+            $subscriber = json_decode($postResponse->getBody()->getContents(), true);
 
-            $message = new Message();
-            $message->membership_no = $membership_no;
-            $message->title = "رسالة إكتمال التسجيل";
-            $message->body = "Subscriber Name: $fullname <br>
-            Membership ID:  $membership_no <br>
-            Subscription Start Date / Time :  $request->start_date <br>
-            Subscription End Date / Time :  $request->end_date ";
-            $message->save();
+            if ($statusCode >= 400) {
+                return response()->json( $subscriber,400);
+            }
+
+            $membership_no = $subscriber['membership_no'];
+
+            $this->skilltax_customer_package($membership_no, 12);
+
+            $fileName = $membership_no . ".json";
+            $contents = File::get(public_path('/jsons/' . $fileName));
+
+            //set subscriber to the last free trial
+            $free_trial = FreeTrialOtp::where('phone',$subscriber['phone_no'])->orderBy('id','DESC')->first();
+            if($free_trial){
+                $free_trial->update(['membership_no' => $membership_no , 'status' => 'Completed']);
+            }
+
+            // echo $contents;exit;
+
+            $client->post("$url/permissionList", [
+                'headers' => ['Authorization' => 'Bearer ' . $token],
+                'json' => json_decode($contents)
+            ]);
+
+            $fullname = $request->first_name . " " . $request->second_name;
+
+            if($request->email)
+            {
+                Mail::to($request->email)->send(new \App\Mail\SendMail(
+                    $fullname,
+                    'Welcome to SkilTax POS system',
+                    $membership_no,
+                    $start_date,
+                    $end_date,
+                    ""
+                ));
+
+                Mail::to("support@skiltax.sa")->send(new FreeTrialMail(
+                    [
+                        'email' => $request->email,
+                        'phone' => $request->phone,
+                        'membership_no' => $subscriber['membership_no'],
+                        'start_date' => $start_date,
+                        'end_date' => $end_date
+                    ]
+                ));
+
+                $message = new Message();
+                $message->membership_no = $membership_no;
+                $message->title = "رسالة إكتمال التسجيل";
+                $message->body = "Subscriber Name: $fullname <br>
+                Membership ID:  $membership_no <br>
+                Subscription Start Date / Time :  $start_date <br>
+                Subscription End Date / Time :  $end_date ";
+                $message->save();
+            }
+
+            return response()->json($subscriber,201);
         }
-        catch (ClientException $e) {}
-
-        return response()->json($subscriber,201);
+        catch(\Exception $e){
+            return response()->json('error'.$e->getMessage());
+        }
     }
     
     public function createBranch(Request $request)
@@ -1207,7 +1258,7 @@ class CustomerController extends Controller
 
          return redirect("/customers")->with("Message", "تم إضافة الفرع");
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
@@ -1298,7 +1349,7 @@ class CustomerController extends Controller
 
         //  return json_decode($postResponse->getBody()->getCode());
         }
-        catch (ClientException $e)
+        catch (ExceptionClientException $e)
         {
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");

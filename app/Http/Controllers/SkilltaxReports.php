@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Info;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
@@ -62,5 +63,39 @@ class SkilltaxReports extends Controller
         Session(['end_date' => ""]);
 
         return redirect('/paymentTransactions');
+    }
+
+    public function skilltaxLoginReport(Request $request)
+    {
+        $client = new Client();
+        $token = session("skillTax_token");
+        $url = Config('app.skilltax_v1')."loginLogs";
+
+        $response = $client->get($url, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json'
+            ],
+            'query' => [ 
+                'membership_no' => $request->membership_no,
+                'status' => $request->status,
+                'paginate' => 25,
+                'page' => $request->get('page', 1)
+            ]
+        ]);
+
+        $result = json_decode($response->getBody()->getContents(), true);
+
+        $items = collect($result['data']);
+
+        $data = new LengthAwarePaginator(
+            $items,
+            $result['total'],
+            $result['per_page'],
+            $result['current_page'],
+            ['path' => url()->current() , 'query' => $request->query()]
+        );
+
+        return view('skilltaxLoginReport',['logins' => $data]);
     }
 }

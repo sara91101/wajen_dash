@@ -191,4 +191,8 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
+
+    "skilltax_v1" => env('SKILLTAX_URL')."v1/",
+    "skilltax_v2" => env('SKILLTAX_URL')."v2/",
+
 ];

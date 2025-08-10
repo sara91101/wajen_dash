@@ -39,6 +39,8 @@ use App\Http\Controllers\LoyaltySplashController;
 use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\PriceShowController;
 use App\Http\Controllers\SkilltaxReports;
+use App\Http\Controllers\CasheirServiceController;
+use App\Http\Controllers\FreeTrialOtpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +91,12 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
     Route::post('/newTown', [TownController::class, 'store'])->name('newTown');
     Route::get('/destroyTown/{town_id}', [TownController::class, 'destroy'])->name('destroyTown');
     Route::post('/updateTown', [TownController::class, 'update'])->name('updateTown');
+
+    //casheir services
+    Route::get('/casheirServices', [CasheirServiceController::class, 'index'])->name('casheirServices');
+    Route::post('/newService', [CasheirServiceController::class, 'store'])->name('newService');
+    Route::get('/destroycasheirService/{Service_id}', [CasheirServiceController::class, 'destroy'])->name('destroycasheirService');
+    Route::post('/updatecasheirService', [CasheirServiceController::class, 'update'])->name('updatecasheirService');
 
     //governorates
     Route::get('/governorates', [GovernorateController::class, 'index'])->name('governorates');
@@ -234,7 +242,7 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
 
     //services
     Route::get('/services', [ServiceController::class, 'index'])->name('services');
-    Route::post('/services', [ServiceController::class, 'store'])->name('newService');
+    Route::post('/services', [ServiceController::class, 'store'])->name('newServices');
     Route::post('/updateService', [ServiceController::class, 'update'])->name('updateService');
     Route::get('/destroyService/{Service_id}', [ServiceController::class, 'destroy'])->name('destroyService');
 
@@ -385,5 +393,9 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
     Route::get('/screenPaymentStatus/{membership_no}/{status}', [CustomerController::class, 'screenPaymentStatus'])->name('screenPaymentStatus');
     Route::get('/insuranceStatus/{membership_no}/{status}', [CustomerController::class, 'insuranceStatus'])->name('insuranceStatus');
     Route::get('/zacatStatus/{membership_no}/{status}', [CustomerController::class, 'zacatStatus'])->name('zacatStatus');
+
+    Route::get('/skilltaxLoginReport', [SkilltaxReports::class, 'skilltaxLoginReport'])->name('skilltaxLoginReport');
+    Route::get('/free_trial_repot', [FreeTrialOtpController::class, 'free_trial_repot'])->name('free_trial_repot');
+
 
 });

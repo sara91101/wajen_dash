@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -100,7 +101,7 @@ class LoyaltyCustomerController extends Controller
             }
 
         }
-        catch (ExceptionClientException $e)
+        catch (ClientException $e)
         {
             return redirect("/loyaltyCustomers/1")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
         }
