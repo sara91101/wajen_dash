@@ -41,7 +41,7 @@ use App\Http\Controllers\PriceShowController;
 use App\Http\Controllers\SkilltaxReports;
 use App\Http\Controllers\CasheirServiceController;
 use App\Http\Controllers\FreeTrialOtpController;
-
+use App\Http\Controllers\SubscriberCustomerNotificationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -396,6 +396,10 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
 
     Route::get('/skilltaxLoginReport', [SkilltaxReports::class, 'skilltaxLoginReport'])->name('skilltaxLoginReport');
     Route::get('/free_trial_repot', [FreeTrialOtpController::class, 'free_trial_repot'])->name('free_trial_repot');
+
+    // SubscriberCustomerNotification
+    Route::get('/SubscriberCustomerNotification', [SubscriberCustomerNotificationController::class, 'index']);
+    Route::get('/SubscriberCustomerNotification/changeStatus/{id}/{status}', [SubscriberCustomerNotificationController::class, 'changeStatus']);
 
 
 });

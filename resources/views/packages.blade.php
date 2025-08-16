@@ -124,7 +124,9 @@
                 <th class="font-weight-bold"> النظام</th>
                 <th class="font-weight-bold">الباقة بالعربية</th>
                 <th class="font-weight-bold">الباقة بالإنجليزية</th>
-                <th class="font-weight-bold"> السعر</th>
+                <th class="font-weight-bold"> السعر (شهري)</th>
+                <th class="font-weight-bold"> السعر (سنوي)</th>
+                <th class="font-weight-bold"> نسبه الخصم</th>
                 <th class="font-weight-bold"> المحتويات</th>
                 <th class="font-weight-bold">العمليات</th>
             </thead>
@@ -138,6 +140,8 @@
                     <td id="PackageAr{{ $pk->id }}">{{ $pk->package_ar }}</td>
                     <td id="PackageEn{{ $pk->id }}">{{ $pk->package_en }}</td>
                     <td id="PackagePrice{{ $pk->id }}">{{ $pk->price }}</td>
+                    <td id="PackagePrice{{ $pk->id }}">{{ $pk->yearly_price }}</td>
+                    <td id="PackagePrice{{ $pk->id }}">{{ $pk->discount_percentage }}</td>
 
                     <td class="float-right">
                         @php $k=0; @endphp

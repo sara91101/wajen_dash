@@ -27,6 +27,12 @@
             majors[i].style.display = "block";
         }
     }
+    
+    function computeYearlyPrice()
+    {
+        let monthly = document.getElementsById('monthly_price').value;
+        document.getElementsById('yearly_price').value = monthly * 12;
+    }
 </script>
 
 <div class="card">
@@ -47,21 +53,34 @@
                 <input type="hidden" value="{{ $package->systm_id }}" name="systm_id">
 
                 <div class="modal-body text-right font-weight-bold row" dir="rtl">
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1" class="text-primary-purple">
                             <i class="mdi mdi-star text-danger"></i>
                             الباقة بالعربية
                         </label>
                         <input type="text" value="{{ $package->package_ar }}" name="package_ar" class="form-control text-right" required>
                     </div>
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1" class="text-primary-purple">الباقة بالإنجليزية</label>
                         <input type="text" value="{{ $package->package_en }}" name="package_en" class="form-control text-right">
                     </div>
+
                     <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1" class="text-primary-purple">
-                            <i class="mdi mdi-star text-danger"></i>السعر</label>
-                        <input type="text" value="{{ $package->price }}" name="price" class="form-control text-right" required>
+                            <i class="mdi mdi-star text-danger"></i> السعر (شهري)</label>
+                        <input type="number" step="any" value="{{ $package->price }}" name="price" id="monthly_price" class="form-control text-right" oninput="computeYearlyPrice()" required>
+                    </div>
+
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            <i class="mdi mdi-star text-danger"></i> السعر (سنوي)</label>
+                        <input type="number" step="any" value="{{ $package->yearly_price }}" id="yearly_price" name="yearly_price" class="form-control text-right" required>
+                    </div>
+
+                    <div class="form-group col-lg-4">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            نسبة الخصم</label>
+                        <input type="number" step="any" value="{{ $package->discount_percentage }}" name="discount_percentage" class="form-control text-right">
                     </div>
 
                     @foreach ($majors as $m)

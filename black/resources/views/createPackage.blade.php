@@ -71,8 +71,20 @@
 
                     <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1" class="text-primary-purple">
-                            <i class="mdi mdi-star text-danger"></i> السعر</label>
-                        <input type="text" name="price" class="form-control text-right" required>
+                            <i class="mdi mdi-star text-danger"></i> السعر (شهري)</label>
+                        <input type="number" step="any" name="price" id="monthly_price" class="form-control text-right" required>
+                    </div>
+
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            <i class="mdi mdi-star text-danger"></i> السعر (سنوي)</label>
+                        <input type="number" step="any" id="yeraly_price" name="yeraly_price" class="form-control text-right" required>
+                    </div>
+
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            <i class="mdi mdi-star text-danger"></i> نسبة الخصم</label>
+                        <input type="number" step="any" name="discount_percentage" class="form-control text-right">
                     </div>
 
                     @foreach ($majors as $m)

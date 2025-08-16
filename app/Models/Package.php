@@ -9,7 +9,7 @@ class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'package_ar', 'package_en', 'systm_id','price'];
+    protected $fillable = [ 'package_ar', 'package_en', 'dash_id','price','is_archived','yearly_price','discount_percentage'];
 
     public function systm()
     {

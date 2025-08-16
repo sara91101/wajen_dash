@@ -27,6 +27,11 @@
             majors[i].style.display = "block";
         }
     }
+    function computeYearlyPrice()
+    {
+        let monthly = document.getElementsById('monthly_price').value;
+        document.getElementsById('yearly_price').value = monthly * 12;
+    }
 </script>
 
 <div class="card">
@@ -71,8 +76,20 @@
 
                     <div class="form-group col-lg-6">
                         <label for="exampleInputUsername1" class="text-primary-purple">
-                            <i class="mdi mdi-star text-danger"></i> السعر</label>
-                        <input type="text" name="price" class="form-control text-right" required>
+                            <i class="mdi mdi-star text-danger"></i> السعر (شهري)</label>
+                        <input type="number" step="any" name="price" id="monthly_price" class="form-control text-right" oninput="computeYearlyPrice()" required>
+                    </div>
+
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            <i class="mdi mdi-star text-danger"></i> السعر (سنوي)</label>
+                        <input type="number" step="any" id="yearly_price" name="yearly_price" class="form-control text-right" required>
+                    </div>
+
+                    <div class="form-group col-lg-6">
+                        <label for="exampleInputUsername1" class="text-primary-purple">
+                            نسبة الخصم</label>
+                        <input type="number" step="any" name="discount_percentage" class="form-control text-right">
                     </div>
 
                     @foreach ($majors as $m)

@@ -128,7 +128,7 @@ class FreeTrialOtpController extends Controller
             $subscribers = $subscribers->where('status',$request->status);
         }
         
-        $subscribers = $subscribers->paginate(30);
+        $subscribers = $subscribers->orderBy('id','DESC')->paginate(30);
 
         return view('free_trial_repot',compact('subscribers'));
     }

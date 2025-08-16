@@ -465,6 +465,7 @@
                         <li class="nav-item"><a class="nav-link" href="/casheirs">طلبات تفعيل الكاشير </a></li>
                         <li class="nav-item"><a class="nav-link" href="/archiveCustomers">  الأرشيف </a></li>
                         <li class="nav-item"><a class="nav-link" href="/priceShow">  عرض السعر </a></li>
+                        <li class="nav-item"><a class="nav-link" href="/SubscriberCustomerNotification">  إشعارات الزبائن </a></li>
 
                       </ul>
                   </div>

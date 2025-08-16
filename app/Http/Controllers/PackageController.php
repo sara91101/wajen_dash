@@ -162,6 +162,8 @@ class PackageController extends Controller
         $package->package_en = $request->input("package_en");
         $package->systm_id = $request->input("systm_id");
         $package->price = $request->input("price");
+        $package->yearly_price = $request->input("yearly_price");
+        $package->discount_percentage = $request->input("discount_percentage");
         $package->save();
 
         $majors = Major::all();
@@ -188,7 +190,9 @@ class PackageController extends Controller
         "dash_id"=>$package->id,
         "package_ar" => $request->input("package_ar"),
         "package_en" => $request->input("package_en"),
-        "price" => $request->input("price")
+        "price" => $request->input("price"),
+        "yearly_price" => $request->input("yearly_price"),
+        "discount_percentage" => $request->input("discount_percentage")
         ];
         $client->post("$url/packages", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
@@ -214,6 +218,8 @@ class PackageController extends Controller
         $package->package_ar = $request->input("package_ar");
         $package->package_en = $request->input("package_en");
         $package->price = $request->input("price");
+        $package->yearly_price = $request->input("yearly_price");
+        $package->discount_percentage = $request->input("discount_percentage");
         $package->update();
 
         PackageMinor::where("package_id",$package_id)->delete();
@@ -251,7 +257,9 @@ class PackageController extends Controller
         $data =[
         "package_ar" => $request->input("package_ar"),
         "package_en" => $request->input("package_en"),
-        "price" => $request->input("price")
+        "price" => $request->input("price"),
+        "yearly_price" => $request->input("yearly_price"),
+        "discount_percentage" => $request->input("discount_percentage")
         ];
         $client->post("$url/packages/$package_id", [
             'headers' => ['Authorization' => 'Bearer ' . $token],
