@@ -155,6 +155,7 @@ Route::group(['middleware' => ['auth','Privilege']],function()
     Route::get('/CustomerMessages/{customer_id}/{membership_no}', [CustomerController::class, 'CustomerMessages'])->name('CustomerMessages');
     Route::get('/printCustomers', [CustomerController::class, 'printCustomers'])->name('printCustomers');
     Route::post('/customerSendMail', [CustomerController::class, 'customerSendMail'])->name('customerSendMail');
+    Route::get('/customerInvoices/{membership_no}', [CustomerController::class, 'invoices'])->name('customerInvoices');
 
     Route::get('/inActivateCustomer/{customer_id}', [CustomerController::class, 'inActivateCustomer'])->name('inActivateCustomer');
     Route::get('/customerActivate/{customer_id}', [CustomerController::class, 'customerActivate'])->name('customerActivate');

@@ -11,12 +11,14 @@ use App\Models\CustomerService;
 use App\Models\CustomerUser;
 use App\Models\FreeTrialOtp;
 use App\Models\Info;
+use App\Models\Invoice;
 use App\Models\Major;
 use App\Models\Message;
 use App\Models\Minor;
 use App\Models\Package;
 use App\Models\Systm;
 use App\Models\User;
+use App\Services\InvoiceService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +37,13 @@ use Prgayman\Zatca\Facades\Zatca;
 
 class CustomerController extends Controller
 {
+    
+    protected $invoiceService;
+
+    public function __construct(InvoiceService $invoiceService)
+    {
+        $this->invoiceService = $invoiceService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -308,15 +317,15 @@ class CustomerController extends Controller
             'json' => json_decode($contents)
         ]);
 
-        //$this->CustomerBill($subscriber->id, $subscriber->package_id, 1);
+        $this->CustomerBill($subscriber->id, $subscriber->package_id, 1,$request);
 
         return redirect("/customers")->with("Message", "تمت الاضافة");
         }
         catch (\Exception $e)
         {
-            // return  response()->json(["error"=>$e->getMessage(),"sub"=>json_encode($subscriber)]);
+            return  response()->json(["error"=>$e->getMessage(),"sub"=>json_encode($subscriber)]);
 
-            return redirect("/customers")->with("errorMessage", json_decode($subscriber['data'])->message);
+            //return redirect("/customers")->with("errorMessage", $e->getMessage());
         }
     }
 
@@ -815,11 +824,15 @@ class CustomerController extends Controller
         else{$data["date"] = date('Y-m-d');}
         
         //echo $data["date"];exit;
+
+        $data['invoiceNumber'] = $this->invoiceService->generateInvoiceNumber();
         $pdf = PDF::loadView('bill3', $data);
         //return view("bill",$data);
 
 
         $fileName = $membership_no."_".$package_id.".pdf";
+
+        $this->invoiceService->storeServiceNumber($data['invoiceNumber'] , $membership_no , $fileName ,'subscription');
         //
         if ($status == 1) {
             return $pdf->save(public_path("bills/$fileName"));
@@ -1136,13 +1149,7 @@ class CustomerController extends Controller
 
         try{
 
-            $login = $client->post("https://back.skilltax.sa/api/v1/subscribers/login", [
-                'headers' => ['Content-Type' => 'application/json'],
-                'json' => ['membership_no' => 701292, 'password' => "888888"]
-            ]);
-
-            $token = json_decode($login->getBody()->getContents())->token;
-            Session(['skillTax_token' => $token]);
+            $token = env('SKILLTAX_TOKEN');
 
             $headers = [
                 'Content-Type' => 'application/json',
@@ -1215,6 +1222,8 @@ class CustomerController extends Controller
                 Subscription End Date / Time :  $end_date ";
                 $message->save();
             }
+
+            $this->sendSubscriptionSMS($request->phone , $membership_no);
 
             return response()->json($subscriber,201);
         }
@@ -1354,6 +1363,22 @@ class CustomerController extends Controller
             //return $e->getMessage();
             return redirect("/customers")->with("errorMessage", " حذث خطأ الرجاء المحاولة مرو أخرى");
         }
+    }
+
+    
+
+    public function sendSubscriptionSMS($subscriber_phone , $membership_no)
+    {
+        $msg = "نرحب بإنضمامك ويسعدنا خدمتك. \n تم إنشاء حسابك، وبيانات الدخول كالتالي: \n رقم العضوية: $membership_no \n لتسجيل الدخول الى لوحة التحكم: https://v1.skilltax.sa/";
+        $apiUrl = 'https://www.msegat.com/gw/sendsms.php';
+        $data = [
+                'userName' => 'Wajen5188',
+                'apiKey' => env('OTP_MESSAGE_KEY'),
+                'numbers' => $subscriber_phone,
+                'userSender' => 'WAJEN',
+                'msg' => $msg,
+            ];
+        Http::post($apiUrl, $data);
     }
 
     public function sendNotification(Request $request)
@@ -1522,6 +1547,13 @@ class CustomerController extends Controller
         }
 
         return back()->with("Message", $msg);
+    }
+
+    public function invoices($membership_no)
+    {
+        $invoices = Invoice::where('membership_no',$membership_no)->paginate(20);
+
+        return view('customer_invoices',compact('invoices'));
     }
 
 }

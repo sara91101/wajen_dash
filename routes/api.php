@@ -5,6 +5,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\APIController;
 use App\Http\Controllers\BlogDepartmentController;
 use App\Http\Controllers\BlogsController;
 use App\Http\Controllers\CustomerController;
@@ -48,5 +49,11 @@ Route::get('/v2/blogs/{dept_id}', [BlogDepartmentController::class, 'blogs']);
 Route::get('/v2/blog/{blog_id}', [BlogsController::class, 'show']);
 
 Route::get('/postman/{phone}', [LoginController::class, 'postman']);
+
+//update package endpoint
+Route::post('/updateSubscriberPackage', [APIController::class, 'updateSubscriberPackage']);
+
+//renew package endpoint
+Route::post('/renewSubscriberPackage', [APIController::class, 'renewSubscriberPackage'])->withoutMiddleware(['web'])->middleware('api');
 
 

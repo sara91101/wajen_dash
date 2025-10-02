@@ -624,6 +624,10 @@
                                         التفاصيل
                                     </a>
                                     <div role="separator" class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-right" href="/customerInvoices/{{ $c['membership_no'] }}" style="text-decoration: none">
+                                        الفواتير
+                                    </a>
+                                    <div role="separator" class="dropdown-divider"></div>
                                     <a class="dropdown-item text-right" onclick="notifyCustomer({{ $c['id'] }})"  href="javascript:;" style="text-decoration: none">
                                         إرسال إشعار
                                     </a>

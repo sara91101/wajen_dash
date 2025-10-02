@@ -400,6 +400,7 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
     // SubscriberCustomerNotification
     Route::get('/SubscriberCustomerNotification', [SubscriberCustomerNotificationController::class, 'index']);
     Route::get('/SubscriberCustomerNotification/changeStatus/{id}/{status}', [SubscriberCustomerNotificationController::class, 'changeStatus']);
+    Route::get('/customerInvoices/{membership_no}', [CustomerController::class, 'invoices'])->name('customerInvoices');
 
 
 });

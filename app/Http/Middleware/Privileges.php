@@ -22,18 +22,7 @@ class Privileges
         $user = Auth::user();
         $route = Route::currentRouteName();
 
-        $token = $request->header('Authorization') ?? $request->bearerToken();
-
-        if (!$token) {
-            $client = new Client();
-            $login = $client->post("https://back.skilltax.sa/api/v1/subscribers/login", [
-            'headers' => ['Content-Type' => 'application/json'],
-            'json' => ['membership_no' => 701292, 'password' => "888888"]
-            ]);
-
-            $token = json_decode($login->getBody()->getContents())->token;
-            Session(['skillTax_token' => $token]);
-        }
+        $token = env('SKILLTAX_TOKEN');
 
         if($user->level_id != 1 && $route != "home" && $route != "changeMode")
         {

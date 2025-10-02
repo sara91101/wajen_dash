@@ -48,16 +48,7 @@ class LoginController extends Controller
         $info = Info::first();
         Session(['infos' => $info]);
         Session(['mode' => "light"]);
-
-        $client = new Client();
-
-        $login = $client->post("https://back.skilltax.sa/api/v1/subscribers/login", [
-            'headers' => ['Content-Type' => 'application/json'],
-            'json' => ['membership_no' => 701292, 'password' => "888888"]
-        ]);
-
-        $token = json_decode($login->getBody()->getContents())->token;
-        Session(['skillTax_token' => $token]);
+        Session(['skillTax_token' => env('SKILLTAX_TOKEN')]);
 
         $this->middleware('guest')->except('logout');
     }
@@ -154,14 +145,14 @@ class LoginController extends Controller
                 ];
 
                 // Make request to msegat api
-                $response = Http::post($apiUrl, $data);
-                $responseData = $response->json();
+                //$response = Http::post($apiUrl, $data);
+               // $responseData = $response->json();
                 // return $responseData;
-                $responseStatusCode = $response->status(); // Get the status code of the response
+                //$responseStatusCode = $response->status(); // Get the status code of the response
 
                 // $responseStatusCode = 200;
 
-                if ($responseStatusCode === 200) {
+                //if ($responseStatusCode === 200) {
                         User::where('id',$user->id)->update([
                         'verification_code' => $code,
                         'valid_until' => Carbon::now()->addMinutes(5), // make otp expire after 5 minutes
@@ -171,10 +162,10 @@ class LoginController extends Controller
                     
 
                     return view('verification_code');
-                } else {
+                //} else {
                     // Data creation failed
-                    return response()->json(['message' => 'Failed to create verification code'], 500);
-                }
+                   // return response()->json(['message' => 'Failed to create verification code'], 500);
+                //}
             } catch (\Exception $e) {
                 Log::error('Error in sending OTP '. $e->getMessage());
                 return response()->json(['message' => $e->getMessage()], 500);
@@ -191,7 +182,7 @@ class LoginController extends Controller
         {
             User::where('id',$user->id)->update(['code_used'=> 1,'verified' => 1]);
             $this->home_after_otp();
-           return redirect('/home');
+            return redirect('/home');
         }
         else
         {
