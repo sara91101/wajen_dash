@@ -10,6 +10,7 @@ use App\Http\Controllers\BlogDepartmentController;
 use App\Http\Controllers\BlogsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistributorController;
+use App\Http\Controllers\ExternalInvoiceController;
 use App\Http\Controllers\FreeTrialOtpController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InquiryController;
@@ -55,5 +56,8 @@ Route::post('/updateSubscriberPackage', [APIController::class, 'updateSubscriber
 
 //renew package endpoint
 Route::post('/renewSubscriberPackage', [APIController::class, 'renewSubscriberPackage'])->withoutMiddleware(['web'])->middleware('api');
+
+//finish storage alert
+Route::post('/inventoryAlert', [APIController::class, 'inventoryAlert']);
 
 

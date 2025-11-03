@@ -40,6 +40,7 @@ use App\Http\Controllers\PrivacyFirstController;
 use App\Http\Controllers\PriceShowController;
 use App\Http\Controllers\SkilltaxReports;
 use App\Http\Controllers\CasheirServiceController;
+use App\Http\Controllers\ExternalInvoiceController;
 use App\Http\Controllers\FreeTrialOtpController;
 use App\Http\Controllers\SubscriberCustomerNotificationController;
 /*
@@ -400,7 +401,14 @@ Route::group(['middleware' => ['auth','Privilege','verified']],function()
     // SubscriberCustomerNotification
     Route::get('/SubscriberCustomerNotification', [SubscriberCustomerNotificationController::class, 'index']);
     Route::get('/SubscriberCustomerNotification/changeStatus/{id}/{status}', [SubscriberCustomerNotificationController::class, 'changeStatus']);
-    Route::get('/customerInvoices/{membership_no}', [CustomerController::class, 'invoices'])->name('customerInvoices');
+    Route::get('/customerInvoices/{membership_no}/{customer_id}', [CustomerController::class, 'invoices'])->name('customerInvoices');
+    Route::get('/addDeviceInvoice/{membership_no}/{customer_id}', [CustomerController::class, 'addDeviceInvoice'])->name('addDeviceInvoice');
+    Route::post('/createDeviceInvoice', [CustomerController::class, 'createDeviceInvoice'])->name('createDeviceInvoice');
+
+    //external invoices
+    Route::get('external_invoices/{id}/{membership_no}/{customer_id}', [ExternalInvoiceController::class , 'edit'])->name('external_invoices.edit');
+    Route::get('external_invoices_destroy/{id}', [ExternalInvoiceController::class , 'destroy'])->name('external_invoices.destroy');
+    Route::post('external_invoices/{id}', [ExternalInvoiceController::class , 'update'])->name('external_invoices.update');
 
 
 });

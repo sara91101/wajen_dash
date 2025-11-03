@@ -43,13 +43,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr  style="border-bottom: 1px solid black;">
+                        {{-- <tr  style="border-bottom: 1px solid black;">
                             <td class="under">{{ $price["package_ar"] }}</td>
                             <td class="under">{{ $price["final_price"] + $price["discount"] }}</td>
                             <td class="under">1</td>
                             <td class="under">{{ $price["discount"] }}</td>
                             <td class="under">{{ $price["final_price"] }}</td>
-                        </tr>
+                        </tr> --}}
                         @php $final_amount = $price["final_price"]; @endphp
                         @foreach ($price["service"] as $service)
                             <tr class="text-center" style="border-bottom: 1px solid black;">

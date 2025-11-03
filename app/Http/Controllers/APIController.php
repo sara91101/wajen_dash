@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 
 use App\Http\Requests\RenewPackageRequest;
+use App\Http\Requests\StorageMailRequest;
 use App\Mail\RenewPackage;
 use App\Mail\SendMail;
+use App\Mail\StorageMail;
 use App\Models\Info;
 use App\Models\Major;
 use App\Models\Minor;
@@ -215,5 +217,26 @@ class APIController extends Controller
         }
         catch (GuzzleException $e) { return response()->json(["error"=>$e],401);}
 
+    }
+
+
+    public function inventoryAlert(StorageMailRequest $request)
+    {
+        try
+        {
+            Mail::to($request->customerEmail)->send(new StorageMail(
+                    $request->customerEmail,
+                    $request->customerName,
+                    $request->materialName,
+                    $request->currentQuantity,
+                    $request->reorderLevel,
+                    $request->depletionDate,
+                    $request->depletionPercentage,
+                    $request->unit
+                ));
+                 return response()->json(["message"=>"Email sent to customer"],200);
+
+        }
+        catch (GuzzleException $e) { return response()->json(["error"=>$e],401);}
     }
 }

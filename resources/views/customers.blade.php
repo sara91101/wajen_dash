@@ -624,7 +624,7 @@
                                         التفاصيل
                                     </a>
                                     <div role="separator" class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-right" href="/customerInvoices/{{ $c['membership_no'] }}" style="text-decoration: none">
+                                    <a class="dropdown-item text-right" href="/customerInvoices/{{ $c['membership_no'] }}/{{ $c['id'] }}" style="text-decoration: none">
                                         الفواتير
                                     </a>
                                     <div role="separator" class="dropdown-divider"></div>

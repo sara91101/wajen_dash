@@ -363,7 +363,7 @@
                         <input type="text" id="activity_name" name="activity_name" class="form-control text-right" required>
                     </div>
 
-                    <div class="form-group col-lg-4">
+                    {{-- <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>الباقة</label>
                         <select name="package_id" id="package_id" class="form-select text-right" required onchange="price(this)">
                             <option value="">-</option>
@@ -387,13 +387,13 @@
                     <div class="form-group col-lg-4">
                         <label for="exampleInputUsername1"><i class="mdi mdi-star text-danger"></i>المبلغ</label>
                         <input type="text" id="final_amount" name="final_price" class="form-control text-right" required>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group col-lg-12">
                         <div class="form-group col-lg-2">
                             <label class="btn btn-success btn-sm" onclick="addService()">
                                 <i class="mdi mdi-plus"></i>
-                                إضافة أصناف أخرى
+                                إضافة الأصناف 
                             </label>
                         </div>
                     </div>
