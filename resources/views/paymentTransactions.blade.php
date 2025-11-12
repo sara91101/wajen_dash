@@ -105,6 +105,8 @@
                     <th class="font-weight-bold">سعر الخدمة</th>
                     <th class="font-weight-bold">رسوم التطبيق</th>
                     <th class="font-weight-bold">مبلغ التاجر</th>
+                    <th class="font-weight-bold">رسوم بوابة الدفع</th>
+                    <th class="font-weight-bold">نوع البطاقه</th>
                     <th class="font-weight-bold">الحالة</th>
                 </thead>
 
@@ -126,6 +128,8 @@
                         <td>{{ $transaction['service_fee'] }}</td>
                         <td>{{ $transaction['app_fee'] }}</td>
                         <td>{{ $transaction['merchant_amount'] }}</td>
+                        <td>{{ $transaction['payment_gateway_fee'] }}</td>
+                        <td>{{ $transaction['card_type'] }}</td>
 
                         <td>
                             @if($transaction['status'] == 'completed') مكتمل

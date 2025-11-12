@@ -20,7 +20,7 @@ class StorageMail extends Mailable
         private string $email,
         private string $business_name,
         private string $materialName,
-        private int $currentQuantity,
+        private string $currentQuantity,
         private string $reorderLevel,
         private ?string $depletionDate,
         private ?float $depletionPercentage,

@@ -49,7 +49,7 @@
                             <th style="border-left: 0;border-right:0;">الكميه</th>
                             <th style="border-left: 0;border-right:0;">السعر</th>
                             <th style="border-left: 0;border-right:0;">الخصم</th>
-                            <th style="border-left: 0;border-right:0;">نسبه الضريبه</th>
+                            {{-- <th style="border-left: 0;border-right:0;">نسبه الضريبه</th> --}}
                             <th style="border-left: 0;border-right:0;">قيمه الضريبه</th>
                             <th style="border-left: 0;border-right:0;">اﻟﻤﺠﻤﻮع</th>
                         </tr>
@@ -61,9 +61,9 @@
                                 <td>{{ $quantities[$k] }}</td>
                                 <td>{{ $prices[$k] }}</td>
                                 <td>{{ $discounts[$k] }}</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>{{ $final_prices[$k] }}</td>
+                                {{-- <td>15</td> --}}
+                                <td>{{ $taxes[$k] }}</td>
+                                <td>{{ $final_prices[$k] + $taxes[$k] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -73,7 +73,7 @@
 
         <div style="width:100%" class="mt-3">
             <div style="border-radius:.90rem;text-align:center !important;width:40%;border:1px ridge black;float: left;" dir="rtl" align="left">
-                <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>  المجموع : {{  number_format($sum_before_tax,2) }} ر.س </b></p>
+                <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>  المجموع الفرعي : {{  number_format($sum_before_tax ,2) }} ر.س </b></p>
                  <p style="font-size: 16px;text-align:center !important;text-float:center;" align="center" class="mb-3"><b>الخصم : {{  number_format($discount,2) }} ر.س &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b>ضريبة القيمة المضافة : {{  number_format($tax_value,2) }} ر.س </b></p>
                 <p style="font-size: 16px;text-align:center !important;" class="mb-3" align="center"><b>  الإجمالي : {{  number_format($sum_after_tax,2) }} ر.س </b></p>

@@ -57,7 +57,8 @@ Route::post('/updateSubscriberPackage', [APIController::class, 'updateSubscriber
 //renew package endpoint
 Route::post('/renewSubscriberPackage', [APIController::class, 'renewSubscriberPackage'])->withoutMiddleware(['web'])->middleware('api');
 
-//finish storage alert
+//finish storage alert 
 Route::post('/inventoryAlert', [APIController::class, 'inventoryAlert']);
+Route::post('/sendCompliantToSubscriberEmail', [APIController::class, 'sendCompliantToSubscriberEmail']);
 
 

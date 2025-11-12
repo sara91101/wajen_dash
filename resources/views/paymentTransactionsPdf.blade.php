@@ -167,6 +167,8 @@
                     <th>سعر الخدمة</th>
                     <th>رسوم التطبيق</th>
                     <th>مبلغ التاجر</th>
+                    <th>رسوم بوابة الدفع</th>
+                    <th>نوع البطاقه</th>
                     <th>الحالة</th>
                 </tr>
             </thead>
@@ -189,6 +191,8 @@
                     <td>{{ $transaction['service_fee'] }}</td>
                     <td>{{ $transaction['app_fee'] }}</td>
                     <td>{{ $transaction['merchant_amount'] }}</td>
+                    <td>{{ $transaction['payment_gateway_fee'] }}</td>
+                    <td>{{ $transaction['card_type'] }}</td>
                     <td>
                         @if($transaction['status'] == 'completed') مكتمل
                         @elseif($transaction['status'] == 'pending') قيد الطلب

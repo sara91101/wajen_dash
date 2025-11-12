@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 
 use App\Http\Requests\RenewPackageRequest;
+use App\Http\Requests\sendCompliantToSubscriberEmailRequest;
 use App\Http\Requests\StorageMailRequest;
 use App\Mail\RenewPackage;
+use App\Mail\sendCompliantToSubscriberEmail;
 use App\Mail\SendMail;
 use App\Mail\StorageMail;
 use App\Models\Info;
@@ -235,6 +237,25 @@ class APIController extends Controller
                     $request->unit
                 ));
                  return response()->json(["message"=>"Email sent to customer"],200);
+
+        }
+        catch (GuzzleException $e) { return response()->json(["error"=>$e],401);}
+    }
+
+
+    public function sendCompliantToSubscriberEmail(sendCompliantToSubscriberEmailRequest $request)
+    {
+        try
+        {
+            Mail::to($request->subscriberEmail)->send(new sendCompliantToSubscriberEmail(
+                    $request->senderName,
+                    $request->senderPhoneNumber,
+                    $request->messageType,
+                    $request->message,
+                    $request->businessName,
+                    $request->branchName
+                ));
+                 return response()->json(["message"=>"Email sent to subscriber"],200);
 
         }
         catch (GuzzleException $e) { return response()->json(["error"=>$e],401);}

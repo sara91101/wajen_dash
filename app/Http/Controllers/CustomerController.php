@@ -1588,20 +1588,24 @@ class CustomerController extends Controller
         $data['final_prices'] = $request->final_prices;
         $data['sum_before_tax'] = $request->first_total;
         $data['discount'] = $request->total_discount;
-        $data['tax_value'] = $request->has_tax ? ($request->total * 15 / 100) : 0;
-        $data['sum_after_tax'] = $request->total - $data['tax_value'];
+        $data['taxes'] = $request->taxes;
+        //$data['tax_value'] = $request->has_tax ? ($request->total * 15 / 100) : 0;
 
         $items_array = [];
+        $taxes_sum = 0;
         foreach($data['items'] as $x => $item){
             $items_array[] =  [
                     "item"=> $item,
                     "quantity"=> $data['quantities'][$x],
                     "price"=> $data['prices'][$x],
                     "discounts"=> $data['discounts'][$x] ?? 0,
-                    "taxes"=> 0,
+                    "taxes"=> $data['taxes'][$x] ?? 0,
                     "final_price"=> $data['final_prices'][$x] ?? 0
             ];
+            $taxes_sum += $data['taxes'][$x] ?? 0;
         }
+        $data['tax_value'] = $taxes_sum;
+        $data['sum_after_tax'] = $request->total + $taxes_sum;
 
         //send data to skilltax
         $payload = [

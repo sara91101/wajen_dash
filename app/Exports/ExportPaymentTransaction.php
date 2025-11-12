@@ -35,7 +35,7 @@ class ExportPaymentTransaction implements FromCollection, WithHeadings
                     'datetime'=> $result['datetime'], 'membership_no'=> $result['membership_no'],
                     'operation_type'=> $result['operation_type'], 'status'=> $result['status'],
                     'service_fee'=> $result['service_fee'], 'app_fee'=> $result['app_fee'],
-                    'merchant_amount'=> $result['merchant_amount']
+                    'merchant_amount'=> $result['merchant_amount'],'payment_gateway_fee'=> $result['payment_gateway_fee'],'card_type'=> $result['card_type']
                 ];
         }
         // print_r($data);
@@ -55,6 +55,8 @@ class ExportPaymentTransaction implements FromCollection, WithHeadings
             'سعر الخدمة',
             'رسوم التطبيق',
             'مبلغ التاجر',
+            'رسوم بوابة الدفع',
+            'نوع البطاقه'
         ];
     }
 }
